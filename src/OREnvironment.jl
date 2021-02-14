@@ -1,5 +1,9 @@
+# __precompile__()
+
 module OREnvironment
 
-# Write your package code here.
+include("Types.jl")
+include("Solution.jl")
+include("Constraints.jl")
 
 end
