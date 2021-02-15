@@ -60,9 +60,9 @@ function get_class_of_status(s::Status)::Symbol
 end
 
 function is_first_status_better(s1::Status, 
-                                      s2::Status, 
-                                      objSense::Symbol, 
-                                      feasibilityRequiered::Bool)::Bool
+                                s2::Status, 
+                                objSense::Symbol, 
+                                feasibilityRequiered::Bool)::Bool
     if feasibilityRequiered
         if is_feasible(s1) && !is_feasible(s2)
             return true;
@@ -97,18 +97,13 @@ function is_first_solution_better(s1::Solution,
 end
 
 function update_constraint_consumption!(s::Solution, 
-                                        constraints::Array{<:Constraint,1}, 
-                                        lhsIsZero::Bool = false)
-    local N::Int = length(constraints);
-    if N == 0 set_feasible!(s, true); return nothing end 
-    local typeLHS::DataType = typeof(get_constraint_consumption(s,1));
+                                        constraints::Array{<:Constraint,1})
     local feasible::Bool = true;
+    local N::Int = length(constraints);
     @inbounds for i in 1:N 
-        local lhs::typeLHS = lhsIsZero ? zero(typeLHS) : compute_lhs(constraints[i], s);
+        local lhs = compute_lhs(constraints[i], s);
         set_constraint_consumption!(s, lhs, i);
-        if !is_feasible(constraints[i], lhs)
-            feasible = false;
-        end
+        if !is_feasible(constraints[i], lhs) feasible = false; end
     end
     set_feasible!(s, feasible);
     return nothing;
@@ -119,22 +114,16 @@ function update_constraint_consumption!(s::Solution,
                                         variable::Int, 
                                         Δvariable::Real, 
                                         idxConstraints::Array{Int,1})
-    local N::Int = length(idxConstraints);
-    if length(constraints) == 0 set_feasible!(s, true); return nothing end
-    if N == 0 return nothing end;
     local feasible::Bool = true;
-    local lhs = get_constraint_consumption(s, 1); # to infer type
     @inbounds for i in idxConstraints
-        lhs = compute_lhs_increment(s, constraints[i], i, variable, Δvariable);
+        local lhs = compute_lhs_increment(s, constraints[i], i, variable, Δvariable);
         set_constraint_consumption!(s, lhs, i);
-        if !is_feasible(constraints[i], lhs)
-            feasible = false;
-        end
+        if !is_feasible(constraints[i], lhs) feasible = false; end
     end
     if !is_feasible(s) && feasible
-        # if the solution was not already feasible and the current movement is feasible
+        # if the solution was not already feasible but the current movement is,
         # then feasibility must be set checking all the constraints.
-        feasible = is_feasible(s, constraints);
+        feasible = is_current_consumption_feasible(s, constraints);
     end
     set_feasible!(s, feasible); 
     return nothing;
@@ -174,7 +163,7 @@ function remove_all_solutions_and_update_status!(s::FixLengthArray{T},
                                                  p::Problem) where {T<:Real}
     s.sol .= zero(T);
     set_objfunction!(s, zero(get_objfunction(s)));
-    update_constraint_consumption!(s, p.constraints, true);
+    update_constraint_consumption!(s, p.constraints); #TODO: can be optimzed by not computing lhs (is zero!)
     return nothing;
 end
 
