@@ -8,7 +8,9 @@ Base.@kwdef mutable struct DefaultStatus{T<:Real, G<:Real} <: Status
     constraintLhsConsumption::Array{G,1};
 end
 
-function constructStatus(numberConstraints::Int, typeObjFunction::DataType, typeLHS::DataType)
+function constructStatus(numberConstraints::Int, 
+                         typeObjFunction::DataType, 
+                         typeLHS::DataType)
     v = zeros(typeLHS, numberConstraints);
     return DefaultStatus{typeObjFunction, typeLHS}(constraintLhsConsumption = v);
 end
@@ -22,8 +24,10 @@ function constructSolution(solutionType::Symbol, args)
     return constructSolution(Val(solutionType), args...);
 end
 
-function constructSolution(::Val{:FixLengthArray}, typeVariables::DataType, 
-                           numVariables::Int, status::Status)
+function constructSolution(::Val{:FixLengthArray}, 
+                           typeVariables::DataType, 
+                           numVariables::Int, 
+                           status::Status)
     return FixLengthArray(zeros(typeVariables, numVariables), status);
 end
 
@@ -43,16 +47,21 @@ worst_value(objsense::Symbol, T::DataType) = worst_value(Val(objsense), T);
 worst_value(::Val{:max}, T::DataType) = typemin(T);
 worst_value(::Val{:min}, T::DataType) = typemax(T);
 
+"""
+    get_class_of_status(s::Status)
+
+Given a status, e.g, OREnvironment.DefaultStatus{T, G}(whatever), it retutns :DefaultStatus 
+"""
 function get_class_of_status(s::Status)::Symbol 
-   # given OREnvironment.SimpleStatus{T, G}(whatever)
-   # returns :SimpleStatus 
    name::String = string(typeof(s));
    @inbounds local x0::Int = findfirst(".", name)[1] + 1;
    @inbounds local xf::Int = findfirst("{", name)[1] - 1;
    return Symbol(name[x0:xf]);
 end
 
-function is_first_obj_function_better(s1::Status, s2::Status, objSense::Symbol, 
+function is_first_obj_function_better(s1::Status, 
+                                      s2::Status, 
+                                      objSense::Symbol, 
                                       feasibilityRequiered::Bool)::Bool
     if feasibilityRequiered
         if is_feasible(s1) && !is_feasible(s2)
@@ -80,12 +89,16 @@ set_objfunction!(s::Solution, val::Real) = set_objfunction!(s.status, val);
 get_constraint_consumption(s::Solution, pos::Int) = get_constraint_consumption(s.status, pos); 
 set_constraint_consumption!(s::Solution, val::Real, pos::Int) = set_constraint_consumption!(s.status, val, pos); 
 
-function is_first_solution_better(s1::Solution, s2::Solution, objSense::Symbol, 
+function is_first_solution_better(s1::Solution, 
+                                  s2::Solution, 
+                                  objSense::Symbol, 
                                   feasibilityRequired::Bool)::Bool
     return is_first_obj_function_better(s1.status, s2.status, objSense, feasibilityRequired);
 end
 
-function update_constraint_consumption!(s::Solution, constraints::Array{<:Constraint,1}, lhsIsZero::Bool = false)
+function update_constraint_consumption!(s::Solution, 
+                                        constraints::Array{<:Constraint,1}, 
+                                        lhsIsZero::Bool = false)
     local N::Int = length(constraints);
     if N == 0 set_feasible!(s, true); return nothing end 
     local typeLHS::DataType = typeof(get_constraint_consumption(s,1));
@@ -101,8 +114,11 @@ function update_constraint_consumption!(s::Solution, constraints::Array{<:Constr
     return nothing;
 end
 
-function update_constraint_consumption!(s::Solution, constraints::Array{<:Constraint,1}, 
-                                        variable::Int, Δvariable::Real, idxConstraints::Array{Int,1})
+function update_constraint_consumption!(s::Solution, 
+                                        constraints::Array{<:Constraint,1}, 
+                                        variable::Int, 
+                                        Δvariable::Real, 
+                                        idxConstraints::Array{Int,1})
     local N::Int = length(idxConstraints);
     if length(constraints) == 0 set_feasible!(s, true); return nothing end
     if N == 0 return nothing end;
