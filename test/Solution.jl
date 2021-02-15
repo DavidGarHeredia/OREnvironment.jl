@@ -226,7 +226,7 @@ end
     end
 end
 
-@testset "update_constraint_consumption" begin
+@testset "update_constraint_consumption_and_feasibility" begin
     sol  = constructorSolution();
     p = constructorProblem();
 
@@ -234,7 +234,7 @@ end
         sol.sol[1] = 1.0;
         sol.sol[2] = 10.0; # note that this doesn't appear in the constraints
         sol.sol[3] = 1.0;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints);
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 5.5;
         @test OREnvironment.get_constraint_consumption(sol, 2) == 7.5;
@@ -242,7 +242,7 @@ end
 
     @testset "infeasible solution" begin
         sol.sol[1] = 2.0;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints);
         @test OREnvironment.is_feasible(sol) == false;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 7.8;
         @test OREnvironment.get_constraint_consumption(sol, 2) == 10.8;
@@ -251,37 +251,37 @@ end
     @testset "empty array of constraints" begin
         # the return is true because it would be the case of problem with no constraints.
         voidArray = Array{OREnvironment.DefaultConstraint, 1}();
-        OREnvironment.update_constraint_consumption!(sol, voidArray);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, voidArray);
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 7.8;
         @test OREnvironment.get_constraint_consumption(sol, 2) == 10.8;
     end
 end
 
-@testset "update_constraint_consumption for increments" begin
+@testset "update_constraint_consumption_and_feasibility for increments" begin
     sol = constructorSolution();
     p = constructorProblem();
 
     sol.sol[1] = 1.0;
     sol.sol[3] = 1.0;
-    OREnvironment.update_constraint_consumption!(sol, p.constraints);
+    OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints);
     @test OREnvironment.get_constraint_consumption(sol, 1) == 5.5;
     @test OREnvironment.get_constraint_consumption(sol, 2) == 7.5;
     
     @testset "feasible solution" begin
         Δ = 0.2;
         sol.sol[4] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 6.12;
         @test OREnvironment.get_constraint_consumption(sol, 2) == 7.5;
         sol.sol[5] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 5, Δ, p.variablesConstraints[5]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 5, Δ, p.variablesConstraints[5]);
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 6.12;
         @test OREnvironment.get_constraint_consumption(sol, 2) == 8.32;
         sol.sol[1] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 1, Δ, p.variablesConstraints[1]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 1, Δ, p.variablesConstraints[1]);
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 6.58;
         @test OREnvironment.get_constraint_consumption(sol, 2) == 8.98;
@@ -290,17 +290,17 @@ end
     @testset "feasible solution negative sign" begin
         Δ = -0.2;
         sol.sol[1] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 1, Δ, p.variablesConstraints[1]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 1, Δ, p.variablesConstraints[1]);
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 6.12;
         @test OREnvironment.get_constraint_consumption(sol, 2) == 8.32;
         sol.sol[5] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 5, Δ, p.variablesConstraints[5]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 5, Δ, p.variablesConstraints[5]);
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 6.12;
         @test OREnvironment.get_constraint_consumption(sol, 2) == 7.5;
         sol.sol[4] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 5.5;
         @test OREnvironment.get_constraint_consumption(sol, 2) == 7.5;
@@ -309,17 +309,17 @@ end
     @testset "infeasible solution" begin
         Δ = 1.5;
         sol.sol[4] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 10.15;
         @test OREnvironment.get_constraint_consumption(sol, 2) == 7.5;
         sol.sol[5] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 5, Δ, p.variablesConstraints[5]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 5, Δ, p.variablesConstraints[5]);
         @test OREnvironment.is_feasible(sol) == false;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 10.15;
         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 13.65;
         sol.sol[1] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 1, Δ, p.variablesConstraints[1]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 1, Δ, p.variablesConstraints[1]);
         @test OREnvironment.is_feasible(sol) == false;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 13.6;
         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 18.6;
@@ -327,7 +327,7 @@ end
 
     @testset "empty Array" begin
         Δ = 1.5;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 2, Δ, p.variablesConstraints[2]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 2, Δ, p.variablesConstraints[2]);
         @test OREnvironment.is_feasible(sol) == false;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 13.6;
         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 18.6;
@@ -336,7 +336,7 @@ end
     @testset "empty constraints" begin
         Δ = 1.5;
         voidArray = Array{OREnvironment.DefaultConstraint, 1}();
-        OREnvironment.update_constraint_consumption!(sol, voidArray, 2, Δ, p.variablesConstraints[2]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, voidArray, 2, Δ, p.variablesConstraints[2]);
         @test OREnvironment.is_feasible(sol) == true;
     end
 
@@ -347,7 +347,7 @@ end
     @testset "from infeasible to infeasible" begin
         Δ = -1.0;
         sol.sol[4] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
         @test OREnvironment.is_feasible(sol) == false;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 10.5;
         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 18.6;
@@ -356,7 +356,7 @@ end
     @testset "from infeasible to feasible" begin
         Δ = -3.0;
         sol.sol[5] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 5, Δ, p.variablesConstraints[5]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 5, Δ, p.variablesConstraints[5]);
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 10.5;
         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 6.3;
@@ -365,7 +365,7 @@ end
     @testset "from feasible to feasible" begin
         Δ = -1.0;
         sol.sol[4] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_constraint_consumption(sol, 1) == 7.4;
         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 6.3;
@@ -374,7 +374,7 @@ end
     @testset "from feasible to infeasible" begin
         Δ = 3.0;
         sol.sol[4] += Δ;
-        OREnvironment.update_constraint_consumption!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
+        OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints, 4, Δ, p.variablesConstraints[4]);
         @test OREnvironment.is_feasible(sol) == false;
         @test OREnvironment.get_constraint_consumption(sol, 1) ≈ 16.7;
         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 6.3;

@@ -96,8 +96,8 @@ function is_first_solution_better(s1::Solution,
     return is_first_status_better(s1.status, s2.status, objSense, feasibilityRequired);
 end
 
-function update_constraint_consumption!(s::Solution, 
-                                        constraints::Array{<:Constraint,1})
+function update_constraint_consumption_and_feasibility!(s::Solution, 
+                                                        constraints::Array{<:Constraint,1})
     local feasible::Bool = true;
     local N::Int = length(constraints);
     @inbounds for i in 1:N 
@@ -109,11 +109,11 @@ function update_constraint_consumption!(s::Solution,
     return nothing;
 end
 
-function update_constraint_consumption!(s::Solution, 
-                                        constraints::Array{<:Constraint,1}, 
-                                        variable::Int, 
-                                        Δvariable::Real, 
-                                        idxConstraints::Array{Int,1})
+function update_constraint_consumption_and_feasibility!(s::Solution, 
+                                                        constraints::Array{<:Constraint,1}, 
+                                                        variable::Int, 
+                                                        Δvariable::Real, 
+                                                        idxConstraints::Array{Int,1})
     local feasible::Bool = true;
     @inbounds for i in idxConstraints
         local lhs = compute_lhs_increment(s, constraints[i], i, variable, Δvariable);
@@ -148,7 +148,7 @@ function add_solution_and_update_status!(s::FixLengthArray{T}, value::T, pos::In
     @inbounds Δ::T = value - s.sol[pos];
     @inbounds newObj = get_objfunction(s) + Δ*p.costs[pos];
     @inbounds s.sol[pos] = value;
-    @inbounds update_constraint_consumption!(s, p.constraints, pos, Δ, p.variablesConstraints[pos]);
+    @inbounds update_constraint_consumption_and_feasibility!(s, p.constraints, pos, Δ, p.variablesConstraints[pos]);
     set_objfunction!(s, newObj);
     return nothing;
 end
@@ -163,7 +163,7 @@ function remove_all_solutions_and_update_status!(s::FixLengthArray{T},
                                                  p::Problem) where {T<:Real}
     s.sol .= zero(T);
     set_objfunction!(s, zero(get_objfunction(s)));
-    update_constraint_consumption!(s, p.constraints); #TODO: can be optimzed by not computing lhs (is zero!)
+    update_constraint_consumption_and_feasibility!(s, p.constraints); #TODO: can be optimzed by not computing lhs (is zero!)
     return nothing;
 end
 
