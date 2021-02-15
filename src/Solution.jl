@@ -59,7 +59,7 @@ function get_class_of_status(s::Status)::Symbol
    return Symbol(name[x0:xf]);
 end
 
-function is_first_obj_function_better(s1::Status, 
+function is_first_status_better(s1::Status, 
                                       s2::Status, 
                                       objSense::Symbol, 
                                       feasibilityRequiered::Bool)::Bool
@@ -93,7 +93,7 @@ function is_first_solution_better(s1::Solution,
                                   s2::Solution, 
                                   objSense::Symbol, 
                                   feasibilityRequired::Bool)::Bool
-    return is_first_obj_function_better(s1.status, s2.status, objSense, feasibilityRequired);
+    return is_first_status_better(s1.status, s2.status, objSense, feasibilityRequired);
 end
 
 function update_constraint_consumption!(s::Solution, 

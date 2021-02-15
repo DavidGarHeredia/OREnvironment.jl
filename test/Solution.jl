@@ -72,7 +72,7 @@ end
     end
 end
 
-@testset "is_first_obj_function_better" begin
+@testset "is_first_status_better" begin
     numConstraints = 5;
     s1 = OREnvironment.constructStatus(numConstraints, Float64, Int);
     s2 = OREnvironment.constructStatus(numConstraints, Float64, Int);
@@ -81,49 +81,49 @@ end
 
     @testset "feasibility not required" begin
         feasibility = false;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == true;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
         OREnvironment.set_objfunction!(s2, 34);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:min, feasibility) == false;
 
         OREnvironment.set_objfunction!(s1, 34);
         OREnvironment.set_objfunction!(s2, 3);
         OREnvironment.set_feasible!(s1, true);
         OREnvironment.set_feasible!(s2, false);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == true;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
         OREnvironment.set_objfunction!(s2, 34);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:min, feasibility) == false;
 
         OREnvironment.set_objfunction!(s1, 34);
         OREnvironment.set_objfunction!(s2, 3);
         OREnvironment.set_feasible!(s1, false);
         OREnvironment.set_feasible!(s2, true);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == true;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
         OREnvironment.set_objfunction!(s2, 34);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:min, feasibility) == false;
 
         OREnvironment.set_objfunction!(s1, 34);
         OREnvironment.set_objfunction!(s2, 3);
         OREnvironment.set_feasible!(s1, true);
         OREnvironment.set_feasible!(s2, true);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == true;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
         OREnvironment.set_objfunction!(s2, 34);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:min, feasibility) == false;
     end
 
     @testset "feasibility required" begin
@@ -132,49 +132,49 @@ end
         OREnvironment.set_objfunction!(s2, 3)
         OREnvironment.set_feasible!(s1, false);
         OREnvironment.set_feasible!(s2, false);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == true;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
         OREnvironment.set_objfunction!(s2, 34);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:min, feasibility) == false;
 
         OREnvironment.set_objfunction!(s1, 34);
         OREnvironment.set_objfunction!(s2, 3);
         OREnvironment.set_feasible!(s1, true);
         OREnvironment.set_feasible!(s2, false);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == true;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == true;
         OREnvironment.set_objfunction!(s2, 34);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == true;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == true;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s2,s1,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s2,s1,:min, feasibility) == false;
 
         OREnvironment.set_objfunction!(s1, 34);
         OREnvironment.set_objfunction!(s2, 3);
         OREnvironment.set_feasible!(s1, false);
         OREnvironment.set_feasible!(s2, true);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
         OREnvironment.set_objfunction!(s2, 34);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:max, feasibility) == true;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:min, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:max, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:min, feasibility) == true;
 
         OREnvironment.set_objfunction!(s1, 34);
         OREnvironment.set_objfunction!(s2, 3);
         OREnvironment.set_feasible!(s1, true);
         OREnvironment.set_feasible!(s2, true);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == true;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == true;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
         OREnvironment.set_objfunction!(s2, 34);
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:max, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s1,s2,:min, feasibility) == false;
-        @test OREnvironment.is_first_obj_function_better(s2,s1,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:max, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s1,s2,:min, feasibility) == false;
+        @test OREnvironment.is_first_status_better(s2,s1,:min, feasibility) == false;
     end
 end
 
