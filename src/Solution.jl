@@ -47,18 +47,6 @@ worst_value(objsense::Symbol, T::DataType) = worst_value(Val(objsense), T);
 worst_value(::Val{:max}, T::DataType) = typemin(T);
 worst_value(::Val{:min}, T::DataType) = typemax(T);
 
-"""
-    get_class_of_status(s::Status)
-
-Given a status, e.g, OREnvironment.DefaultStatus{T, G}(whatever), it retutns :DefaultStatus 
-"""
-function get_class_of_status(s::Status)::Symbol #TODO: check if I really need this because it looks awfull
-   name::String = string(typeof(s));
-   @inbounds local x0::Int = findfirst(".", name)[1] + 1;
-   @inbounds local xf::Int = findfirst("{", name)[1] - 1;
-   return Symbol(name[x0:xf]);
-end
-
 function is_first_status_better(s1::Status, 
                                 s2::Status, 
                                 objSense::Symbol, 

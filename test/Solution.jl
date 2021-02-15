@@ -62,16 +62,6 @@ end
     end
 end
 
-@testset "get_class_of_status" begin
-    typesObj = [Float16, Float32, Float64, Int];
-    typesLHS = [Float16, Float32, Float64, Int];
-    numConstraints = 5;
-    for tObj in typesObj, tLHS in typesLHS
-        status = OREnvironment.constructStatus(numConstraints, tObj, tLHS);
-        @test OREnvironment.get_class_of_status(status) == :DefaultStatus;
-    end
-end
-
 @testset "is_first_status_better" begin
     numConstraints = 5;
     s1 = OREnvironment.constructStatus(numConstraints, Float64, Int);
@@ -497,6 +487,7 @@ end
         end
     end
     @testset "Removing all" begin
+        OREnvironment.set_feasible!(sol, false);
         OREnvironment.remove_all_solutions_and_update_status!(sol, p); 
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.get_objfunction(sol) == 0.0;
