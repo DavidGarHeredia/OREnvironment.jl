@@ -11,8 +11,8 @@ end
 function constructStatus(numberConstraints::Int, 
                          typeObjFunction::DataType, 
                          typeLHS::DataType)
-    v = zeros(typeLHS, numberConstraints);
-    return DefaultStatus{typeObjFunction, typeLHS}(constraintLhsConsumption = v);
+    lhs = zeros(typeLHS, numberConstraints);
+    return DefaultStatus{typeObjFunction, typeLHS}(constraintLhsConsumption = lhs);
 end
 
 mutable struct FixLengthArray{T<:Real} <: Solution
@@ -52,7 +52,7 @@ worst_value(::Val{:min}, T::DataType) = typemax(T);
 
 Given a status, e.g, OREnvironment.DefaultStatus{T, G}(whatever), it retutns :DefaultStatus 
 """
-function get_class_of_status(s::Status)::Symbol 
+function get_class_of_status(s::Status)::Symbol #TODO: check if I really need this because it looks awfull
    name::String = string(typeof(s));
    @inbounds local x0::Int = findfirst(".", name)[1] + 1;
    @inbounds local xf::Int = findfirst("{", name)[1] - 1;
@@ -132,7 +132,8 @@ end
 ############################
 # Specific methods for Status
 ############################
-function update_solution_status!(s::Solution, st::DefaultStatus{T,G}) where {T<:Real, G<:Real}
+function update_solution_status!(s::Solution, 
+                                 st::DefaultStatus{T,G}) where {T<:Real, G<:Real}
     set_objfunction!(s, get_objfunction(st));
     set_feasible!(s, is_feasible(st));
     set_optimal!(s, is_optimal(st)); 
@@ -143,17 +144,21 @@ end
 ############################
 # Specific methods for Solution
 ############################
-function add_solution_and_update_status!(s::FixLengthArray{T}, value::T, pos::Int, 
+function add_solution_and_update_status!(s::FixLengthArray{T}, 
+                                         value::T, 
+                                         pos::Int, 
                                          p::Problem) where {T<:Real}
     @inbounds Δ::T = value - s.sol[pos];
     @inbounds newObj = get_objfunction(s) + Δ*p.costs[pos];
     @inbounds s.sol[pos] = value;
-    @inbounds update_constraint_consumption_and_feasibility!(s, p.constraints, pos, Δ, p.variablesConstraints[pos]);
+    @inbounds update_constraint_consumption_and_feasibility!(s, p.constraints, pos, Δ, 
+                                                             p.variablesConstraints[pos]);
     set_objfunction!(s, newObj);
     return nothing;
 end
 
-function remove_solution_and_update_status!(s::FixLengthArray{T}, pos::Int, 
+function remove_solution_and_update_status!(s::FixLengthArray{T}, 
+                                            pos::Int, 
                                             p::Problem) where {T<:Real}
     add_solution_and_update_status!(s, zero(T), pos, p);
     return nothing;
@@ -163,7 +168,9 @@ function remove_all_solutions_and_update_status!(s::FixLengthArray{T},
                                                  p::Problem) where {T<:Real}
     s.sol .= zero(T);
     set_objfunction!(s, zero(get_objfunction(s)));
-    update_constraint_consumption_and_feasibility!(s, p.constraints); #TODO: can be optimzed by not computing lhs (is zero!)
+    s.status.constraintLhsConsumption .= zero(eltype(s.status.constraintLhsConsumption));
+    local feasible::Bool = is_current_consumption_feasible(s, p.constraints);
+    set_feasible!(s, feasible);
     return nothing;
 end
 
