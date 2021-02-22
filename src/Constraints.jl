@@ -68,3 +68,75 @@ is_feasible(c::Constraint, lhs::Real)::Bool = is_feasible(get_rhs(c), lhs, Val(g
 is_feasible(rhs::Real, lhs::Real, ::Val{:lessOrEq})::Bool    = lhs <= rhs;
 is_feasible(rhs::Real, lhs::Real, ::Val{:equal})::Bool       = lhs ≈ rhs;
 is_feasible(rhs::Real, lhs::Real, ::Val{:greaterOrEq})::Bool = lhs >= rhs;
+
+
+function compute_lhs_after_increment(variable::Int, 
+                                     Δvariable::Real,
+                                     currentLHS::Real, 
+                                     c::Constraint)
+    local Δconsumption = Δvariable*get_coefficient(c, variable);
+    local lhs = currentLHS + Δconsumption; 
+    return lhs;
+end
+
+function is_increment_feasible(variable::Int, 
+                               Δvariable::Real,
+                               currentLHS::Real, 
+                               c::Constraint)::Bool
+    local lhs = compute_lhs_after_increment(variable, Δvariable, currentLHS, c);
+    return is_feasible(c, lhs);
+end
+
+
+############################
+# General methods for Constraints when dealing with Solutions
+############################
+function is_increment_feasible(s::Solution, 
+                               constraints::Array{<:Constraint,1}, 
+                               variable::Int, 
+                               Δvariable::Real, 
+                               idxConstraints::Array{Int,1})::Bool
+    if length(idxConstraints) == 0 return true end;
+    local currentLHS = get_constraint_consumption(s, 1);
+    @inbounds for i in idxConstraints
+        currentLHS = get_constraint_consumption(s, i);
+        if !is_increment_feasible(variable, Δvariable, currentLHS, constraints[i])
+            return false;
+        end
+    end
+    return true;
+end
+
+function is_current_consumption_feasible(s::Solution, 
+                                         constraints::Array{<:Constraint,1})::Bool
+    local N::Int = length(constraints);
+    @inbounds for i in 1:N
+        local lhs = get_constraint_consumption(s, i);
+        if !is_feasible(constraints[i], lhs)
+            return false;
+        end
+    end
+    return true;
+end 
+
+function compute_lhs(c::Constraint, s::Solution)
+    local lhs = zero(typeof(get_rhs(c)));
+    for (variable, coef) in c.variablesPositiveCoefficients
+         lhs += coef*get_solution(s, variable);
+    end
+    for (variable, coef) in c.variablesNegativeCoefficients
+         lhs += coef*get_solution(s, variable);
+    end
+    return lhs;
+end
+
+function is_feasible(s::Solution, 
+                     constraints::Array{<:Constraint,1})::Bool
+    for c in constraints
+        local lhs = compute_lhs(c, s);
+        if !is_feasible(c, lhs)
+            return false;
+        end
+    end
+    return true;
+end

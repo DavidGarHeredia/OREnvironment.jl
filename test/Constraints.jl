@@ -27,6 +27,15 @@ function constructorProblem()
     return MyProblem(cost, constraints, variablesConstraints);
 end
 
+function constructorSolution(numConstraints=2)
+    Tobj = Float64; Tconstraints = Float64;
+    status = OREnvironment.constructStatus(numConstraints, Tobj, Tconstraints);
+    Tvariables = Float64; sizeArray = 6;
+    sol  = OREnvironment.constructSolution(:FixLengthArray, (Tvariables, sizeArray, status));
+    return sol;
+end
+
+
 #######################
 # TESTS 
 #######################
@@ -102,4 +111,132 @@ end
     dummy = Array{OREnvironment.DefaultConstraint,1}();
     variablesConstraints = OREnvironment.get_relationship_variables_constraints(dummy, 6);
     variablesConstraints == Array{Array{Int,1}, 1}();
+end
+
+@testset "is_increment_feasible and compute_lhs_after_increment" begin
+    s = constructorSolution();
+    p = constructorProblem();
+
+    @testset "providing a variable that is not in the constraint" begin
+        idx = 1;
+        variable = 2;
+        Δvariable = 12.0;
+        currentLHS = OREnvironment.get_constraint_consumption(s, idx);
+        lhs = OREnvironment.compute_lhs_after_increment(variable, Δvariable, currentLHS, p.constraints[idx]);
+        feasible = OREnvironment.is_increment_feasible(variable, Δvariable, currentLHS, p.constraints[idx]);
+        @test feasible == true;
+        @test lhs == 0.0;
+        idx = 2;
+        currentLHS = OREnvironment.get_constraint_consumption(s, idx);
+        lhs = OREnvironment.compute_lhs_after_increment(variable, Δvariable, currentLHS, p.constraints[idx]);
+        feasible = OREnvironment.is_increment_feasible(variable, Δvariable, currentLHS, p.constraints[idx]);
+        @test feasible == true;
+        @test lhs == 0.0;
+    end
+    
+    @testset "variable that is in both constraints" begin
+        idx = 1;
+        variable = 1;
+        Δvariable = 5.0;
+        currentLHS = OREnvironment.get_constraint_consumption(s, idx);
+        lhs = OREnvironment.compute_lhs_after_increment(variable, Δvariable, currentLHS, p.constraints[idx]);
+        feasible = OREnvironment.is_increment_feasible(variable, Δvariable, currentLHS, p.constraints[idx]);
+        @test feasible == true;
+        @test lhs == 11.5;
+        idx = 2;
+        currentLHS = OREnvironment.get_constraint_consumption(s, idx);
+        lhs = OREnvironment.compute_lhs_after_increment(variable, Δvariable, currentLHS, p.constraints[idx]);
+        feasible = OREnvironment.is_increment_feasible(variable, Δvariable, currentLHS, p.constraints[idx]);
+        @test feasible == false;
+        @test lhs == 16.5;
+    end
+end
+
+
+#######################
+# TESTS WHEN DEALING WITH SOLUTIONS
+#######################
+@testset "is_increment_feasible" begin
+    s = constructorSolution();
+    p = constructorProblem();
+
+    variable = 1;
+    Δvariable = 1.0;
+    @test OREnvironment.is_increment_feasible(s, p.constraints, variable, Δvariable, p.variablesConstraints[variable]) == true;
+    Δvariable = 3.0;
+    @test OREnvironment.is_increment_feasible(s, p.constraints, variable, Δvariable, p.variablesConstraints[variable]) == false;
+
+    variable = 5;
+    Δvariable = 1.0;
+    @test OREnvironment.is_increment_feasible(s, p.constraints, variable, Δvariable, p.variablesConstraints[variable]) == true;
+    Δvariable = 3.0;
+    @test OREnvironment.is_increment_feasible(s, p.constraints, variable, Δvariable, p.variablesConstraints[variable]) == false;
+
+    # case with no constraints 
+    variable = 2;
+    Δvariable = 10.0;
+    @test OREnvironment.is_increment_feasible(s, p.constraints, variable, Δvariable, p.variablesConstraints[variable]) == true;
+    Δvariable = 30.0;
+    @test OREnvironment.is_increment_feasible(s, p.constraints, variable, Δvariable, p.variablesConstraints[variable]) == true;
+end
+
+@testset "is_current_consumption_feasible" begin
+    s = constructorSolution();
+    p = constructorProblem();
+
+    OREnvironment.set_constraint_consumption!(s, 7.0, 1);
+    OREnvironment.set_constraint_consumption!(s, 7.0, 2);
+    feasible = OREnvironment.is_current_consumption_feasible(s, p.constraints);
+    @test feasible == true;
+
+    OREnvironment.set_constraint_consumption!(s, 17.0, 1);
+    feasible = OREnvironment.is_current_consumption_feasible(s, p.constraints);
+    @test feasible == false;
+    
+    OREnvironment.set_constraint_consumption!(s, 7.0, 1);
+    OREnvironment.set_constraint_consumption!(s, 17.0, 2);
+    feasible = OREnvironment.is_current_consumption_feasible(s, p.constraints);
+    @test feasible == false;
+
+    OREnvironment.set_constraint_consumption!(s, 37.0, 1);
+    feasible = OREnvironment.is_current_consumption_feasible(s, p.constraints);
+    @test feasible == false;
+
+    OREnvironment.set_constraint_consumption!(s, 6.0, 1);
+    OREnvironment.set_constraint_consumption!(s, 5.0, 2);
+    feasible = OREnvironment.is_current_consumption_feasible(s, p.constraints);
+    @test feasible == true;
+end
+
+@testset "compute_lhs and is_feasible" begin
+    s = constructorSolution();
+    p = constructorProblem();
+
+    OREnvironment.add_solution!(s, 2.0, 1);
+    lhs = OREnvironment.compute_lhs(p.constraints[1], s);
+    @test lhs == 4.6;
+    lhs = OREnvironment.compute_lhs(p.constraints[2], s);
+    @test lhs == 6.6;
+    @test OREnvironment.is_feasible(s, p.constraints) == true;
+
+    OREnvironment.add_solution!(s, 4.5, 2);
+    lhs = OREnvironment.compute_lhs(p.constraints[1], s);
+    @test lhs == 4.6;
+    lhs = OREnvironment.compute_lhs(p.constraints[2], s);
+    @test lhs == 6.6;
+    @test OREnvironment.is_feasible(s, p.constraints) == true;
+
+    OREnvironment.add_solution!(s, 1.5, 3);
+    lhs = OREnvironment.compute_lhs(p.constraints[1], s);
+    @test lhs == 9.4;
+    lhs = OREnvironment.compute_lhs(p.constraints[2], s);
+    @test lhs == 12.9;
+    @test OREnvironment.is_feasible(s, p.constraints) == false;
+
+    OREnvironment.remove_all_solutions!(s);
+    lhs = OREnvironment.compute_lhs(p.constraints[1], s);
+    @test lhs == 0.0;
+    lhs = OREnvironment.compute_lhs(p.constraints[2], s);
+    @test lhs == 0.0;
+    @test OREnvironment.is_feasible(s, p.constraints) == true;
 end
