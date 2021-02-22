@@ -4,6 +4,7 @@ using Test
 const testdir = dirname(@__FILE__)
 
 tests = [
+    "Status"
     "Solution"
     "Constraints"
 ]
