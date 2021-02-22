@@ -126,32 +126,32 @@ end
 ############################
 # Specific methods for Solution
 ############################
-# function add_solution_and_update_status!(s::FixLengthArray{T}, 
-#                                          value::T, 
-#                                          pos::Int, 
-#                                          p::Problem) where {T<:Real}
-#     @inbounds Δ::T = value - s.sol[pos];
-#     @inbounds newObj = get_objfunction(s) + Δ*p.costs[pos];
-#     @inbounds s.sol[pos] = value;
-#     @inbounds update_constraint_consumption_and_feasibility!(s, p.constraints, pos, Δ, 
-#                                                              p.variablesConstraints[pos]);
-#     set_objfunction!(s, newObj);
-#     return nothing;
-# end
+function add_solution_and_update_status!(s::FixLengthArray{T}, 
+                                         value::T, 
+                                         pos::Int, 
+                                         p::Problem) where {T<:Real}
+    @inbounds Δ::T = value - s.sol[pos];
+    @inbounds newObj = get_objfunction(s) + Δ*p.costs[pos];
+    @inbounds s.sol[pos] = value;
+    @inbounds update_constraint_consumption_and_feasibility!(s, p.constraints, pos, Δ, 
+                                                             p.variablesConstraints[pos]);
+    set_objfunction!(s, newObj);
+    return nothing;
+end
 
-# function remove_solution_and_update_status!(s::FixLengthArray{T}, 
-#                                             pos::Int, 
-#                                             p::Problem) where {T<:Real}
-#     add_solution_and_update_status!(s, zero(T), pos, p);
-#     return nothing;
-# end
+function remove_solution_and_update_status!(s::FixLengthArray{T}, 
+                                            pos::Int, 
+                                            p::Problem) where {T<:Real}
+    add_solution_and_update_status!(s, zero(T), pos, p);
+    return nothing;
+end
 
-# function remove_all_solutions_and_update_status!(s::FixLengthArray{T},
-#                                                  p::Problem) where {T<:Real}
-#     s.sol .= zero(T);
-#     set_objfunction!(s, zero(get_objfunction(s)));
-#     s.status.constraintLhsConsumption .= zero(eltype(s.status.constraintLhsConsumption));
-#     local feasible::Bool = is_current_consumption_feasible(s, p.constraints);
-#     set_feasible!(s, feasible);
-#     return nothing;
-# end
+function remove_all_solutions_and_update_status!(s::FixLengthArray{T},
+                                                 p::Problem) where {T<:Real}
+    s.sol .= zero(T);
+    set_objfunction!(s, zero(get_objfunction(s)));
+    s.status.constraintLhsConsumption .= zero(eltype(s.status.constraintLhsConsumption));
+    local feasible::Bool = is_current_consumption_feasible(s, p.constraints);
+    set_feasible!(s, feasible);
+    return nothing;
+end

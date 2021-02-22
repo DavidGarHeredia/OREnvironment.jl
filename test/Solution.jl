@@ -34,22 +34,21 @@ function constructorSolution(numConstraints=2)
     return sol;
 end
 
-# function constructorProblemNegative()
-#     cost = collect(1.0:6.0);
+function constructorProblemNegative()
+    cost = collect(1.0:6.0);
 
-#     variables1 = [1, 3, 4, 6];
-#     variables2 = [1, 3, 5, 6];
-#     coefficients1 = -[2.3, 3.2, 3.1, 12.34];
-#     coefficients2 = coefficients1 .- 1.0; 
-#     constraint1 = OREnvironment.constructConstraint(15.0, :greaterOrEq, variables1, coefficients1); 
-#     constraint2 = OREnvironment.constructConstraint(9.0, :greaterOrEq, variables2, coefficients2); 
-#     constraints = [constraint1, constraint2];
+    variables1 = [1, 3, 4, 6];
+    variables2 = [1, 3, 5, 6];
+    coefficients1 = -[2.3, 3.2, 3.1, 12.34];
+    coefficients2 = coefficients1 .- 1.0; 
+    constraint1 = OREnvironment.constructConstraint(15.0, :greaterOrEq, variables1, coefficients1); 
+    constraint2 = OREnvironment.constructConstraint(9.0, :greaterOrEq, variables2, coefficients2); 
+    constraints = [constraint1, constraint2];
 
-#     variablesConstraints = [[1,2], Int[], [1,2], [1], [2], [1,2]];
+    variablesConstraints = [[1,2], Int[], [1,2], [1], [2], [1,2]];
 
-#     return MyProblem(cost, constraints, variablesConstraints);
-# end
-
+    return MyProblem(cost, constraints, variablesConstraints);
+end
 
 
 #######################
@@ -621,164 +620,163 @@ end
     end
 end
 
-# @testset "Constraints with all negative consumption" begin
-#     s = constructorSolution();
-#     p = constructorProblemNegative();
-
-#     OREnvironment.add_solution_and_update_status!(s, -2.0, 1, p);
-#     lhs = OREnvironment.compute_lhs(p.constraints[1], s);
-#     @test lhs == 4.6;
-#     @test lhs == OREnvironment.get_constraint_consumption(s, 1);
-#     lhs = OREnvironment.compute_lhs(p.constraints[2], s);
-#     @test lhs == 6.6;
-#     @test lhs == OREnvironment.get_constraint_consumption(s, 2);
-#     @test OREnvironment.is_feasible(s) == false; 
-#     @test OREnvironment.is_feasible(s, p.constraints) == false;
-
-#     OREnvironment.add_solution_and_update_status!(s, -4.5, 2, p);
-#     lhs = OREnvironment.compute_lhs(p.constraints[1], s);
-#     @test lhs == 4.6;
-#     @test lhs == OREnvironment.get_constraint_consumption(s, 1);
-#     lhs = OREnvironment.compute_lhs(p.constraints[2], s);
-#     @test lhs == 6.6;
-#     @test lhs == OREnvironment.get_constraint_consumption(s, 2);
-#     @test OREnvironment.is_feasible(s) == false; 
-#     @test OREnvironment.is_feasible(s, p.constraints) == false;
-
-#     OREnvironment.add_solution_and_update_status!(s, -1.5, 3, p);
-#     lhs = OREnvironment.compute_lhs(p.constraints[1], s);
-#     @test lhs == 9.4;
-#     @test lhs == OREnvironment.get_constraint_consumption(s, 1);
-#     lhs = OREnvironment.compute_lhs(p.constraints[2], s);
-#     @test lhs == 12.9;
-#     @test lhs == OREnvironment.get_constraint_consumption(s, 2);
-#     @test OREnvironment.is_feasible(s) == false; 
-#     @test OREnvironment.is_feasible(s, p.constraints) == false;
-
-#     OREnvironment.add_solution_and_update_status!(s, -3.5, 3, p);
-#     lhs = OREnvironment.compute_lhs(p.constraints[1], s);
-#     @test lhs == 15.8;
-#     @test lhs == OREnvironment.get_constraint_consumption(s, 1);
-#     lhs = OREnvironment.compute_lhs(p.constraints[2], s);
-#     @test lhs == 21.3;
-#     @test lhs == OREnvironment.get_constraint_consumption(s, 2);
-#     @test OREnvironment.is_feasible(s) == true; 
-#     @test OREnvironment.is_feasible(s, p.constraints) == true;
-
-#     OREnvironment.remove_all_solutions_and_update_status!(s, p);
-#     lhs = OREnvironment.compute_lhs(p.constraints[1], s);
-#     @test lhs == 0.0;
-#     @test lhs == OREnvironment.get_constraint_consumption(s, 1);
-#     lhs = OREnvironment.compute_lhs(p.constraints[2], s);
-#     @test lhs == 0.0;
-#     @test lhs == OREnvironment.get_constraint_consumption(s, 2);
-#     @test OREnvironment.is_feasible(s) == false; 
-#     @test OREnvironment.is_feasible(s, p.constraints) == false;
-    
-# end
-
 #######################
 # TESTS WHEN DEALING WITH PROBLEMS
 #######################
-# @testset "Adding and removing solution with constraint update" begin
-#     sol = constructorSolution();
-#     p = constructorProblem();
+@testset "Adding and removing solution with constraint update" begin
+    sol = constructorSolution();
+    p = constructorProblem();
 
-#     @test OREnvironment.is_feasible(sol) == false;
-#     @test OREnvironment.get_objfunction(sol) == 0.0;
-#     @test OREnvironment.get_constraint_consumption(sol, 1) == 0.0;
-#     @test OREnvironment.get_constraint_consumption(sol, 2) == 0.0;
+    @test OREnvironment.is_feasible(sol) == false;
+    @test OREnvironment.get_objfunction(sol) == 0.0;
+    @test OREnvironment.get_constraint_consumption(sol, 1) == 0.0;
+    @test OREnvironment.get_constraint_consumption(sol, 2) == 0.0;
 
-#     @testset "Adding" begin
-#         # from 0 to 2.5 => increase 2.5
-#         OREnvironment.add_solution_and_update_status!(sol, 2.5, 1, p);
-#         @test OREnvironment.is_feasible(sol) == true;
-#         @test OREnvironment.get_objfunction(sol) == 2.5;
-#         @test OREnvironment.get_constraint_consumption(sol, 1) == 5.75;
-#         @test OREnvironment.get_constraint_consumption(sol, 2) == 8.25;
-#         @test OREnvironment.get_solution(sol, 1) == 2.5;
-#         for i in 2:6
-#             @test OREnvironment.get_solution(sol, i) == 0.0;
-#         end
-#         # from 2.5 to 3 => increase 0.5
-#         OREnvironment.add_solution_and_update_status!(sol, 3.0, 1, p);
-#         @test OREnvironment.is_feasible(sol) == false;
-#         @test OREnvironment.get_objfunction(sol) == 3.0;
-#         @test OREnvironment.get_constraint_consumption(sol, 1) == 6.9;
-#         @test OREnvironment.get_constraint_consumption(sol, 2) == 9.9;
-#         @test OREnvironment.get_solution(sol, 1) == 3.0;
-#         for i in 2:6
-#             @test OREnvironment.get_solution(sol, i) == 0.0;
-#         end
+    @testset "Adding" begin
+        # from 0 to 2.5 => increase 2.5
+        OREnvironment.add_solution_and_update_status!(sol, 2.5, 1, p);
+        @test OREnvironment.is_feasible(sol) == true;
+        @test OREnvironment.get_objfunction(sol) == 2.5;
+        @test OREnvironment.get_constraint_consumption(sol, 1) == 5.75;
+        @test OREnvironment.get_constraint_consumption(sol, 2) == 8.25;
+        @test OREnvironment.get_solution(sol, 1) == 2.5;
+        for i in 2:6
+            @test OREnvironment.get_solution(sol, i) == 0.0;
+        end
+        # from 2.5 to 3 => increase 0.5
+        OREnvironment.add_solution_and_update_status!(sol, 3.0, 1, p);
+        @test OREnvironment.is_feasible(sol) == false;
+        @test OREnvironment.get_objfunction(sol) == 3.0;
+        @test OREnvironment.get_constraint_consumption(sol, 1) == 6.9;
+        @test OREnvironment.get_constraint_consumption(sol, 2) == 9.9;
+        @test OREnvironment.get_solution(sol, 1) == 3.0;
+        for i in 2:6
+            @test OREnvironment.get_solution(sol, i) == 0.0;
+        end
 
-#         # from 3 to 1.5 => reduce of 1.5
-#         OREnvironment.add_solution_and_update_status!(sol, 1.5, 1, p);
-#         @test OREnvironment.is_feasible(sol) == true;
-#         @test OREnvironment.get_objfunction(sol) == 1.5;
-#         @test OREnvironment.get_constraint_consumption(sol, 1) ≈ 3.45;
-#         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 4.95;
-#         @test OREnvironment.get_solution(sol, 1) == 1.5;
-#         for i in 2:6
-#             @test OREnvironment.get_solution(sol, i) == 0.0;
-#         end
+        # from 3 to 1.5 => reduce of 1.5
+        OREnvironment.add_solution_and_update_status!(sol, 1.5, 1, p);
+        @test OREnvironment.is_feasible(sol) == true;
+        @test OREnvironment.get_objfunction(sol) == 1.5;
+        @test OREnvironment.get_constraint_consumption(sol, 1) ≈ 3.45;
+        @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 4.95;
+        @test OREnvironment.get_solution(sol, 1) == 1.5;
+        for i in 2:6
+            @test OREnvironment.get_solution(sol, i) == 0.0;
+        end
 
-#         # from 0 to 1.75 in a variable that does not affect constraints 
-#         OREnvironment.add_solution_and_update_status!(sol, 1.75, 2, p);
-#         @test OREnvironment.is_feasible(sol) == true;
-#         @test OREnvironment.get_objfunction(sol) == 5.0;
-#         @test OREnvironment.get_constraint_consumption(sol, 1) ≈ 3.45;
-#         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 4.95;
-#         @test OREnvironment.get_solution(sol, 1) == 1.5;
-#         @test OREnvironment.get_solution(sol, 2) == 1.75;
-#         for i in 3:6
-#             @test OREnvironment.get_solution(sol, i) == 0.0;
-#         end
+        # from 0 to 1.75 in a variable that does not affect constraints 
+        OREnvironment.add_solution_and_update_status!(sol, 1.75, 2, p);
+        @test OREnvironment.is_feasible(sol) == true;
+        @test OREnvironment.get_objfunction(sol) == 5.0;
+        @test OREnvironment.get_constraint_consumption(sol, 1) ≈ 3.45;
+        @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 4.95;
+        @test OREnvironment.get_solution(sol, 1) == 1.5;
+        @test OREnvironment.get_solution(sol, 2) == 1.75;
+        for i in 3:6
+            @test OREnvironment.get_solution(sol, i) == 0.0;
+        end
 
-#         # from 0 to 2.25 in variable 4 (affects only to the 1st constraint)
-#         OREnvironment.add_solution_and_update_status!(sol, 2.25, 4, p);
-#         @test OREnvironment.is_feasible(sol) == true;
-#         @test OREnvironment.get_objfunction(sol) == 14.0;
-#         @test OREnvironment.get_constraint_consumption(sol, 1) ≈ 10.425;
-#         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 4.95;
-#         @test OREnvironment.get_solution(sol, 1) == 1.5;
-#         @test OREnvironment.get_solution(sol, 2) == 1.75;
-#         @test OREnvironment.get_solution(sol, 4) == 2.25; 
-#         for i in [3,5,6]
-#             @test OREnvironment.get_solution(sol, i) == 0.0;
-#         end
+        # from 0 to 2.25 in variable 4 (affects only to the 1st constraint)
+        OREnvironment.add_solution_and_update_status!(sol, 2.25, 4, p);
+        @test OREnvironment.is_feasible(sol) == true;
+        @test OREnvironment.get_objfunction(sol) == 14.0;
+        @test OREnvironment.get_constraint_consumption(sol, 1) ≈ 10.425;
+        @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 4.95;
+        @test OREnvironment.get_solution(sol, 1) == 1.5;
+        @test OREnvironment.get_solution(sol, 2) == 1.75;
+        @test OREnvironment.get_solution(sol, 4) == 2.25; 
+        for i in [3,5,6]
+            @test OREnvironment.get_solution(sol, i) == 0.0;
+        end
 
-#         # from 2.25 to 1 in variable 4
-#         OREnvironment.add_solution_and_update_status!(sol, 1.0, 4, p);
-#         @test OREnvironment.is_feasible(sol) == true;
-#         @test OREnvironment.get_objfunction(sol) == 9.0;
-#         @test OREnvironment.get_constraint_consumption(sol, 1) ≈ 6.55;
-#         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 4.95;
-#         @test OREnvironment.get_solution(sol, 1) == 1.5;
-#         @test OREnvironment.get_solution(sol, 2) == 1.75;
-#         @test OREnvironment.get_solution(sol, 4) == 1.0; 
-#         for i in [3,5,6]
-#             @test OREnvironment.get_solution(sol, i) == 0.0;
-#         end
-#     end
-#     @testset "Removing" begin
-#         OREnvironment.remove_solution_and_update_status!(sol, 4, p);
-#         @test OREnvironment.is_feasible(sol) == true;
-#         @test OREnvironment.get_objfunction(sol) == 5.0;
-#         @test OREnvironment.get_constraint_consumption(sol, 1) ≈ 3.45;
-#         @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 4.95;
-#         @test OREnvironment.get_solution(sol, 1) == 1.5;
-#         @test OREnvironment.get_solution(sol, 2) == 1.75;
-#         for i in 3:6
-#             @test OREnvironment.get_solution(sol, i) == 0.0;
-#         end
-#     end
-#     @testset "Removing all" begin
-#         OREnvironment.set_feasible!(sol, false);
-#         OREnvironment.remove_all_solutions_and_update_status!(sol, p); 
-#         @test OREnvironment.is_feasible(sol) == true;
-#         @test OREnvironment.get_objfunction(sol) == 0.0;
-#         @test OREnvironment.get_constraint_consumption(sol, 1) == 0.0;
-#         @test OREnvironment.get_constraint_consumption(sol, 2) == 0.0;
-#     end
-# end
+        # from 2.25 to 1 in variable 4
+        OREnvironment.add_solution_and_update_status!(sol, 1.0, 4, p);
+        @test OREnvironment.is_feasible(sol) == true;
+        @test OREnvironment.get_objfunction(sol) == 9.0;
+        @test OREnvironment.get_constraint_consumption(sol, 1) ≈ 6.55;
+        @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 4.95;
+        @test OREnvironment.get_solution(sol, 1) == 1.5;
+        @test OREnvironment.get_solution(sol, 2) == 1.75;
+        @test OREnvironment.get_solution(sol, 4) == 1.0; 
+        for i in [3,5,6]
+            @test OREnvironment.get_solution(sol, i) == 0.0;
+        end
+    end
+    @testset "Removing" begin
+        OREnvironment.remove_solution_and_update_status!(sol, 4, p);
+        @test OREnvironment.is_feasible(sol) == true;
+        @test OREnvironment.get_objfunction(sol) == 5.0;
+        @test OREnvironment.get_constraint_consumption(sol, 1) ≈ 3.45;
+        @test OREnvironment.get_constraint_consumption(sol, 2) ≈ 4.95;
+        @test OREnvironment.get_solution(sol, 1) == 1.5;
+        @test OREnvironment.get_solution(sol, 2) == 1.75;
+        for i in 3:6
+            @test OREnvironment.get_solution(sol, i) == 0.0;
+        end
+    end
+    @testset "Removing all" begin
+        OREnvironment.set_feasible!(sol, false);
+        OREnvironment.remove_all_solutions_and_update_status!(sol, p); 
+        @test OREnvironment.is_feasible(sol) == true;
+        @test OREnvironment.get_objfunction(sol) == 0.0;
+        @test OREnvironment.get_constraint_consumption(sol, 1) == 0.0;
+        @test OREnvironment.get_constraint_consumption(sol, 2) == 0.0;
+    end
+end
+
+@testset "Constraints with all negative consumption" begin
+    s = constructorSolution();
+    p = constructorProblemNegative();
+
+    OREnvironment.add_solution_and_update_status!(s, -2.0, 1, p);
+    lhs = OREnvironment.compute_lhs(p.constraints[1], s);
+    @test lhs == 4.6;
+    @test lhs == OREnvironment.get_constraint_consumption(s, 1);
+    lhs = OREnvironment.compute_lhs(p.constraints[2], s);
+    @test lhs == 6.6;
+    @test lhs == OREnvironment.get_constraint_consumption(s, 2);
+    @test OREnvironment.is_feasible(s) == false; 
+    @test OREnvironment.is_feasible(s, p.constraints) == false;
+
+    OREnvironment.add_solution_and_update_status!(s, -4.5, 2, p);
+    lhs = OREnvironment.compute_lhs(p.constraints[1], s);
+    @test lhs == 4.6;
+    @test lhs == OREnvironment.get_constraint_consumption(s, 1);
+    lhs = OREnvironment.compute_lhs(p.constraints[2], s);
+    @test lhs == 6.6;
+    @test lhs == OREnvironment.get_constraint_consumption(s, 2);
+    @test OREnvironment.is_feasible(s) == false; 
+    @test OREnvironment.is_feasible(s, p.constraints) == false;
+
+    OREnvironment.add_solution_and_update_status!(s, -1.5, 3, p);
+    lhs = OREnvironment.compute_lhs(p.constraints[1], s);
+    @test lhs == 9.4;
+    @test lhs == OREnvironment.get_constraint_consumption(s, 1);
+    lhs = OREnvironment.compute_lhs(p.constraints[2], s);
+    @test lhs == 12.9;
+    @test lhs == OREnvironment.get_constraint_consumption(s, 2);
+    @test OREnvironment.is_feasible(s) == false; 
+    @test OREnvironment.is_feasible(s, p.constraints) == false;
+
+    OREnvironment.add_solution_and_update_status!(s, -3.5, 3, p);
+    lhs = OREnvironment.compute_lhs(p.constraints[1], s);
+    @test lhs == 15.8;
+    @test lhs == OREnvironment.get_constraint_consumption(s, 1);
+    lhs = OREnvironment.compute_lhs(p.constraints[2], s);
+    @test lhs == 21.3;
+    @test lhs == OREnvironment.get_constraint_consumption(s, 2);
+    @test OREnvironment.is_feasible(s) == true; 
+    @test OREnvironment.is_feasible(s, p.constraints) == true;
+
+    OREnvironment.remove_all_solutions_and_update_status!(s, p);
+    lhs = OREnvironment.compute_lhs(p.constraints[1], s);
+    @test lhs == 0.0;
+    @test lhs == OREnvironment.get_constraint_consumption(s, 1);
+    lhs = OREnvironment.compute_lhs(p.constraints[2], s);
+    @test lhs == 0.0;
+    @test lhs == OREnvironment.get_constraint_consumption(s, 2);
+    @test OREnvironment.is_feasible(s) == false; 
+    @test OREnvironment.is_feasible(s, p.constraints) == false;
+end
 
