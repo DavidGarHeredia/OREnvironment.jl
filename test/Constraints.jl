@@ -93,6 +93,22 @@ end
     end
 end
 
+@testset "add_constraint_index_to_variables" begin
+    p = constructorProblem();
+    variablesConstraints = [Int[] for i in 1:6];
+    OREnvironment.add_constraint_index_to_variables!(p.constraints[1], 1, variablesConstraints);
+    @test variablesConstraints[1] == [1];
+    @test variablesConstraints[2] == Int[];
+    @test variablesConstraints[3] == [1];
+    @test variablesConstraints[4] == [1];
+    @test variablesConstraints[5] == Int[];
+    @test variablesConstraints[6] == [1];
+    OREnvironment.add_constraint_index_to_variables!(p.constraints[2], 2, variablesConstraints);
+    for i in 1:6
+      @test variablesConstraints[i] == p.variablesConstraints[i];
+    end
+end
+
 @testset "get_relationship_variables_constraints" begin
     p = constructorProblem();
     variablesConstraints = OREnvironment.get_relationship_variables_constraints(p.constraints, 6);
@@ -110,7 +126,7 @@ end
     # when passing no constraints 
     dummy = Array{OREnvironment.DefaultConstraint,1}();
     variablesConstraints = OREnvironment.get_relationship_variables_constraints(dummy, 6);
-    variablesConstraints == Array{Array{Int,1}, 1}();
+    @test variablesConstraints == Array{Array{Int,1}, 1}();
 end
 
 @testset "is_increment_feasible and compute_lhs_after_increment" begin

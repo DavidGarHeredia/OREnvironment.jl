@@ -54,14 +54,21 @@ function get_relationship_variables_constraints(constraints::Array{<:Constraint,
     if length(constraints) == 0 return Array{Array{Int,1}, 1}() end
     variablesConstraints = [Int[] for i in 1:nVariables];
     for i in 1:length(constraints)
-        for variable in keys(constraints[i].variablesPositiveCoefficients)
-            push!(variablesConstraints[variable], i);
-        end
-        for variable in keys(constraints[i].variablesNegativeCoefficients)
-            push!(variablesConstraints[variable], i);
-        end
+      add_constraint_index_to_variables!(constraints[i], i, variablesConstraints);
     end
     return variablesConstraints;
+end
+
+function add_constraint_index_to_variables!(c::Constraint, 
+                                            idx::Int,
+                                            variablesConstraints::Array{Array{Int,1}, 1})  
+    for variable in keys(c.variablesPositiveCoefficients)
+        push!(variablesConstraints[variable], idx);
+    end
+    for variable in keys(c.variablesNegativeCoefficients)
+        push!(variablesConstraints[variable], idx);
+    end
+    return nothing;
 end
 
 is_feasible(c::Constraint, lhs::Real)::Bool = is_feasible(get_rhs(c), lhs, Val(get_type(c))); 
