@@ -6,5 +6,6 @@ include("Types.jl")
 include("Status.jl")
 include("Solution.jl")
 include("Constraints.jl")
+include("Problem.jl")
 
 end
