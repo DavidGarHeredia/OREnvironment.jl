@@ -131,10 +131,10 @@ function add_solution_and_update_status!(s::FixLengthArray{T},
                                          pos::Int, 
                                          p::Problem) where {T<:Real}
     @inbounds Δ::T = value - s.sol[pos];
-    @inbounds newObj = get_objfunction(s) + Δ*p.costs[pos];
+    @inbounds newObj = get_objfunction(s) + Δ*get_cost(p, pos);
     @inbounds s.sol[pos] = value;
-    @inbounds update_constraint_consumption_and_feasibility!(s, p.constraints, pos, Δ, 
-                                                             p.variablesConstraints[pos]);
+    @inbounds update_constraint_consumption_and_feasibility!(s, get_constraints(p), pos, Δ, 
+                                                             get_constraints_of_variable(p, pos));
     set_objfunction!(s, newObj);
     return nothing;
 end
@@ -151,7 +151,7 @@ function remove_all_solutions_and_update_status!(s::FixLengthArray{T},
     s.sol .= zero(T);
     set_objfunction!(s, zero(get_objfunction(s)));
     s.status.constraintLhsConsumption .= zero(eltype(s.status.constraintLhsConsumption));
-    local feasible::Bool = is_current_consumption_feasible(s, p.constraints);
+    local feasible::Bool = is_current_consumption_feasible(s, get_constraints(p));
     set_feasible!(s, feasible);
     return nothing;
 end
