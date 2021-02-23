@@ -13,6 +13,7 @@ using Test
   variablesConstraints = [[1,2], Int[], [1,2], [1], [2], [1,2]];
   p = OREnvironment.DefaultProblem(cost, constraints, variablesConstraints, :max);
 
+  @test OREnvironment.get_constraints(p) === constraints;
   for i in 1:length(cost)
     @test OREnvironment.get_cost(p, i) == cost[i];
   end

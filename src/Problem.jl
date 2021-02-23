@@ -18,6 +18,7 @@ set_cost!(p::Problem, val::Real, pos::Int) = p.costs[pos] = val;
 get_obj_sense(p::Problem)::Symbol          = p.objSense;
 set_obj_sense!(p::Problem, val::Symbol)    = p.objSense = val;
 get_constraint(p::Problem, pos::Int)       = p.constraints[pos];
+get_constraints(p::Problem)                = p.constraints;
 get_constraints_of_variable(p::Problem, pos::Int)::Array{Int,1} = p.variablesConstraints[pos];
 
 function add_constraint!(p::Problem, c::Constraint) 
