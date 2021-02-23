@@ -7,6 +7,7 @@ tests = [
     "Status"
     "Solution"
     "Constraints"
+    "Problem"
 ]
 
 @testset "OREnvironment.jl" begin
