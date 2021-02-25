@@ -50,7 +50,7 @@ function get_coefficient(c::Constraint, pos::Int)
 end
 
 function get_relationship_variables_constraints(constraints::Array{<:Constraint,1}, 
-                                                nVariables::Int)
+                                                nVariables::Int)::Array{Array{Int,1}, 1}
     if length(constraints) == 0 return Array{Array{Int,1}, 1}() end
     variablesConstraints = [Int[] for i in 1:nVariables];
     for i in 1:length(constraints)
@@ -69,6 +69,49 @@ function add_constraint_index_to_variables!(c::Constraint,
         push!(variablesConstraints[variable], idx);
     end
     return nothing;
+end
+
+function read_constraints(file::String, Trhs::DataType)
+    fileStream = open(file, "r");
+    lines = readlines(fileStream);
+    constraints = [constructConstraint(zero(Trhs), :equal, Int[], Array{Trhs,1}()) 
+                   for i in 1:length(lines)];
+    for i in 1:length(lines) # code in parallel!!!
+      parse_constraint!(constraints[i], lines[i], Trhs, i);
+    end
+    return constraints;
+end
+
+function parse_constraint!(c::Constraint, line::String, Trhs::DataType, idx::Int)
+    local sign = parse_and_set_constraint_sign!(c, line, idx);
+    elements = split(line, sign);
+
+    set_rhs!(c, parse(Trhs, elements[2]));
+
+    lhs = split(elements[1], "+");
+    for i in 1:length(lhs)
+      terms = split(lhs[i], "x");
+      coef = parse(Trhs, terms[1]);
+      var  = parse(Int, terms[2]);
+      set_coefficient!(c, var, coef);
+    end
+end
+
+function parse_and_set_constraint_sign!(c::Constraint, line::String, idx::Int)
+    local sign = "";
+    if occursin("<=", line)
+      sign = "<=";
+      set_type!(c, :lessOrEq);
+    elseif occursin(">=", line)
+      sign = ">=";
+      set_type!(c, :greaterOrEq);
+    elseif occursin("=", line) && !occursin("<", line) && !occursin(">", line) && !occursin("==", line)
+      sign = "=";
+      set_type!(c, :equal);
+    else
+      error("Incorrect sign in constraint ", idx, ". Maybe you wrote => instead of >=, or == instead of =");
+    end
+    return sign;
 end
 
 is_feasible(c::Constraint, lhs::Real)::Bool = is_feasible(get_rhs(c), lhs, Val(get_type(c))); 

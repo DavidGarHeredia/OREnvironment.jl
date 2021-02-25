@@ -129,6 +129,107 @@ end
     @test variablesConstraints == Array{Array{Int,1}, 1}();
 end
 
+@testset "parse_and_set_constraint_sign" begin
+  l1 = "12x1 + 13x2 + 5x3 <= 10";
+  l2 = "1x2 + 23.2x14 + 5.3x6 >= 12";
+  l3 = "2x5 + 3x7 + 5x19 = 15";
+  lwithError1 = "1x2 + 23x4 + 5x6 => 12";
+  lwithError2 = "1x2 + 23x4 + 5x6 == 12";
+  c = OREnvironment.constructConstraint(0, :equal, Int[], Int[]);
+
+  sign = OREnvironment.parse_and_set_constraint_sign!(c, l1, 1);
+  @test sign == "<=";
+  @test OREnvironment.get_type(c) == :lessOrEq;
+  sign = OREnvironment.parse_and_set_constraint_sign!(c, l2, 2);
+  @test sign == ">=";
+  @test OREnvironment.get_type(c) == :greaterOrEq;
+  sign = OREnvironment.parse_and_set_constraint_sign!(c, l3, 3);
+  @test sign == "=";
+  @test OREnvironment.get_type(c) == :equal;
+  @test_throws ErrorException OREnvironment.parse_and_set_constraint_sign!(c, lwithError1, 4);
+  @test_throws ErrorException OREnvironment.parse_and_set_constraint_sign!(c, lwithError2, 5);
+end
+
+@testset "parse_constraint" begin
+  l1 = "12x1 + 13x2 + 5x3 <= 10";
+  l2 = "1x2 + 23.2x14 + 5.3x6 >= 12";
+  l3 = "2x5 + 3x7 + 5x19 = 15";
+  lwithError1 = "1x2 + 23x4 + 5x6 => 12";
+  lwithError2 = "1x2 + 23x4 + 5x6 == 12";
+  c = OREnvironment.constructConstraint(0.0, :equal, Int[], Float64[]);
+
+  OREnvironment.parse_constraint!(c, l1, Float64, 1);
+  @test OREnvironment.get_rhs(c) == 10;
+  @test OREnvironment.get_type(c) == :lessOrEq;
+  @test OREnvironment.is_variable(c, 1) == true;
+  @test OREnvironment.is_variable(c, 2) == true;
+  @test OREnvironment.is_variable(c, 3) == true;
+  @test OREnvironment.get_coefficient(c, 1) == 12.0;
+  @test OREnvironment.get_coefficient(c, 2) == 13.0;
+  @test OREnvironment.get_coefficient(c, 3) == 5.0;
+
+  OREnvironment.parse_constraint!(c, l2, Float64, 2);
+  @test OREnvironment.get_rhs(c) == 12;
+  @test OREnvironment.get_type(c) == :greaterOrEq;
+  @test OREnvironment.is_variable(c, 2) == true;
+  @test OREnvironment.is_variable(c, 14) == true;
+  @test OREnvironment.is_variable(c, 6) == true;
+  @test OREnvironment.get_coefficient(c, 2) == 1.0;
+  @test OREnvironment.get_coefficient(c, 14) == 23.2;
+  @test OREnvironment.get_coefficient(c, 6) == 5.3;
+
+  OREnvironment.parse_constraint!(c, l3, Float64, 3);
+  @test OREnvironment.get_rhs(c) == 15;
+  @test OREnvironment.get_type(c) == :equal;
+  @test OREnvironment.is_variable(c, 5) == true;
+  @test OREnvironment.is_variable(c, 7) == true;
+  @test OREnvironment.is_variable(c, 19) == true;
+  @test OREnvironment.get_coefficient(c, 5) == 2.0;
+  @test OREnvironment.get_coefficient(c, 7) == 3.0;
+  @test OREnvironment.get_coefficient(c, 19) == 5.0;
+
+  @test_throws ErrorException OREnvironment.parse_constraint!(c, lwithError1, Float64, 4);
+  @test_throws ErrorException OREnvironment.parse_constraint!(c, lwithError2, Float64, 5);
+end
+
+@testset "read_constraints" begin
+  testdir = dirname(@__FILE__);
+  file = joinpath(testdir, "sampleConstraints.txt");
+  constraints = OREnvironment.read_constraints(file, Float64);
+
+  c = constraints[1];
+  @test OREnvironment.get_rhs(c) == 9;
+  @test OREnvironment.get_type(c) == :lessOrEq;
+  @test OREnvironment.is_variable(c, 1) == true;
+  @test OREnvironment.is_variable(c, 5) == true;
+  @test OREnvironment.is_variable(c, 17) == true;
+  @test OREnvironment.get_coefficient(c, 1) == 2.0;
+  @test OREnvironment.get_coefficient(c, 5) == 3.0;
+  @test OREnvironment.get_coefficient(c, 17) == 2.5;
+
+  c = constraints[2];
+  @test OREnvironment.get_rhs(c) == 12;
+  @test OREnvironment.get_type(c) == :greaterOrEq;
+  @test OREnvironment.is_variable(c, 24) == true;
+  @test OREnvironment.is_variable(c, 122) == true;
+  @test OREnvironment.is_variable(c, 3) == true;
+  @test OREnvironment.is_variable(c, 1) == true;
+  @test OREnvironment.get_coefficient(c, 24) == -3.0;
+  @test OREnvironment.get_coefficient(c, 122) == 5.2;
+  @test OREnvironment.get_coefficient(c, 3) == -2.1;
+  @test OREnvironment.get_coefficient(c, 1) == 1;
+
+  c = constraints[3];
+  @test OREnvironment.get_rhs(c) == 4;
+  @test OREnvironment.get_type(c) == :equal;
+  @test OREnvironment.is_variable(c, 9) == true;
+  @test OREnvironment.is_variable(c, 15) == true;
+  @test OREnvironment.is_variable(c, 32) == true;
+  @test OREnvironment.get_coefficient(c, 9) == 3.0;
+  @test OREnvironment.get_coefficient(c, 15) == 23.0;
+  @test OREnvironment.get_coefficient(c, 32) == -10.0;
+end
+
 @testset "is_increment_feasible and compute_lhs_after_increment" begin
     s = constructorSolution();
     p = constructorProblem();
