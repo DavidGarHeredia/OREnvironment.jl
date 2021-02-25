@@ -56,6 +56,8 @@ end
   data_rhs = [12.3, 9.0, 33.0];
   data_symbol = [:lessOrEq, :equal, :greaterOrEq];
   # simulating the reading of constraints
+  # NOTE: check function read_constraints in ./test/Constraints.jl for actually
+  # reading from a file!!!
   constraints = Array{OREnvironment.Constraint, 1}();
   for i in 1:3
     vars = data_vars[i]; # in practice we read from file
@@ -64,10 +66,10 @@ end
     symbol = data_symbol[i];
     push!(constraints, OREnvironment.constructConstraint(rhs, symbol, vars, coefs));
   end
-  variablesConstraints = OREnvironment.get_relationship_variables_constraints(constraints, 6);
   p = OREnvironment.constructProblem(cost, constraints, :max);
 
   # test that everything works
+  variablesConstraints = OREnvironment.get_relationship_variables_constraints(constraints, 6);
   @test length(constraints) == 3;
   @test length(p.constraints) == 3;
   for i in 1:3
