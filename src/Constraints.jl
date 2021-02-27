@@ -1,9 +1,9 @@
 
-mutable struct DefaultConstraint{T<:Real} <: Constraint
-    rhs::T;
+mutable struct DefaultConstraint <: Constraint
+    rhs::Float64;
     type::Symbol;
-    variablesPositiveCoefficients::Dict{Int,T}; 
-    variablesNegativeCoefficients::Dict{Int,T}; 
+    variablesPositiveCoefficients::Dict{Int,Float64}; 
+    variablesNegativeCoefficients::Dict{Int,Float64}; 
 end
 
 """
@@ -11,19 +11,21 @@ end
 
 Construct a `DefaultConstraint` with right-hand side `rhs`, type `t` and left-hand side given by the variables in `vars` and coefficients in `coefs`.
 
+**Note:** Both, the rhs and coefs must be of type Float64.
+
 # Example
 ```jldoctest
-julia> OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 12, 33], [2, 5, 3, 1]);
+julia> OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 12, 33], [2.0, 5.0, 3.0, 1.0]);
 ```
 """
-function constructConstraint(rhs::T, 
+function constructConstraint(rhs::Float64, 
                              constraintType::Symbol, 
                              variables::Array{Int,1}, 
-                             coefficients::Array{T,1}) where {T<:Real}
-    dictPositive = Dict{Int,T}();
-    dictNegative = Dict{Int,T}();
+                             coefficients::Array{Float64,1}) 
+    dictPositive = Dict{Int,Float64}();
+    dictNegative = Dict{Int,Float64}();
     for i in 1:length(variables)
-        if coefficients[i] > 0
+        if coefficients[i] > 0.0
             dictPositive[variables[i]] = coefficients[i];
         else
             dictNegative[variables[i]] = coefficients[i];
@@ -39,12 +41,12 @@ Returns the right-hand side value of constraint `c`
 
 # Example
 ```jldoctest
-julia> c = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 12, 33], [2, 5, 3, 1]);
+julia> c = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 12, 33], [2.0, 5.0, 3.0, 1.0]);
 julia> OREnvironment.get_rhs(c)
-12
+12.0
 ```
 """
-get_rhs(c::Constraint) = c.rhs;
+get_rhs(c::Constraint)::Float64 = c.rhs;
 
 """
     set_rhs!(c, val)
@@ -53,13 +55,13 @@ Sets the right-hand side value of constraint `c` to `val`
 
 # Example
 ```jldoctest
-julia> c = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 12, 33], [2, 5, 3, 1]);
-julia> OREnvironment.set_rhs!(c, 25); 
+julia> c = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 12, 33], [2.0, 5.0, 3.0, 1.0]);
+julia> OREnvironment.set_rhs!(c, 25.0); 
 julia> OREnvironment.get_rhs(c)
-25
+25.0
 ```
 """
-set_rhs!(c::Constraint, value::Real) = c.rhs = value;
+set_rhs!(c::Constraint, value::Float64) = c.rhs = value;
 
 """
     get_type(c)
@@ -68,7 +70,7 @@ Returns the constraint type of `c`. Admisible values are :lessOrEq, :equal and :
 
 # Example
 ```jldoctest
-julia> c = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 12, 33], [2, 5, 3, 1]);
+julia> c = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 12, 33], [2.0, 5.0, 3.0, 1.0]);
 julia> OREnvironment.get_type(c)
 :lessOrEq
 ```
@@ -82,7 +84,7 @@ Sets the constraint type of `c` to `val`. Admisible values are :lessOrEq, :equal
 
 # Example
 ```jldoctest
-julia> c = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 12, 33], [2, 5, 3, 1]);
+julia> c = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 12, 33], [2.0, 5.0, 3.0, 1.0]);
 julia> OREnvironment.set_type!(c, :greaterOrEq);
 julia> OREnvironment.get_type(c)
 :greaterOrEq
@@ -97,7 +99,7 @@ Returns true if variable `var` is in constraint `c`.
 
 # Example
 ```jldoctest
-julia> c = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 12, 33], [2, 5, 3, 1]);
+julia> c = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 12, 33], [2.0, 5.0, 3.0, 1.0]);
 julia> OREnvironment.is_variable(c, 33)
 true
 julia> OREnvironment.is_variable(c, 13)
@@ -113,22 +115,22 @@ end
 """
     get_coefficient(c, var)
 
-Returns the coefficient of variable `var` in constraint `c`. If the variable is not in the constraint it returns zero(T), where T is the type of the constraint (Int, Float64...).
+Returns the coefficient of variable `var` in constraint `c`. If the variable is not in the constraint it returns 0.0;
 
 
 # Example
 ```jldoctest
-julia> c = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 12, 33], [2, 5, 3, 1]);
+julia> c = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 12, 33], [2.0, 5.0, 3.0, 1.0]);
 julia> OREnvironment.get_coefficient(c, 33)
-1
+1.0
 julia> OREnvironment.get_coefficient(c, 3)
-5
+5.0
 ```
 """
-function get_coefficient(c::Constraint, variable::Int)
-    local value = get(c.variablesPositiveCoefficients, variable, zero(typeof(c.rhs)));
-    if value == zero(typeof(c.rhs))
-        value = get(c.variablesNegativeCoefficients, variable, zero(typeof(c.rhs)));
+function get_coefficient(c::Constraint, variable::Int)::Float64
+    local value::Float64 = get(c.variablesPositiveCoefficients, variable, 0.0);
+    if value == 0.0
+        value = get(c.variablesNegativeCoefficients, variable, 0.0);
     end
     return value;
 end
@@ -140,14 +142,14 @@ Sets in constraint `c` coefficient `coef` for variable `var`. If the variable wa
 
 # Example
 ```jldoctest
-julia> c = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 12, 33], [2, 5, 3, 1]);
-julia> OREnvironment.set_coefficient!(c, 33, 123);
+julia> c = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 12, 33], [2.0, 5.0, 3.0, 1.0]);
+julia> OREnvironment.set_coefficient!(c, 33, 123.0);
 julia> OREnvironment.get_coefficient(c, 33)
-123
+123.0
 ```
 """
-function set_coefficient!(c::Constraint, variable::Int, value::Real)
-    if value > 0
+function set_coefficient!(c::Constraint, variable::Int, value::Float64)
+    if value > 0.0
         c.variablesPositiveCoefficients[variable] = value;
     else
         c.variablesNegativeCoefficients[variable] = value;
@@ -164,8 +166,8 @@ This function is employed in the `Problem` struct so it is possible to quickly i
 
 # Example
 ```jldoctest
-julia> c1 = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 4], [2, 5, 3]);
-julia> c2 = OREnvironment.constructConstraint(5, :equal, [2, 3, 5], [9, 1, 7]);
+julia> c1 = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 4], [2.0, 5.0, 3.0]);
+julia> c2 = OREnvironment.constructConstraint(5.0, :equal, [2, 3, 5], [9.0, 1.0, 7.0]);
 julia> constraints = [c1, c2];
 julia> nVariables = 5;
 julia> OREnvironment.get_relationship_variables_constraints(constraints, nVariables)
@@ -202,33 +204,33 @@ function add_constraint_index_to_variables!(c::Constraint,
 end
 
 """
-    read_constraints(file, typeRHS)
+    read_constraints(file)
 
 Returns an Array of constraints. The constraints are read from `file`.
 
-See an example in the source file ./test/Constraints.jl
+See example in the file with the tests: *./test/Constraints.jl*.
 """
-function read_constraints(file::String, Trhs::DataType)
+function read_constraints(file::String)
     fileStream = open(file, "r");
     lines = readlines(fileStream);
-    constraints = [constructConstraint(zero(Trhs), :equal, Int[], Array{Trhs,1}()) 
+    constraints = [constructConstraint(0.0, :equal, Int[], Array{Float64,1}()) 
                    for i in 1:length(lines)];
     for i in 1:length(lines) # code in parallel!!!
-      parse_constraint!(constraints[i], lines[i], Trhs, i);
+      parse_constraint!(constraints[i], lines[i], i);
     end
     return constraints;
 end
 
-function parse_constraint!(c::Constraint, line::String, Trhs::DataType, idx::Int)
+function parse_constraint!(c::Constraint, line::String, idx::Int)
     local sign = parse_and_set_constraint_sign!(c, line, idx);
     elements = split(line, sign);
 
-    set_rhs!(c, parse(Trhs, elements[2]));
+    set_rhs!(c, parse(Float64, elements[2]));
 
     lhs = split(elements[1], "+");
     for i in 1:length(lhs)
       terms = split(lhs[i], "x");
-      coef = parse(Trhs, terms[1]);
+      coef = parse(Float64, terms[1]);
       var  = parse(Int, terms[2]);
       set_coefficient!(c, var, coef);
     end
@@ -258,17 +260,17 @@ Given a constraint `c`, returns if the left-hand side consumption `lhs` is feasi
 
 # Example
 ```jldoctest
-julia> c = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 4], [2, 5, 3]);
-julia> OREnvironment.is_feasible(c, 6)
+julia> c = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 4], [2.0, 5.0, 3.0]);
+julia> OREnvironment.is_feasible(c, 6.0)
 true
-julia> OREnvironment.is_feasible(c, 16)
+julia> OREnvironment.is_feasible(c, 16.0)
 false
 ```
 """
-is_feasible(c::Constraint, lhs::Real)::Bool = is_feasible(get_rhs(c), lhs, Val(get_type(c))); 
-is_feasible(rhs::Real, lhs::Real, ::Val{:lessOrEq})::Bool    = lhs <= rhs;
-is_feasible(rhs::Real, lhs::Real, ::Val{:equal})::Bool       = lhs ≈ rhs;
-is_feasible(rhs::Real, lhs::Real, ::Val{:greaterOrEq})::Bool = lhs >= rhs;
+is_feasible(c::Constraint, lhs::Float64)::Bool = is_feasible(get_rhs(c), lhs, Val(get_type(c))); 
+is_feasible(rhs::Float64, lhs::Float64, ::Val{:lessOrEq})::Bool    = lhs <= rhs;
+is_feasible(rhs::Float64, lhs::Float64, ::Val{:equal})::Bool       = lhs ≈ rhs;
+is_feasible(rhs::Float64, lhs::Float64, ::Val{:greaterOrEq})::Bool = lhs >= rhs;
 
 """
     compute_lhs_after_increment(var, Δ, currentLHS, c)
@@ -278,18 +280,18 @@ For a change of `Δ` in the value of variable `var`, returns the new left-hand s
 
 # Example
 ```jldoctest
-julia> c = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 4], [2, 5, 3]);
-julia> Δ = 3; currentLHS = 9;
+julia> c = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 4], [2.0, 5.0, 3.0]);
+julia> Δ = 3; currentLHS = 9.0;
 julia> OREnvironment.compute_lhs_after_increment(1, Δ, currentLHS, c)
-15 # = 2*Δ + currentLHS
+15.0 # = 2*Δ + currentLHS
 ```
 """
 function compute_lhs_after_increment(variable::Int, 
                                      Δvariable::Real,
-                                     currentLHS::Real, 
-                                     c::Constraint)
-    local Δconsumption = Δvariable*get_coefficient(c, variable);
-    local lhs = currentLHS + Δconsumption; 
+                                     currentLHS::Float64, 
+                                     c::Constraint)::Float64
+    local Δconsumption::Float64 = Δvariable*get_coefficient(c, variable);
+    local lhs::Float64 = currentLHS + Δconsumption; 
     return lhs;
 end
 
@@ -299,18 +301,19 @@ end
 For a change of `Δ` in the value of variable `var`, returns if new left-hand side consumption in constraint `c` is feasible given the current consumption `currentLHS`.
 # Example
 ```jldoctest
-julia> c = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 4], [2, 5, 3]);
-julia> Δ = 3; currentLHS = 9;
+julia> c = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 4], [2.0, 5.0, 3.0]);
+julia> Δ = 3; currentLHS = 9.0;
 julia> OREnvironment.is_increment_feasible(1, Δ, currentLHS, c)
 false # new lhs would be 15 which larger than 12
 ```
 """
 function is_increment_feasible(variable::Int, 
                                Δvariable::Real,
-                               currentLHS::Real, 
+                               currentLHS::Float64, 
                                c::Constraint)::Bool
-    local lhs = compute_lhs_after_increment(variable, Δvariable, currentLHS, c);
-    return is_feasible(c, lhs);
+    local lhs::Float64 = compute_lhs_after_increment(variable, Δvariable, currentLHS, c);
+    local answer::Bool = is_feasible(c, lhs);
+    return answer;
 end
 
 
@@ -320,9 +323,9 @@ end
 """
   is_increment_feasible(s, vconstraints, var, Δ, idxConstraints)
 
-Given solution `s`, the constraints of the problem `vconstraints`, a change `Δ` in variable `var` and an Array with the constraint indices where variable `var` appears, returns if the change is feasible or not.
+Given solution `s`, the constraints of the problem `vconstraints`, a change `Δ` (respect to the current solution `s`) in variable `var` and an Array with the constraint indexes where variable `var` appears, returns if the change is feasible or not.
 
-**Note:** That the change is feasible DOES NOT mean that the solution is feasible. Given a feasible solution, a feasible change implies that the new solution is still feasible. But given an infeasible solution, a feasible change means that the constraints where `var` appears are not violated by the current change. However, as the original solution was infeasible, the new one is still infeasible. If the return of the function is `false`, then the solution after the change is infeasible, regardless of the original feasibility situation.
+**Note:** That the change is feasible DOES NOT mean that the solution is feasible. Given a feasible solution, a feasible change implies that the new solution is still feasible. But given an infeasible solution, a feasible change means that the constraints where `var` appears are not violated by the current change. However, as the original solution was infeasible, the new one is still infeasible. If the return of the function is `false`, then the solution after the change is infeasible regardless of the original feasibility situation.
 
 See examples in the file with the tests: *./test/Constraints.jl*.
 """
@@ -332,8 +335,9 @@ function is_increment_feasible(s::Solution,
                                Δvariable::Real, 
                                idxConstraints::Array{Int,1})::Bool
     @inbounds for i in idxConstraints
-        local currentLHS = get_constraint_consumption(s, i);
-        if !is_increment_feasible(variable, Δvariable, currentLHS, constraints[i])
+        local currentLHS::Float64 = get_constraint_consumption(s, i);
+        local feasible::Bool = is_increment_feasible(variable, Δvariable, currentLHS, constraints[i]);
+        if !feasible
             return false;
         end
     end
@@ -355,8 +359,9 @@ function is_current_consumption_feasible(s::Solution,
                                          constraints::Array{<:Constraint,1})::Bool
     local N::Int = length(constraints);
     @inbounds for i in 1:N
-        local lhs = get_constraint_consumption(s, i);
-        if !is_feasible(constraints[i], lhs)
+        local lhs::Float64 = get_constraint_consumption(s, i);
+        local feasible::Bool = is_feasible(constraints[i], lhs);
+        if !feasible
             return false;
         end
     end
@@ -372,8 +377,8 @@ Computes the consumption (left-hand side) of constraint `c` by solution `s`.
 
 See examples in the file with the tests: *./test/Constraints.jl*.
 """
-function compute_lhs(c::Constraint, s::Solution)
-    local lhs = zero(typeof(get_rhs(c)));
+function compute_lhs(c::Constraint, s::Solution)::Float64
+    local lhs::Float64 = 0.0;
     for (variable, coef) in c.variablesPositiveCoefficients
          lhs += coef*get_solution(s, variable);
     end
@@ -388,7 +393,7 @@ end
 
 Returns true if the consumption incurred by solution `s` is feasible respect to constraints `vconstraints`.
 
-**Note:** This function computed the left-hand sides of constraints useing `s`, but it DOES NOT update the current consumption of solution `s`.
+**Note:** This function computes the left-hand sides of constraints using `s`, but it DOES NOT update the current consumption of solution `s`.
 
 **Tip:** If the lhs does not have to be recomputed, then check function [`is_current_consumption_feasible`](@ref) for a better performance. Actually, that function should be preferred over `is_feasible(s, vconstraints)`.
 
@@ -397,8 +402,9 @@ See examples in the file with the tests: *./test/Constraints.jl*.
 function is_feasible(s::Solution, 
                      constraints::Array{<:Constraint,1})::Bool
     for c in constraints
-        local lhs = compute_lhs(c, s);
-        if !is_feasible(c, lhs)
+        local lhs::Float64 = compute_lhs(c, s);
+        local feasible::Bool = is_feasible(c, lhs);
+        if !feasible
             return false;
         end
     end

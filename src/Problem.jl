@@ -1,24 +1,24 @@
 
-mutable struct DefaultProblem{T<:Real} <: Problem
-  costs::Array{T,1};
+mutable struct DefaultProblem <: Problem
+  costs::Array{Float64,1};
   constraints::Array{<:Constraint,1};
   variablesConstraints::Array{Array{Int,1},1};
   objSense::Symbol;
 end
 
-function constructProblem(costs::Array{T,1},
+function constructProblem(costs::Array{Float64,1},
                           constraints::Array{<:Constraint,1},
-                          objSense::Symbol) where {T<:Real}
+                          objSense::Symbol) 
   variablesConstraints = get_relationship_variables_constraints(constraints, length(costs));
   return DefaultProblem(costs, constraints, variablesConstraints, objSense);
 end
 
-get_cost(p::Problem, pos::Int)             = p.costs[pos];
-set_cost!(p::Problem, val::Real, pos::Int) = p.costs[pos] = val;
-get_obj_sense(p::Problem)::Symbol          = p.objSense;
-set_obj_sense!(p::Problem, val::Symbol)    = p.objSense = val;
-get_constraint(p::Problem, pos::Int)       = p.constraints[pos];
-get_constraints(p::Problem)                = p.constraints;
+get_cost(p::Problem, pos::Int)::Float64       = p.costs[pos];
+set_cost!(p::Problem, val::Float64, pos::Int) = p.costs[pos] = val;
+get_obj_sense(p::Problem)::Symbol       = p.objSense;
+set_obj_sense!(p::Problem, val::Symbol) = p.objSense = val;
+get_constraint(p::Problem, idxConstraint::Int) = p.constraints[idxConstraint];
+get_constraints(p::Problem) = p.constraints;
 get_constraints_of_variable(p::Problem, pos::Int)::Array{Int,1} = p.variablesConstraints[pos];
 
 function add_constraint!(p::Problem, c::Constraint) 

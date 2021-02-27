@@ -1,35 +1,32 @@
 ############################
 # Types & Constructors
 ############################
-Base.@kwdef mutable struct DefaultStatus{T<:Real, G<:Real} <: Status
+Base.@kwdef mutable struct DefaultStatus <: Status
     feasible::Bool = false;
     optimal::Bool  = false; 
-    objfunction::T = zero(T);
-    constraintLhsConsumption::Array{G,1};
+    objfunction::Float64 = 0.0;
+    constraintLhsConsumption::Array{Float64,1};
 end
 
-function constructStatus(numberConstraints::Int, 
-                         typeObjFunction::DataType, 
-                         typeLHS::DataType)
-    lhs = zeros(typeLHS, numberConstraints);
-    return DefaultStatus{typeObjFunction, typeLHS}(constraintLhsConsumption = lhs);
+function constructStatus(numberConstraints::Int)
+    return DefaultStatus(constraintLhsConsumption = zeros(Float64, numberConstraints));
 end
 
 ############################
 # General methods for Status
 ############################
 is_feasible(s::Status)::Bool           = s.feasible;
-set_feasible!(s::Status, val::Bool)    = s.feasible = val;
+set_feasible!(s::Status, value::Bool)  = s.feasible = value;
 is_optimal(s::Status)::Bool            = s.optimal; 
-set_optimal!(s::Status, val::Bool)     = s.optimal = val; 
-get_objfunction(s::Status)             = s.objfunction;
-set_objfunction!(s::Status, val::Real) = s.objfunction = val;
-get_constraint_consumption(s::Status, pos::Int) = @inbounds s.constraintLhsConsumption[pos];
-set_constraint_consumption!(s::Status, val::Real, pos::Int) = @inbounds s.constraintLhsConsumption[pos] = val;
+set_optimal!(s::Status, value::Bool)   = s.optimal = value; 
+get_objfunction(s::Status)::Float64    = s.objfunction;
+set_objfunction!(s::Status, value::Float64) = s.objfunction = value;
+get_constraint_consumption(s::Status, idxConstraint::Int)::Float64 = @inbounds s.constraintLhsConsumption[idxConstraint];
+set_constraint_consumption!(s::Status, value::Float64, idxConstraint::Int) = @inbounds s.constraintLhsConsumption[idxConstraint] = value;
 
-worst_value(objsense::Symbol, T::DataType) = worst_value(Val(objsense), T);
-worst_value(::Val{:max}, T::DataType) = typemin(T);
-worst_value(::Val{:min}, T::DataType) = typemax(T);
+worst_value(objsense::Symbol)::Float64 = worst_value(Val(objsense));
+worst_value(::Val{:max})::Float64 = typemin(Float64);
+worst_value(::Val{:min})::Float64 = typemax(Float64);
 
 function is_first_status_better(s1::Status, 
                                 s2::Status, 
@@ -53,8 +50,8 @@ is_first_obj_function_better(s1::Status, s2::Status, ::Val{:min})::Bool = get_ob
 ############################
 # Specific methods for Status
 ############################
-function update_status!(oldStatus::DefaultStatus{T,G},
-                        newStatus::DefaultStatus{T,G}) where {T<:Real, G<:Real}
+function update_status!(oldStatus::DefaultStatus,
+                        newStatus::DefaultStatus)
     set_objfunction!(oldStatus, get_objfunction(newStatus));
     set_feasible!(oldStatus, is_feasible(newStatus));
     set_optimal!(oldStatus, is_optimal(newStatus)); 

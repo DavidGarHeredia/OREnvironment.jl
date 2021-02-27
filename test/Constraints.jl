@@ -5,8 +5,8 @@ using Test
 #######################
 # PRELIMINARIES FOR THE TESTS 
 #######################
-mutable struct MyProblem{T<:Real} <: OREnvironment.Problem 
-    costs::Array{T,1};
+mutable struct MyProblem <: OREnvironment.Problem 
+    costs::Array{Float64,1};
     constraints::Array{<:OREnvironment.Constraint,1};
     variablesConstraints::Array{Array{Int,1},1};
 end
@@ -28,8 +28,7 @@ function constructorProblem()
 end
 
 function constructorSolution(numConstraints=2)
-    Tobj = Float64; Tconstraints = Float64;
-    status = OREnvironment.constructStatus(numConstraints, Tobj, Tconstraints);
+    status = OREnvironment.constructStatus(numConstraints);
     Tvariables = Float64; sizeArray = 6;
     sol  = OREnvironment.constructSolution(:FixLengthArray, (Tvariables, sizeArray, status));
     return sol;
@@ -135,7 +134,7 @@ end
   l3 = "2x5 + 3x7 + 5x19 = 15";
   lwithError1 = "1x2 + 23x4 + 5x6 => 12";
   lwithError2 = "1x2 + 23x4 + 5x6 == 12";
-  c = OREnvironment.constructConstraint(0, :equal, Int[], Int[]);
+  c = OREnvironment.constructConstraint(0.0, :equal, Int[], Float64[]);
 
   sign = OREnvironment.parse_and_set_constraint_sign!(c, l1, 1);
   @test sign == "<=";
@@ -158,7 +157,7 @@ end
   lwithError2 = "1x2 + 23x4 + 5x6 == 12";
   c = OREnvironment.constructConstraint(0.0, :equal, Int[], Float64[]);
 
-  OREnvironment.parse_constraint!(c, l1, Float64, 1);
+  OREnvironment.parse_constraint!(c, l1, 1);
   @test OREnvironment.get_rhs(c) == 10;
   @test OREnvironment.get_type(c) == :lessOrEq;
   @test OREnvironment.is_variable(c, 1) == true;
@@ -168,7 +167,7 @@ end
   @test OREnvironment.get_coefficient(c, 2) == 13.0;
   @test OREnvironment.get_coefficient(c, 3) == 5.0;
 
-  OREnvironment.parse_constraint!(c, l2, Float64, 2);
+  OREnvironment.parse_constraint!(c, l2, 2);
   @test OREnvironment.get_rhs(c) == 12;
   @test OREnvironment.get_type(c) == :greaterOrEq;
   @test OREnvironment.is_variable(c, 2) == true;
@@ -178,7 +177,7 @@ end
   @test OREnvironment.get_coefficient(c, 14) == 23.2;
   @test OREnvironment.get_coefficient(c, 6) == 5.3;
 
-  OREnvironment.parse_constraint!(c, l3, Float64, 3);
+  OREnvironment.parse_constraint!(c, l3, 3);
   @test OREnvironment.get_rhs(c) == 15;
   @test OREnvironment.get_type(c) == :equal;
   @test OREnvironment.is_variable(c, 5) == true;
@@ -188,14 +187,14 @@ end
   @test OREnvironment.get_coefficient(c, 7) == 3.0;
   @test OREnvironment.get_coefficient(c, 19) == 5.0;
 
-  @test_throws ErrorException OREnvironment.parse_constraint!(c, lwithError1, Float64, 4);
-  @test_throws ErrorException OREnvironment.parse_constraint!(c, lwithError2, Float64, 5);
+  @test_throws ErrorException OREnvironment.parse_constraint!(c, lwithError1, 4);
+  @test_throws ErrorException OREnvironment.parse_constraint!(c, lwithError2, 5);
 end
 
 @testset "read_constraints" begin
   testdir = dirname(@__FILE__);
   file = joinpath(testdir, "sampleConstraints.txt");
-  constraints = OREnvironment.read_constraints(file, Float64);
+  constraints = OREnvironment.read_constraints(file);
 
   c = constraints[1];
   @test OREnvironment.get_rhs(c) == 9;

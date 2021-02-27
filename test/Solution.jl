@@ -4,8 +4,8 @@ using Test
 #######################
 # PRELIMINARIES FOR THE TESTS 
 #######################
-mutable struct MyProblem{T<:Real} <: OREnvironment.Problem 
-    costs::Array{T,1};
+mutable struct MyProblem <: OREnvironment.Problem 
+    costs::Array{Float64,1};
     constraints::Array{<:OREnvironment.Constraint,1};
     variablesConstraints::Array{Array{Int,1},1};
 end
@@ -27,8 +27,7 @@ function constructorProblem()
 end
 
 function constructorSolution(numConstraints=2)
-    Tobj = Float64; Tconstraints = Float64;
-    status = OREnvironment.constructStatus(numConstraints, Tobj, Tconstraints);
+    status = OREnvironment.constructStatus(numConstraints);
     Tvariables = Float64; sizeArray = 6;
     sol  = OREnvironment.constructSolution(:FixLengthArray, (Tvariables, sizeArray, status));
     return sol;
@@ -56,12 +55,12 @@ end
 #######################
 @testset "Building Solution" begin
     @testset "FixLengthArray" begin
-        numConstraints = 5; Tobj = Float64; Tconstraints = Float64;
+        numConstraints = 5; 
         sol = constructorSolution(numConstraints);
 
         @test OREnvironment.is_feasible(sol) == false;
         @test OREnvironment.is_optimal(sol) == false;
-        @test OREnvironment.get_objfunction(sol) == zero(Tobj);
+        @test OREnvironment.get_objfunction(sol) == 0.0;
         for i in 1:numConstraints
             @test OREnvironment.get_constraint_consumption(sol, i) == 0.0;
         end
@@ -79,7 +78,7 @@ end
             @test OREnvironment.get_constraint_consumption(sol, i) == 12.0;
         end
 
-        st = OREnvironment.constructStatus(numConstraints, Tobj, Tconstraints);
+        st = OREnvironment.constructStatus(numConstraints);
         OREnvironment.set_feasible!(st, false);
         OREnvironment.set_objfunction!(st, 125.63);
         OREnvironment.set_constraint_consumption!(st, 3.0, 1);
@@ -105,68 +104,68 @@ end
         @test OREnvironment.get_solution(sol, 1) == 2value; 
         @test OREnvironment.get_solution(sol, 2) == 3value; 
         OREnvironment.remove_solution!(sol, 3);
-        @test OREnvironment.get_solution(sol, 3) == zero(Float64); 
+        @test OREnvironment.get_solution(sol, 3) == 0.0; 
         @test OREnvironment.get_solution(sol, 1) == 2value; 
         @test OREnvironment.get_solution(sol, 2) == 3value; 
         OREnvironment.remove_all_solutions!(sol);
         @test length(sol.sol) == 6;
         for v in sol.sol
-            @test v == zero(Float64);
+            @test v == 0.0;
         end
     end
 end
 
 @testset "is first solution better" begin
-    Tobj = Float64; Tconstraints = Float64; numConstraints = 5;
-    status1 = OREnvironment.constructStatus(numConstraints, Tobj, Tconstraints);
-    status2 = OREnvironment.constructStatus(numConstraints, Tobj, Tconstraints);
+    numConstraints = 5;
+    status1 = OREnvironment.constructStatus(numConstraints);
+    status2 = OREnvironment.constructStatus(numConstraints);
     Tvariables = Int; sizeArray = 6;
     s1 = OREnvironment.constructSolution(:FixLengthArray, (Tvariables, sizeArray, status1));
     s2 = OREnvironment.constructSolution(:FixLengthArray, (Tvariables, sizeArray, status2));
-    OREnvironment.set_objfunction!(s1, 34);
-    OREnvironment.set_objfunction!(s2, 3);
+    OREnvironment.set_objfunction!(s1, 34.0);
+    OREnvironment.set_objfunction!(s2, 3.0);
 
     @testset "feasibility not required" begin
         feasibility = false;
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == true;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
-        OREnvironment.set_objfunction!(s2, 34);
+        OREnvironment.set_objfunction!(s2, 34.0);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:min, feasibility) == false;
 
-        OREnvironment.set_objfunction!(s1, 34);
-        OREnvironment.set_objfunction!(s2, 3);
+        OREnvironment.set_objfunction!(s1, 34.0);
+        OREnvironment.set_objfunction!(s2, 3.0);
         OREnvironment.set_feasible!(s1, true);
         OREnvironment.set_feasible!(s2, false);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == true;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
-        OREnvironment.set_objfunction!(s2, 34);
+        OREnvironment.set_objfunction!(s2, 34.0);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:min, feasibility) == false;
 
-        OREnvironment.set_objfunction!(s1, 34);
-        OREnvironment.set_objfunction!(s2, 3);
+        OREnvironment.set_objfunction!(s1, 34.0);
+        OREnvironment.set_objfunction!(s2, 3.0);
         OREnvironment.set_feasible!(s1, false);
         OREnvironment.set_feasible!(s2, true);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == true;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
-        OREnvironment.set_objfunction!(s2, 34);
+        OREnvironment.set_objfunction!(s2, 34.0);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:min, feasibility) == false;
 
-        OREnvironment.set_objfunction!(s1, 34);
-        OREnvironment.set_objfunction!(s2, 3);
+        OREnvironment.set_objfunction!(s1, 34.0);
+        OREnvironment.set_objfunction!(s2, 3.0);
         OREnvironment.set_feasible!(s1, true);
         OREnvironment.set_feasible!(s2, true);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == true;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
-        OREnvironment.set_objfunction!(s2, 34);
+        OREnvironment.set_objfunction!(s2, 34.0);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
@@ -175,49 +174,49 @@ end
 
     @testset "feasibility required" begin
         feasibility = true;
-        OREnvironment.set_objfunction!(s1, 34);
-        OREnvironment.set_objfunction!(s2, 3)
+        OREnvironment.set_objfunction!(s1, 34.0);
+        OREnvironment.set_objfunction!(s2, 3.0)
         OREnvironment.set_feasible!(s1, false);
         OREnvironment.set_feasible!(s2, false);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == true;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
-        OREnvironment.set_objfunction!(s2, 34);
+        OREnvironment.set_objfunction!(s2, 34.0);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:min, feasibility) == false;
 
-        OREnvironment.set_objfunction!(s1, 34);
-        OREnvironment.set_objfunction!(s2, 3);
+        OREnvironment.set_objfunction!(s1, 34.0);
+        OREnvironment.set_objfunction!(s2, 3.0);
         OREnvironment.set_feasible!(s1, true);
         OREnvironment.set_feasible!(s2, false);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == true;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == true;
-        OREnvironment.set_objfunction!(s2, 34);
+        OREnvironment.set_objfunction!(s2, 34.0);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == true;
         @test OREnvironment.is_first_solution_better(s2,s1,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == true;
         @test OREnvironment.is_first_solution_better(s2,s1,:min, feasibility) == false;
 
-        OREnvironment.set_objfunction!(s1, 34);
-        OREnvironment.set_objfunction!(s2, 3);
+        OREnvironment.set_objfunction!(s1, 34.0);
+        OREnvironment.set_objfunction!(s2, 3.0);
         OREnvironment.set_feasible!(s1, false);
         OREnvironment.set_feasible!(s2, true);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
-        OREnvironment.set_objfunction!(s2, 34);
+        OREnvironment.set_objfunction!(s2, 34.0);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:max, feasibility) == true;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:min, feasibility) == true;
 
-        OREnvironment.set_objfunction!(s1, 34);
-        OREnvironment.set_objfunction!(s2, 3);
+        OREnvironment.set_objfunction!(s1, 34.0);
+        OREnvironment.set_objfunction!(s2, 3.0);
         OREnvironment.set_feasible!(s1, true);
         OREnvironment.set_feasible!(s2, true);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == true;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
-        OREnvironment.set_objfunction!(s2, 34);
+        OREnvironment.set_objfunction!(s2, 34.0);
         @test OREnvironment.is_first_solution_better(s1,s2,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s2,s1,:max, feasibility) == false;
         @test OREnvironment.is_first_solution_better(s1,s2,:min, feasibility) == false;
@@ -230,9 +229,6 @@ end
     s2 = constructorSolution();
     p = constructorProblem();
 
-    #OREnvironment.add_solution_and_update_status!(s1, 7.0, 1, p);
-    #OREnvironment.add_solution_and_update_status!(s1, 7.4, 2, p);
-    #OREnvironment.add_solution_and_update_status!(s1, 3.3, 3, p);
     OREnvironment.add_solution!(s1, 7.0, 1);
     OREnvironment.add_solution!(s1, 7.4, 2);
     OREnvironment.add_solution!(s1, 3.3, 3);
@@ -240,8 +236,6 @@ end
     OREnvironment.set_constraint_consumption!(s1, 36.96, 2); 
     OREnvironment.set_objfunction!(s1, 31.7);
 
-    #OREnvironment.add_solution_and_update_status!(s2, 73.4, 4, p);
-    #OREnvironment.add_solution_and_update_status!(s2, 8.0, 5, p);
     OREnvironment.add_solution!(s2, 73.4, 4);
     OREnvironment.add_solution!(s2, 8.0, 5);
     OREnvironment.set_constraint_consumption!(s2, 227.54, 1); 
@@ -387,7 +381,6 @@ end
   isIncrementFeasible = true;
   @test OREnvironment.should_global_feasibility_be_checked(isSolutionFeasible, isIncrementFeasible) == true;
 end
-
 
 @testset "update_constraint_consumption for increments" begin
     sol = constructorSolution();
