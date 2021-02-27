@@ -59,7 +59,7 @@ julia> OREnvironment.get_rhs(c)
 25
 ```
 """
-set_rhs!(c::Constraint, val::Real) = c.rhs = val;
+set_rhs!(c::Constraint, value::Real) = c.rhs = value;
 
 """
     get_type(c)
@@ -88,7 +88,7 @@ julia> OREnvironment.get_type(c)
 :greaterOrEq
 ```
 """
-set_type!(c::Constraint, val::Symbol) = c.type = val;
+set_type!(c::Constraint, value::Symbol) = c.type = value;
 
 """
     is_variable(c, var)
@@ -104,9 +104,9 @@ julia> OREnvironment.is_variable(c, 13)
 false
 ```
 """
-function is_variable(c::Constraint, pos::Int)::Bool
-    local answer::Bool = haskey(c.variablesPositiveCoefficients, pos) || 
-                         haskey(c.variablesNegativeCoefficients, pos);
+function is_variable(c::Constraint, variable::Int)::Bool
+    local answer::Bool = haskey(c.variablesPositiveCoefficients, variable) || 
+                         haskey(c.variablesNegativeCoefficients, variable);
    return answer; 
 end
 
@@ -125,12 +125,12 @@ julia> OREnvironment.get_coefficient(c, 3)
 5
 ```
 """
-function get_coefficient(c::Constraint, pos::Int)
-    local val = get(c.variablesPositiveCoefficients, pos, zero(typeof(c.rhs)));
-    if val == zero(typeof(c.rhs))
-        val = get(c.variablesNegativeCoefficients, pos, zero(typeof(c.rhs)));
+function get_coefficient(c::Constraint, variable::Int)
+    local value = get(c.variablesPositiveCoefficients, variable, zero(typeof(c.rhs)));
+    if value == zero(typeof(c.rhs))
+        value = get(c.variablesNegativeCoefficients, variable, zero(typeof(c.rhs)));
     end
-    return val;
+    return value;
 end
 
 """
@@ -146,12 +146,13 @@ julia> OREnvironment.get_coefficient(c, 33)
 123
 ```
 """
-function set_coefficient!(c::Constraint, pos::Int, val::Real)
-    if val > 0
-        c.variablesPositiveCoefficients[pos] = val;
+function set_coefficient!(c::Constraint, variable::Int, value::Real)
+    if value > 0
+        c.variablesPositiveCoefficients[variable] = value;
     else
-        c.variablesNegativeCoefficients[pos] = val;
+        c.variablesNegativeCoefficients[variable] = value;
     end
+    return nothing;
 end
 
 """
@@ -280,7 +281,7 @@ For a change of `Δ` in the value of variable `var`, returns the new left-hand s
 julia> c = OREnvironment.constructConstraint(12, :lessOrEq, [1, 3, 4], [2, 5, 3]);
 julia> Δ = 3; currentLHS = 9;
 julia> OREnvironment.compute_lhs_after_increment(1, Δ, currentLHS, c)
-15 # = Δ*2 + currentLHS
+15 # = 2*Δ + currentLHS
 ```
 """
 function compute_lhs_after_increment(variable::Int, 
@@ -330,10 +331,8 @@ function is_increment_feasible(s::Solution,
                                variable::Int, 
                                Δvariable::Real, 
                                idxConstraints::Array{Int,1})::Bool
-    if length(idxConstraints) == 0 return true end;
-    local currentLHS = get_constraint_consumption(s, 1);
     @inbounds for i in idxConstraints
-        currentLHS = get_constraint_consumption(s, i);
+        local currentLHS = get_constraint_consumption(s, i);
         if !is_increment_feasible(variable, Δvariable, currentLHS, constraints[i])
             return false;
         end
