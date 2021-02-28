@@ -22,13 +22,13 @@ end
 # General methods for Solution
 ############################
 is_feasible(s::Solution)::Bool           = is_feasible(s.status);
-set_feasible!(s::Solution, val::Bool)    = set_feasible!(s.status, val);
+set_feasible!(s::Solution, value::Bool)  = set_feasible!(s.status, value);
 is_optimal(s::Solution)::Bool            = is_optimal(s.status); 
-set_optimal!(s::Solution, val::Bool)     = set_optimal!(s.status, val); 
+set_optimal!(s::Solution, value::Bool)   = set_optimal!(s.status, value); 
 get_objfunction(s::Solution)::Float64    = get_objfunction(s.status);
-set_objfunction!(s::Solution, val::Float64) = set_objfunction!(s.status, val);
-get_constraint_consumption(s::Solution, pos::Int)::Float64 = get_constraint_consumption(s.status, pos); 
-set_constraint_consumption!(s::Solution, val::Float64, pos::Int) = set_constraint_consumption!(s.status, val, pos); 
+set_objfunction!(s::Solution, value::Float64) = set_objfunction!(s.status, value);
+get_constraint_consumption(s::Solution, idxConstraint::Int)::Float64 = get_constraint_consumption(s.status, idxConstraint); 
+set_constraint_consumption!(s::Solution, value::Float64, idxConstraint::Int) = set_constraint_consumption!(s.status, value, idxConstraint); 
 
 function is_first_solution_better(s1::Solution, 
                                   s2::Solution, 
@@ -41,9 +41,9 @@ end
 # Specific methods for Solution
 ############################
 
-get_solution(s::FixLengthArray{T}, pos::Int)            where {T<:Real} = @inbounds s.sol[pos];
-add_solution!(s::FixLengthArray{T}, value::T, pos::Int) where {T<:Real} = @inbounds s.sol[pos] = value;
-remove_solution!(s::FixLengthArray{T}, pos::Int)        where {T<:Real} = @inbounds s.sol[pos] = zero(T);
+get_solution(s::FixLengthArray{T}, variable::Int)            where {T<:Real} = @inbounds s.sol[variable];
+add_solution!(s::FixLengthArray{T}, value::T, variable::Int) where {T<:Real} = @inbounds s.sol[variable] = value;
+remove_solution!(s::FixLengthArray{T}, variable::Int)        where {T<:Real} = @inbounds s.sol[variable] = zero(T);
 function remove_all_solutions!(s::FixLengthArray{T}) where {T<:Real}
     s.sol .= zero(T);
     return nothing;
@@ -130,21 +130,21 @@ end
 ############################
 function add_solution_and_update_status!(s::FixLengthArray{T}, 
                                          value::T, 
-                                         pos::Int, 
+                                         variable::Int, 
                                          p::Problem) where {T<:Real}
-    @inbounds local Δ::T   = value - s.sol[pos];
-    @inbounds local newObj::Float64 = get_objfunction(s) + Δ*get_cost(p, pos);
-    @inbounds s.sol[pos]   = value;
-    @inbounds update_constraint_consumption_and_feasibility!(s, get_constraints(p), pos, Δ, 
-                                                             get_constraints_of_variable(p, pos));
+    @inbounds local Δ::T  = value - s.sol[variable];
+    @inbounds local newObj::Float64 = get_objfunction(s) + Δ*get_cost(p, variable);
+    @inbounds s.sol[variable] = value;
+    @inbounds update_constraint_consumption_and_feasibility!(s, get_constraints(p), variable, Δ, 
+                                                             get_constraints_of_variable(p, variable));
     set_objfunction!(s, newObj);
     return nothing;
 end
 
 function remove_solution_and_update_status!(s::FixLengthArray{T}, 
-                                            pos::Int, 
+                                            variable::Int, 
                                             p::Problem) where {T<:Real}
-    add_solution_and_update_status!(s, zero(T), pos, p);
+    add_solution_and_update_status!(s, zero(T), variable, p);
     return nothing;
 end
 
