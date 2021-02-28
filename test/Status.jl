@@ -15,7 +15,7 @@ using Test
     OREnvironment.set_feasible!(status, true);
     OREnvironment.set_optimal!(status, true);
     OREnvironment.set_objfunction!(status, 16.0);
-    OREnvironment.set_constraint_consumption!(status, 15.0, 1);
+    OREnvironment.set_constraint_consumption!(status, 1, 15.0);
     @test OREnvironment.is_feasible(status) == true;
     @test OREnvironment.is_optimal(status) == true;
     @test OREnvironment.get_objfunction(status) == 16.0;
@@ -140,11 +140,11 @@ end
     OREnvironment.set_objfunction!(s1, 34.0);
     OREnvironment.set_feasible!(s1, true);
     OREnvironment.set_optimal!(s1, true);
-    OREnvironment.set_constraint_consumption!(s1, 1.2, 1);
-    OREnvironment.set_constraint_consumption!(s1, 2.2, 2);
-    OREnvironment.set_constraint_consumption!(s1, 3.2, 3);
-    OREnvironment.set_constraint_consumption!(s1, 4.2, 4);
-    OREnvironment.set_constraint_consumption!(s1, 5.2, 5);
+    OREnvironment.set_constraint_consumption!(s1, 1, 1.2);
+    OREnvironment.set_constraint_consumption!(s1, 2, 2.2);
+    OREnvironment.set_constraint_consumption!(s1, 3, 3.2);
+    OREnvironment.set_constraint_consumption!(s1, 4, 4.2);
+    OREnvironment.set_constraint_consumption!(s1, 5, 5.2);
 
     @test OREnvironment.is_feasible(s1) == true;
     @test OREnvironment.is_optimal(s1) == true;

@@ -300,26 +300,26 @@ end
     s = constructorSolution();
     p = constructorProblem();
 
-    OREnvironment.set_constraint_consumption!(s, 7.0, 1);
-    OREnvironment.set_constraint_consumption!(s, 7.0, 2);
+    OREnvironment.set_constraint_consumption!(s, 1, 7.0);
+    OREnvironment.set_constraint_consumption!(s, 2, 7.0);
     feasible = OREnvironment.is_current_consumption_feasible(s, p.constraints);
     @test feasible == true;
 
-    OREnvironment.set_constraint_consumption!(s, 17.0, 1);
+    OREnvironment.set_constraint_consumption!(s, 1, 17.0);
     feasible = OREnvironment.is_current_consumption_feasible(s, p.constraints);
     @test feasible == false;
     
-    OREnvironment.set_constraint_consumption!(s, 7.0, 1);
-    OREnvironment.set_constraint_consumption!(s, 17.0, 2);
+    OREnvironment.set_constraint_consumption!(s, 1, 7.0);
+    OREnvironment.set_constraint_consumption!(s, 2, 17.0);
     feasible = OREnvironment.is_current_consumption_feasible(s, p.constraints);
     @test feasible == false;
 
-    OREnvironment.set_constraint_consumption!(s, 37.0, 1);
+    OREnvironment.set_constraint_consumption!(s, 1, 37.0);
     feasible = OREnvironment.is_current_consumption_feasible(s, p.constraints);
     @test feasible == false;
 
-    OREnvironment.set_constraint_consumption!(s, 6.0, 1);
-    OREnvironment.set_constraint_consumption!(s, 5.0, 2);
+    OREnvironment.set_constraint_consumption!(s, 1, 6.0);
+    OREnvironment.set_constraint_consumption!(s, 2, 5.0);
     feasible = OREnvironment.is_current_consumption_feasible(s, p.constraints);
     @test feasible == true;
 end

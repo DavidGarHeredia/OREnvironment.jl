@@ -28,7 +28,7 @@ set_optimal!(s::Solution, value::Bool)   = set_optimal!(s.status, value);
 get_objfunction(s::Solution)::Float64    = get_objfunction(s.status);
 set_objfunction!(s::Solution, value::Float64) = set_objfunction!(s.status, value);
 get_constraint_consumption(s::Solution, idxConstraint::Int)::Float64 = get_constraint_consumption(s.status, idxConstraint); 
-set_constraint_consumption!(s::Solution, value::Float64, idxConstraint::Int) = set_constraint_consumption!(s.status, value, idxConstraint); 
+set_constraint_consumption!(s::Solution, idxConstraint::Int, value::Float64) = set_constraint_consumption!(s.status, idxConstraint, value); 
 
 function is_first_solution_better(s1::Solution, 
                                   s2::Solution, 
@@ -64,7 +64,7 @@ function update_constraint_consumption!(s::Solution,
     local N::Int = length(constraints);
     @inbounds for i in 1:N 
         local lhs::Float64 = compute_lhs(constraints[i], s);
-        set_constraint_consumption!(s, lhs, i);
+        set_constraint_consumption!(s, i, lhs);
     end
     return nothing;
 end
@@ -75,7 +75,7 @@ function update_constraint_consumption_and_feasibility!(s::Solution,
     local N::Int = length(constraints);
     @inbounds for i in 1:N 
         local lhs::Float64 = compute_lhs(constraints[i], s);
-        set_constraint_consumption!(s, lhs, i);
+        set_constraint_consumption!(s, i, lhs);
         local isfeasible::Bool = is_feasible(constraints[i], lhs);
         if !isfeasible feasible = false; end
     end
@@ -91,7 +91,7 @@ function update_constraint_consumption!(s::Solution,
     @inbounds for i in idxConstraints
         local currentLHS::Float64 = get_constraint_consumption(s, i);
         local lhs::Float64 = compute_lhs_after_increment(variable, Δvariable, currentLHS, constraints[i]);
-        set_constraint_consumption!(s, lhs, i);
+        set_constraint_consumption!(s, i, lhs);
     end
     return nothing;
 end
@@ -105,7 +105,7 @@ function update_constraint_consumption_and_feasibility!(s::Solution,
     @inbounds for i in idxConstraints
         local currentLHS::Float64 = get_constraint_consumption(s, i);
         local lhs::Float64 = compute_lhs_after_increment(variable, Δvariable, currentLHS, constraints[i]);
-        set_constraint_consumption!(s, lhs, i);
+        set_constraint_consumption!(s, i, lhs);
         local isfeasible::Bool = is_feasible(constraints[i], lhs);
         if !isfeasible feasible = false; end
     end

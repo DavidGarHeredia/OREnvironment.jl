@@ -69,7 +69,7 @@ end
         OREnvironment.set_optimal!(sol, true);
         OREnvironment.set_objfunction!(sol, 16.0);
         for i in 1:numConstraints
-            OREnvironment.set_constraint_consumption!(sol, 12.0, i);
+            OREnvironment.set_constraint_consumption!(sol, i, 12.0);
         end
         @test OREnvironment.is_feasible(sol) == true;
         @test OREnvironment.is_optimal(sol) == true;
@@ -81,8 +81,8 @@ end
         st = OREnvironment.constructStatus(numConstraints);
         OREnvironment.set_feasible!(st, false);
         OREnvironment.set_objfunction!(st, 125.63);
-        OREnvironment.set_constraint_consumption!(st, 3.0, 1);
-        OREnvironment.set_constraint_consumption!(st, 4.0, 5);
+        OREnvironment.set_constraint_consumption!(st, 1, 3.0);
+        OREnvironment.set_constraint_consumption!(st, 5, 4.0);
         OREnvironment.update_status!(sol.status, st);
         @test OREnvironment.is_feasible(sol) == false;
         @test OREnvironment.is_optimal(sol) == false;
@@ -232,14 +232,14 @@ end
     OREnvironment.add_solution!(s1, 7.0, 1);
     OREnvironment.add_solution!(s1, 7.4, 2);
     OREnvironment.add_solution!(s1, 3.3, 3);
-    OREnvironment.set_constraint_consumption!(s1, 26.66, 1); 
-    OREnvironment.set_constraint_consumption!(s1, 36.96, 2); 
+    OREnvironment.set_constraint_consumption!(s1, 1, 26.66); 
+    OREnvironment.set_constraint_consumption!(s1, 2, 36.96); 
     OREnvironment.set_objfunction!(s1, 31.7);
 
     OREnvironment.add_solution!(s2, 73.4, 4);
     OREnvironment.add_solution!(s2, 8.0, 5);
-    OREnvironment.set_constraint_consumption!(s2, 227.54, 1); 
-    OREnvironment.set_constraint_consumption!(s2, 32.8, 2); 
+    OREnvironment.set_constraint_consumption!(s2, 1, 227.54); 
+    OREnvironment.set_constraint_consumption!(s2, 2, 32.8); 
     OREnvironment.set_objfunction!(s2, 333.6);
 
     @test OREnvironment.get_objfunction(s1) == 31.7;

@@ -22,7 +22,7 @@ set_optimal!(s::Status, value::Bool)   = s.optimal = value;
 get_objfunction(s::Status)::Float64    = s.objfunction;
 set_objfunction!(s::Status, value::Float64) = s.objfunction = value;
 get_constraint_consumption(s::Status, idxConstraint::Int)::Float64 = @inbounds s.constraintLhsConsumption[idxConstraint];
-set_constraint_consumption!(s::Status, value::Float64, idxConstraint::Int) = @inbounds s.constraintLhsConsumption[idxConstraint] = value;
+set_constraint_consumption!(s::Status, idxConstraint::Int, value::Float64) = @inbounds s.constraintLhsConsumption[idxConstraint] = value;
 
 worst_value(objsense::Symbol)::Float64 = worst_value(Val(objsense));
 worst_value(::Val{:max})::Float64 = typemin(Float64);
