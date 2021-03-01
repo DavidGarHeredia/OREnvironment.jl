@@ -133,10 +133,10 @@ function add_solution_and_update_status!(s::FixLengthArray{T},
                                          variable::Int, 
                                          p::Problem) where {T<:Real}
     @inbounds local Δ::T  = value - s.sol[variable];
-    @inbounds local newObj::Float64 = get_objfunction(s) + Δ*get_cost(p, variable);
+    local newObj::Float64 = get_objfunction(s) + Δ*get_cost(p, variable);
     @inbounds s.sol[variable] = value;
-    @inbounds update_constraint_consumption_and_feasibility!(s, get_constraints(p), variable, Δ, 
-                                                             get_constraints_of_variable(p, variable));
+    update_constraint_consumption_and_feasibility!(s, get_constraints(p), variable, Δ, 
+                                                   get_constraints_of_variable(p, variable));
     set_objfunction!(s, newObj);
     return nothing;
 end

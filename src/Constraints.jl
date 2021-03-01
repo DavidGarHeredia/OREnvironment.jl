@@ -24,7 +24,7 @@ function constructConstraint(rhs::Float64,
                              coefficients::Array{Float64,1}) 
     dictPositive = Dict{Int,Float64}();
     dictNegative = Dict{Int,Float64}();
-    for i in 1:length(variables)
+    @inbounds for i in 1:length(variables)
         if coefficients[i] > 0.0
             dictPositive[variables[i]] = coefficients[i];
         else
@@ -185,7 +185,7 @@ function get_relationship_variables_constraints(constraints::Array{<:Constraint,
                                                 nVariables::Int)::Array{Array{Int,1}, 1}
     if length(constraints) == 0 return Array{Array{Int,1}, 1}() end
     variablesConstraints = [Int[] for i in 1:nVariables];
-    for i in 1:length(constraints)
+    @inbounds for i in 1:length(constraints)
       add_constraint_index_to_variables!(constraints[i], i, variablesConstraints);
     end
     return variablesConstraints;
@@ -194,10 +194,10 @@ end
 function add_constraint_index_to_variables!(c::Constraint, 
                                             idx::Int,
                                             variablesConstraints::Array{Array{Int,1}, 1})  
-    for variable in keys(c.variablesPositiveCoefficients)
+    @inbounds for variable in keys(c.variablesPositiveCoefficients)
         push!(variablesConstraints[variable], idx);
     end
-    for variable in keys(c.variablesNegativeCoefficients)
+    @inbounds for variable in keys(c.variablesNegativeCoefficients)
         push!(variablesConstraints[variable], idx);
     end
     return nothing;
@@ -215,7 +215,7 @@ function read_constraints(file::String)
     lines = readlines(fileStream);
     constraints = [constructConstraint(0.0, :equal, Int[], Array{Float64,1}()) 
                    for i in 1:length(lines)];
-    Threads.@threads for i in 1:length(lines)
+    @inbounds Threads.@threads for i in 1:length(lines)
       parse_constraint!(constraints[i], lines[i], i);
     end
     return constraints;
@@ -228,7 +228,7 @@ function parse_constraint!(c::Constraint, line::String, idx::Int)
     set_rhs!(c, parse(Float64, elements[2]));
 
     lhs = split(elements[1], "+");
-    for i in 1:length(lhs)
+    @inbounds for i in 1:length(lhs)
       terms = split(lhs[i], "x");
       coef = parse(Float64, terms[1]);
       var  = parse(Int, terms[2]);

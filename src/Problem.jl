@@ -13,13 +13,13 @@ function constructProblem(costs::Array{Float64,1},
   return DefaultProblem(costs, constraints, variablesConstraints, objSense);
 end
 
-get_cost(p::Problem, variable::Int)::Float64         = p.costs[variable];
-set_cost!(p::Problem, value::Float64, variable::Int) = p.costs[variable] = value;
+get_cost(p::Problem, variable::Int)::Float64         = @inbounds p.costs[variable];
+set_cost!(p::Problem, value::Float64, variable::Int) = @inbounds p.costs[variable] = value;
 get_obj_sense(p::Problem)::Symbol         = p.objSense;
 set_obj_sense!(p::Problem, value::Symbol) = p.objSense = value;
-get_constraint(p::Problem, idxConstraint::Int) = p.constraints[idxConstraint];
+get_constraint(p::Problem, idxConstraint::Int) = @inbounds p.constraints[idxConstraint];
 get_constraints(p::Problem) = p.constraints;
-get_constraints_of_variable(p::Problem, idxConstraint::Int)::Array{Int,1} = p.variablesConstraints[idxConstraint];
+get_constraints_of_variable(p::Problem, idxConstraint::Int)::Array{Int,1} = @inbounds p.variablesConstraints[idxConstraint];
 
 function add_constraint!(p::Problem, c::Constraint) 
   push!(p.constraints, c);
