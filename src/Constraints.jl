@@ -215,7 +215,7 @@ function read_constraints(file::String)
     lines = readlines(fileStream);
     constraints = [constructConstraint(0.0, :equal, Int[], Array{Float64,1}()) 
                    for i in 1:length(lines)];
-    for i in 1:length(lines) # code in parallel!!!
+    Threads.@threads for i in 1:length(lines)
       parse_constraint!(constraints[i], lines[i], i);
     end
     return constraints;
