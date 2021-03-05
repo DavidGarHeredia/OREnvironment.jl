@@ -21,7 +21,7 @@ using Test
     @test OREnvironment.get_constraints_of_variable(p, i) == variablesConstraints[i];
   end
   for i in 1:length(cost)
-    OREnvironment.set_cost!(p, 12.0*i,  i); 
+    OREnvironment.set_cost!(p, i, 12.0*i); 
   end
   for i in 1:length(cost)
     @test OREnvironment.get_cost(p, i) == 12.0*i;
