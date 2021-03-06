@@ -9,7 +9,7 @@ Base.@kwdef mutable struct DefaultStatus <: Status
 end
 
 """
-  constructStatus(nConstraints)
+    constructStatus(nConstraints)
 
 Construct a `DefaultStatus`. It is necessary to specify the number of constraints of the problem.
 
@@ -26,7 +26,7 @@ end
 # General methods for Status
 ############################
 """
-  is_feasible(s)
+    is_feasible(s)
 
 Returns the feasibility value of status `s`.
 
@@ -40,7 +40,7 @@ false
 is_feasible(s::Status)::Bool = s.feasible;
 
 """
-  set_feasible!(s, val)
+    set_feasible!(s, val)
 
 Sets the feasibility value of status `s` to `val`.
 
@@ -55,7 +55,7 @@ true
 set_feasible!(s::Status, value::Bool) = s.feasible = value;
 
 """
-  is_optimal(s)
+    is_optimal(s)
 
 Returns the optimality value of status `s`.
 
@@ -69,7 +69,7 @@ false
 is_optimal(s::Status)::Bool = s.optimal; 
 
 """
-  set_optimal!(s, val)
+    set_optimal!(s, val)
 
 Sets the optimality value of status `s` to `val`.
 
@@ -84,7 +84,7 @@ true
 set_optimal!(s::Status, value::Bool) = s.optimal = value; 
 
 """
-  get_objfunction(s)
+    get_objfunction(s)
 
 Returns the objective function value of status `s`.
 
@@ -98,7 +98,7 @@ julia> OREnvironment.get_objfunction(s)
 get_objfunction(s::Status)::Float64 = s.objfunction;
 
 """
-  set_objfunction!(s, val)
+    set_objfunction!(s, val)
 
 Sets the objective function value of status `s` to `val`.
 
@@ -113,7 +113,7 @@ julia> OREnvironment.get_objfunction(s)
 set_objfunction!(s::Status, value::Float64) = s.objfunction = value;
 
 """
-  get_constraint_consumption(s, idx)
+    get_constraint_consumption(s, idx)
 
 Returns the consumption of constraint `idx` in status `s`.
 
@@ -127,7 +127,7 @@ julia> OREnvironment.get_constraint_consumption(s, 1)
 get_constraint_consumption(s::Status, idxConstraint::Int)::Float64 = @inbounds s.constraintLhsConsumption[idxConstraint];
 
 """
-  set_constraint_consumption!(s, idx, val)
+    set_constraint_consumption!(s, idx, val)
 
 Sets the consumption of constraint `idx` to `val` in status `s`.
 
@@ -142,7 +142,7 @@ julia> OREnvironment.get_constraint_consumption(s, 2)
 set_constraint_consumption!(s::Status, idxConstraint::Int, value::Float64) = @inbounds s.constraintLhsConsumption[idxConstraint] = value;
 
 """
-  worst_value(objSense)
+    worst_value(objSense)
 
 Returns the worst value of the objetive function according to the objective sense of the problem.
 
@@ -159,7 +159,7 @@ worst_value(::Val{:max})::Float64 = typemin(Float64);
 worst_value(::Val{:min})::Float64 = typemax(Float64);
 
 """
-  is_first_status_better(s1, s2, objSense, feasibilityRequiered)
+    is_first_status_better(s1, s2, objSense, feasibilityRequiered)
 
 Returns if status `s1` is better than status `s2`. For the comparaison is required the objective function sense and if feasibility is a must for the comparaison.
 
@@ -205,7 +205,7 @@ is_first_obj_function_better(s1::Status, s2::Status, ::Val{:min})::Bool = get_ob
 # Specific methods for Status
 ############################
 """
-  update_status!(s1, s2)
+    update_status!(s1, s2)
 
 Copies info of status `s2` to `s1`.
 
