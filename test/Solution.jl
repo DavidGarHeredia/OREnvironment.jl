@@ -97,9 +97,9 @@ end
     valueDummy = 0.0;
     @testset "FixLengthArray" begin
         sol  = constructorSolution();
-        OREnvironment.add_solution!(sol, value,  3);
-        OREnvironment.add_solution!(sol, 2value, 1);
-        OREnvironment.add_solution!(sol, 3value, 2);
+        OREnvironment.add_solution!(sol, 3, value);
+        OREnvironment.add_solution!(sol, 1, 2value);
+        OREnvironment.add_solution!(sol, 2, 3value);
         @test OREnvironment.get_solution(sol, 3) == value; 
         @test OREnvironment.get_solution(sol, 1) == 2value; 
         @test OREnvironment.get_solution(sol, 2) == 3value; 
@@ -229,15 +229,15 @@ end
     s2 = constructorSolution();
     p = constructorProblem();
 
-    OREnvironment.add_solution!(s1, 7.0, 1);
-    OREnvironment.add_solution!(s1, 7.4, 2);
-    OREnvironment.add_solution!(s1, 3.3, 3);
+    OREnvironment.add_solution!(s1, 1, 7.0);
+    OREnvironment.add_solution!(s1, 2, 7.4);
+    OREnvironment.add_solution!(s1, 3, 3.3);
     OREnvironment.set_constraint_consumption!(s1, 1, 26.66); 
     OREnvironment.set_constraint_consumption!(s1, 2, 36.96); 
     OREnvironment.set_objfunction!(s1, 31.7);
 
-    OREnvironment.add_solution!(s2, 73.4, 4);
-    OREnvironment.add_solution!(s2, 8.0, 5);
+    OREnvironment.add_solution!(s2, 4, 73.4);
+    OREnvironment.add_solution!(s2, 5, 8.0);
     OREnvironment.set_constraint_consumption!(s2, 1, 227.54); 
     OREnvironment.set_constraint_consumption!(s2, 2, 32.8); 
     OREnvironment.set_objfunction!(s2, 333.6);

@@ -328,21 +328,21 @@ end
     s = constructorSolution();
     p = constructorProblem();
 
-    OREnvironment.add_solution!(s, 2.0, 1);
+    OREnvironment.add_solution!(s, 1, 2.0);
     lhs = OREnvironment.compute_lhs(p.constraints[1], s);
     @test lhs == 4.6;
     lhs = OREnvironment.compute_lhs(p.constraints[2], s);
     @test lhs == 6.6;
     @test OREnvironment.is_feasible(s, p.constraints) == true;
 
-    OREnvironment.add_solution!(s, 4.5, 2);
+    OREnvironment.add_solution!(s, 2, 4.5);
     lhs = OREnvironment.compute_lhs(p.constraints[1], s);
     @test lhs == 4.6;
     lhs = OREnvironment.compute_lhs(p.constraints[2], s);
     @test lhs == 6.6;
     @test OREnvironment.is_feasible(s, p.constraints) == true;
 
-    OREnvironment.add_solution!(s, 1.5, 3);
+    OREnvironment.add_solution!(s, 3, 1.5);
     lhs = OREnvironment.compute_lhs(p.constraints[1], s);
     @test lhs == 9.4;
     lhs = OREnvironment.compute_lhs(p.constraints[2], s);
