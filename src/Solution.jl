@@ -6,6 +6,19 @@ mutable struct FixLengthArray{T<:Real} <: Solution
     status::Status;
 end
 
+"""
+    constructSolution(solutionType, args)
+
+Construct a container of type `solutionType` for the solution. Note that the arguments of the constructor are provided in `args`.
+
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+```
+"""
 function constructSolution(solutionType::Symbol, args)
     return constructSolution(Val(solutionType), args...);
 end
@@ -21,15 +34,172 @@ end
 ############################
 # General methods for Solution
 ############################
-is_feasible(s::Solution)::Bool           = is_feasible(s.status);
-set_feasible!(s::Solution, value::Bool)  = set_feasible!(s.status, value);
-is_optimal(s::Solution)::Bool            = is_optimal(s.status); 
-set_optimal!(s::Solution, value::Bool)   = set_optimal!(s.status, value); 
-get_objfunction(s::Solution)::Float64    = get_objfunction(s.status);
+"""
+    is_feasible(s)
+
+Returns the feasibility value of solution `s`.
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.is_feasible(s)
+false
+```
+"""
+is_feasible(s::Solution)::Bool = is_feasible(s.status);
+
+"""
+    set_feasible!(s, val)
+
+Sets the feasibility value of solution `s` to val.
+
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.set_feasible!(s, true)
+julia> OREnvironment.is_feasible(s)
+true
+```
+"""
+set_feasible!(s::Solution, value::Bool) = set_feasible!(s.status, value);
+
+"""
+    is_optimal(s)
+
+Returns the optimality value of solution `s`.
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.is_optimal(s)
+false
+```
+"""
+is_optimal(s::Solution)::Bool = is_optimal(s.status); 
+
+"""
+    set_optimal!(s, val)
+
+Sets the optimality value of solution `s` to val.
+
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.set_optimal!(s, true)
+julia> OREnvironment.is_optimal(s)
+true
+```
+"""
+set_optimal!(s::Solution, value::Bool) = set_optimal!(s.status, value); 
+
+"""
+    get_objfunction(s)
+
+Returns the objective function value of solution `s`.
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.get_objfunction(s)
+0.0
+```
+"""
+get_objfunction(s::Solution)::Float64 = get_objfunction(s.status);
+
+"""
+    set_objfunction!(s, val)
+
+Sets the objective function value of solution `s` to val.
+
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.set_objfunction!(s, 15.66)
+julia> OREnvironment.get_objfunction(s)
+15.66
+```
+"""
 set_objfunction!(s::Solution, value::Float64) = set_objfunction!(s.status, value);
+
+"""
+    get_constraint_consumption(s, idx)
+
+Returns the consumption of constraint `idx` in solution `s`. 
+
+**Note:** It returns the stored value, This method does not compute the consumption based on the current solution.
+
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.get_constraint_consumption(s, 2)
+0.0
+```
+"""
 get_constraint_consumption(s::Solution, idxConstraint::Int)::Float64 = get_constraint_consumption(s.status, idxConstraint); 
+
+"""
+    set_constraint_consumption!(s, idx, val)
+
+Sets the consumption of constraint `idx` in solution `s` to value `val`. 
+
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.set_constraint_consumption(s, 2, 3.4);
+julia> OREnvironment.get_constraint_consumption(s, 2)
+3.4
+```
+"""
 set_constraint_consumption!(s::Solution, idxConstraint::Int, value::Float64) = set_constraint_consumption!(s.status, idxConstraint, value); 
 
+"""
+    is_first_solution_better(s1, s2, objSense, feasibilityRequired)
+
+Returns if solution `s1` is better than solution `s2`. For the comparaison is required the objective function sense and if feasibility is a must in the comparaison.
+
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s1 = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.set_feasible!(s1, true);
+julia> OREnvironment.set_objfunction!(s1, 19.8);
+julia> s2 = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.set_feasible!(s2, false);
+julia> OREnvironment.set_objfunction!(s2, 100.0);
+julia> OREnvironment.is_first_solution_better(s1, s2, :max, true)
+julia> true
+julia> OREnvironment.is_first_solution_better(s1, s2, :max, false)
+julia> false
+julia> OREnvironment.set_feasible!(s2, true);
+julia> OREnvironment.is_first_solution_better(s1, s2, :max, true)
+julia> false
+julia> OREnvironment.is_first_solution_better(s1, s2, :min, true)
+julia> true
+``` 
+"""
 function is_first_solution_better(s1::Solution, 
                                   s2::Solution, 
                                   objSense::Symbol, 
@@ -41,14 +211,96 @@ end
 # Specific methods for Solution
 ############################
 
-get_solution(s::FixLengthArray{T}, variable::Int)            where {T<:Real} = @inbounds s.sol[variable];
-add_solution!(s::FixLengthArray{T}, value::T, variable::Int) where {T<:Real} = @inbounds s.sol[variable] = value;
-remove_solution!(s::FixLengthArray{T}, variable::Int)        where {T<:Real} = @inbounds s.sol[variable] = zero(T);
+"""
+    get_solution(s, var)
+
+Returns the solution value of variable/index `var`.
+
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.get_solution(s, 2)
+0
+```
+"""
+get_solution(s::FixLengthArray{T}, variable::Int) where {T<:Real} = @inbounds s.sol[variable];
+
+"""
+    add_solution!(s, var, val)
+
+Sets the solution value of variable/index `var` to `val`
+
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.add_solution!(s, 2, 4)
+julia> OREnvironment.get_solution(s, 2)
+4
+```
+"""
+add_solution!(s::FixLengthArray{T}, variable::Int, value::T) where {T<:Real} = @inbounds s.sol[variable] = value;
+
+"""
+    remove_solution!(s, var)
+
+Sets the solution value of variable/index `var` to 0.
+
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.add_solution!(s, 2, 4)
+julia> OREnvironment.get_solution(s, 2)
+4
+julia> OREnvironment.remove_solution!(s, 2)
+julia> OREnvironment.get_solution(s, 2)
+0
+```
+"""
+remove_solution!(s::FixLengthArray{T}, variable::Int) where {T<:Real} = @inbounds s.sol[variable] = zero(T);
+
+"""
+    remove_all_solution!(s)
+
+Sets the solution value of all the variables to 0.
+
+# Example
+```jldoctest
+julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixLengthArray, args)
+julia> OREnvironment.add_solution!(s, 1, 12)
+julia> OREnvironment.get_solution(s, 1)
+12
+julia> OREnvironment.add_solution!(s, 2, 4)
+julia> OREnvironment.get_solution(s, 2)
+4
+julia> OREnvironment.remove_all_solution!(s)
+julia> OREnvironment.get_solution(s, 1)
+0
+julia> OREnvironment.get_solution(s, 2)
+0
+```
+"""
 function remove_all_solutions!(s::FixLengthArray{T}) where {T<:Real}
     s.sol .= zero(T);
     return nothing;
 end
 
+"""
+    copy_first_solution_to_second(s1, s2)
+
+Copies all the information of the first solution (`s1`) into the second one (`s2`).
+"""
 @inline function copy_first_solution_to_second!(s1::FixLengthArray{T}, 
                                                 s2::FixLengthArray{T}) where {T<:Real}
     update_status!(s2.status, s1.status); 
