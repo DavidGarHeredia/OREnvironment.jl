@@ -300,6 +300,8 @@ end
     copy_first_solution_to_second(s1, s2)
 
 Copies all the information of the first solution (`s1`) into the second one (`s2`).
+
+See file *./test/Solution.jl* for an example.
 """
 @inline function copy_first_solution_to_second!(s1::FixLengthArray{T}, 
                                                 s2::FixLengthArray{T}) where {T<:Real}
@@ -311,6 +313,13 @@ end
 ############################
 # General methods for Solution when dealing with constraints
 ############################
+"""
+    update_constraint_consumption!(s, vconstr)
+
+Given solution `s` and the constraints of the problem `vconstr`, this method computes the left-hand side of the constraints (constraint consumption) and saves the values in memory.
+
+See file *./test/Solution.jl* for an example.
+"""
 function update_constraint_consumption!(s::Solution, 
                                         constraints::Array{<:Constraint,1})
     local N::Int = length(constraints);
@@ -321,6 +330,13 @@ function update_constraint_consumption!(s::Solution,
     return nothing;
 end
 
+"""
+    update_constraint_consumption_and_feasibility!(s, vconstr)
+
+Given solution `s` and the constraints of the problem `vconstr`, this method computes the left-hand side of the constraints (constraint consumption), saves the values in memory and update the feasibility status according to the results obtained.
+
+See file *./test/Solution.jl* for an example.
+"""
 function update_constraint_consumption_and_feasibility!(s::Solution, 
                                                         constraints::Array{<:Constraint,1})
     local feasible::Bool = true;
@@ -335,6 +351,15 @@ function update_constraint_consumption_and_feasibility!(s::Solution,
     return nothing;
 end
 
+"""
+    update_constraint_consumption!(s, vconstr, var, Δ, idxConstraints)
+
+Updates constraint consuption of solution `s` for the constraints of the problem (`vconstr`) when variable `var` has changed its value by `Δ`. `idxConstraints` is the vector of constraint indexes where variable `var` appears.
+
+Note that this method is more efficient than updating the constraint consumption by recomputing again the left-hand sides of the constraints: Most of the constraints does not change when modifying a variable, and those which change, only do it in one variable! Thus, only multiple changes have occurred in the vector ofsolutions since the last update, this incremental method should be preferred.
+
+See file *./test/Solution.jl* for an example.
+"""
 function update_constraint_consumption!(s::Solution, 
                                         constraints::Array{<:Constraint,1}, 
                                         variable::Int, 
@@ -348,6 +373,15 @@ function update_constraint_consumption!(s::Solution,
     return nothing;
 end
 
+"""
+    update_constraint_consumption!(s, vconstr, var, Δ, idxConstraints)
+
+Updates constraint consuption of solution `s`, and its feasibility status, for the constraints of the problem (`vconstr`) when variable `var` has changed its value by `Δ`. `idxConstraints` is the vector of constraint indexes where variable `var` appears.
+
+Note that this method is more efficient than updating the constraint consumption by recomputing again the left-hand sides of the constraints: Most of the constraints does not change when modifying a variable, and those which change, only do it in one variable! Thus, only multiple changes have occurred in the vector ofsolutions since the last update, this incremental method should be preferred.
+
+See file *./test/Solution.jl* for an example.
+"""
 function update_constraint_consumption_and_feasibility!(s::Solution, 
                                                         constraints::Array{<:Constraint,1}, 
                                                         variable::Int, 
@@ -380,9 +414,16 @@ end
 ############################
 # Specific methods for Solution
 ############################
+"""
+    add_solution_and_update_status!(s, var, val, p)
+    
+Sets the solution value of variable/index `var` to `val` and updates the status of the solution (including the consumption of the constraints in problem `p`).
+
+See file *./test/Solution.jl* for an example.
+"""
 function add_solution_and_update_status!(s::FixLengthArray{T}, 
-                                         value::T, 
                                          variable::Int, 
+                                         value::T, 
                                          p::Problem) where {T<:Real}
     @inbounds local Δ::T  = value - s.sol[variable];
     local newObj::Float64 = get_objfunction(s) + Δ*get_cost(p, variable);
@@ -393,13 +434,27 @@ function add_solution_and_update_status!(s::FixLengthArray{T},
     return nothing;
 end
 
+"""
+    remove_solution_and_update_status!(s, var, p)
+    
+Sets the solution value of variable/index `var` to 0 and updates the status of the solution (including the consumption of the constraints in problem `p`).
+
+See file *./test/Solution.jl* for an example.
+"""
 function remove_solution_and_update_status!(s::FixLengthArray{T}, 
                                             variable::Int, 
                                             p::Problem) where {T<:Real}
-    add_solution_and_update_status!(s, zero(T), variable, p);
+    add_solution_and_update_status!(s, variable, zero(T), p);
     return nothing;
 end
 
+"""
+    remove_all_solution_and_update_status!(s, p)
+    
+Sets the solution value of all the variables to 0 and updates the status of the solution (including the consumption of the constraints in problem `p`).
+
+See file *./test/Solution.jl* for an example.
+"""
 function remove_all_solutions_and_update_status!(s::FixLengthArray{T},
                                                  p::Problem) where {T<:Real}
     s.sol .= zero(T);
