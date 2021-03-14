@@ -11,7 +11,7 @@ end
 """
     constructStatus(nConstraints)
 
-Construct a `DefaultStatus`. It is necessary to specify the number of constraints of the problem.
+Constructs a `DefaultStatus`. It is necessary to specify the number of constraints of the problem.
 
 # Example
 ```jldoctest

@@ -9,7 +9,7 @@ end
 """
     constructSolution(solutionType, args)
 
-Construct a container of type `solutionType` for the solution. Note that the arguments of the constructor are provided in `args`.
+Constructs a container of type `solutionType` for the solution. Note that the arguments of the constructor are provided in `args`.
 
 # Example
 ```jldoctest
@@ -53,7 +53,7 @@ is_feasible(s::Solution)::Bool = is_feasible(s.status);
 """
     set_feasible!(s, val)
 
-Sets the feasibility value of solution `s` to val.
+Sets the feasibility value of solution `s` to `val`.
 
 # Example
 ```jldoctest
@@ -87,7 +87,7 @@ is_optimal(s::Solution)::Bool = is_optimal(s.status);
 """
     set_optimal!(s, val)
 
-Sets the optimality value of solution `s` to val.
+Sets the optimality value of solution `s` to `val`.
 
 # Example
 ```jldoctest
@@ -121,7 +121,7 @@ get_objfunction(s::Solution)::Float64 = get_objfunction(s.status);
 """
     set_objfunction!(s, val)
 
-Sets the objective function value of solution `s` to val.
+Sets the objective function value of solution `s` to `val`.
 
 # Example
 ```jldoctest
@@ -139,7 +139,7 @@ set_objfunction!(s::Solution, value::Float64) = set_objfunction!(s.status, value
 """
     get_constraint_consumption(s, idx)
 
-Returns the consumption of constraint `idx` in solution `s`. 
+Returns the consumption of the `idx` constraint in solution `s`. 
 
 **Note:** It returns the stored value, This method does not compute the consumption based on the current solution.
 
@@ -158,7 +158,7 @@ get_constraint_consumption(s::Solution, idxConstraint::Int)::Float64 = get_const
 """
     set_constraint_consumption!(s, idx, val)
 
-Sets the consumption of constraint `idx` in solution `s` to value `val`. 
+Sets the consumption of the `idx` constraint in solution `s` to value `val`. 
 
 # Example
 ```jldoctest
@@ -356,7 +356,7 @@ end
 
 Updates constraint consuption of solution `s` for the constraints of the problem (`vconstr`) when variable `var` has changed its value by `Δ`. `idxConstraints` is the vector of constraint indexes where variable `var` appears.
 
-Note that this method is more efficient than updating the constraint consumption by recomputing again the left-hand sides of the constraints: Most of the constraints does not change when modifying a variable, and those which change, only do it in one variable! Thus, only multiple changes have occurred in the vector ofsolutions since the last update, this incremental method should be preferred.
+Note that this method is more efficient than updating the constraint consumption by recomputing again all the left-hand sides of the constraints: Most of the constraints does not change when modifying a variable, and those which change, only do it in one variable! Thus, if only a few changes have occurred in the vector of solutions since the last update, this incremental method should be preferred.
 
 See file *./test/Solution.jl* for an example.
 """
@@ -378,7 +378,7 @@ end
 
 Updates constraint consuption of solution `s`, and its feasibility status, for the constraints of the problem (`vconstr`) when variable `var` has changed its value by `Δ`. `idxConstraints` is the vector of constraint indexes where variable `var` appears.
 
-Note that this method is more efficient than updating the constraint consumption by recomputing again the left-hand sides of the constraints: Most of the constraints does not change when modifying a variable, and those which change, only do it in one variable! Thus, only multiple changes have occurred in the vector ofsolutions since the last update, this incremental method should be preferred.
+Note that this method is more efficient than updating the constraint consumption by recomputing again all the left-hand sides of the constraints: Most of the constraints does not change when modifying a variable, and those which change, only do it in one variable! Thus, if only a few changes have occurred in the vector of solutions since the last update, this incremental method should be preferred.
 
 See file *./test/Solution.jl* for an example.
 """
