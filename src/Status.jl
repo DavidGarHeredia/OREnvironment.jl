@@ -115,7 +115,7 @@ set_objfunction!(s::Status, value::Float64) = s.objfunction = value;
 """
     get_constraint_consumption(s, idx)
 
-Returns the consumption of constraint `idx` in status `s`.
+Returns the consumption of the `idx`-th constraint in status `s`.
 
 # Example
 ```jldoctest
@@ -129,7 +129,7 @@ get_constraint_consumption(s::Status, idxConstraint::Int)::Float64 = @inbounds s
 """
     set_constraint_consumption!(s, idx, val)
 
-Sets the consumption of constraint `idx` to `val` in status `s`.
+Sets the consumption of the `idx`-th constraint to `val` in status `s`.
 
 # Example
 ```jldoctest
