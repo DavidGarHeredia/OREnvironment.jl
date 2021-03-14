@@ -29,7 +29,7 @@ end
 function constructorSolution(numConstraints=2)
     status = OREnvironment.constructStatus(numConstraints);
     Tvariables = Float64; sizeArray = 6;
-    sol  = OREnvironment.constructSolution(:FixLengthArray, (Tvariables, sizeArray, status));
+    sol  = OREnvironment.constructSolution(:FixedLengthArray, (Tvariables, sizeArray, status));
     return sol;
 end
 
@@ -54,7 +54,7 @@ end
 # TESTS 
 #######################
 @testset "Building Solution" begin
-    @testset "FixLengthArray" begin
+    @testset "FixedLengthArray" begin
         numConstraints = 5; 
         sol = constructorSolution(numConstraints);
 
@@ -95,7 +95,7 @@ end
 @testset "Adding and removing solutions" begin
     value = 12.3;
     valueDummy = 0.0;
-    @testset "FixLengthArray" begin
+    @testset "FixedLengthArray" begin
         sol  = constructorSolution();
         OREnvironment.add_solution!(sol, 3, value);
         OREnvironment.add_solution!(sol, 1, 2value);
@@ -120,8 +120,8 @@ end
     status1 = OREnvironment.constructStatus(numConstraints);
     status2 = OREnvironment.constructStatus(numConstraints);
     Tvariables = Int; sizeArray = 6;
-    s1 = OREnvironment.constructSolution(:FixLengthArray, (Tvariables, sizeArray, status1));
-    s2 = OREnvironment.constructSolution(:FixLengthArray, (Tvariables, sizeArray, status2));
+    s1 = OREnvironment.constructSolution(:FixedLengthArray, (Tvariables, sizeArray, status1));
+    s2 = OREnvironment.constructSolution(:FixedLengthArray, (Tvariables, sizeArray, status2));
     OREnvironment.set_objfunction!(s1, 34.0);
     OREnvironment.set_objfunction!(s2, 3.0);
 

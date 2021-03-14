@@ -30,7 +30,7 @@ end
 function constructorSolution(numConstraints=2)
     status = OREnvironment.constructStatus(numConstraints);
     Tvariables = Float64; sizeArray = 6;
-    sol  = OREnvironment.constructSolution(:FixLengthArray, (Tvariables, sizeArray, status));
+    sol  = OREnvironment.constructSolution(:FixedLengthArray, (Tvariables, sizeArray, status));
     return sol;
 end
 
