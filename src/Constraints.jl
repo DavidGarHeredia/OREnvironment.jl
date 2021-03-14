@@ -9,7 +9,7 @@ end
 """
     constructConstraint(rhs, t, vars, coefs)
 
-Construct a `DefaultConstraint` with right-hand side `rhs`, type `t` and left-hand side given by the variables in `vars` and coefficients in `coefs`.
+Constructs a `DefaultConstraint` with right-hand side `rhs`, type `t` and left-hand side given by the variables in `vars` and coefficients in `coefs`.
 
 **Note:** Both, the rhs and coefs must be of type Float64.
 
@@ -136,9 +136,11 @@ function get_coefficient(c::Constraint, variable::Int)::Float64
 end
 
 """
-   set_coefficient!(c, var, coef)
+    set_coefficient!(c, var, coef)
 
-Sets in constraint `c` coefficient `coef` for variable `var`. If the variable was not in the constraint, it is added to it.
+Sets in constraint `c` coefficient `coef` for variable `var`. 
+
+**Note:** If the variable was not in the constraint, it is added to it. Note that the vector that relates variables and constraints in the `Problem` struct is not updated when calling this adding a variable using this method!
 
 # Example
 ```jldoctest
@@ -158,11 +160,11 @@ function set_coefficient!(c::Constraint, variable::Int, value::Float64)
 end
 
 """
-   get_relationship_variables_constraints(vconstraints, nVariables)
+    get_relationship_variables_constraints(vconstraints, nVariables)
 
 Given an Array of constraints `vconstraints` and the number of variables in the problem, returns an Array where the i-th element is an Array with the indexes of the constraints where the i-th variable appears.
 
-This function is employed in the `Problem` struct so it is possible to quickly identfy what constraints in the problem are affected when a variable changes its value. This permits faster updates of the left-hand side value associated to a given solution.
+This function is employed in the `Problem` struct so it is possible to quickly identify what constraints in the problem are affected when a variable changes its value. This permits faster updates of the left-hand side value associated to a given solution.
 
 # Example
 ```jldoctest
@@ -177,7 +179,7 @@ julia> OREnvironment.get_relationship_variables_constraints(constraints, nVariab
  [1, 2]
  [1]
  [2]
- # So variable 1 appears in constraint 1, variable 2 in constraint 2 
+ # So variable 1 appears in constraint 1, variable 2 in constraint 2, 
  # variable 3 in constraints 1 and 2...
 ```
 """
@@ -321,7 +323,7 @@ end
 # General methods for Constraints when dealing with Solutions
 ############################
 """
-  is_increment_feasible(s, vconstraints, var, Δ, idxConstraints)
+    is_increment_feasible(s, vconstraints, var, Δ, idxConstraints)
 
 Given solution `s`, the constraints of the problem `vconstraints`, a change `Δ` (respect to the current solution `s`) in variable `var` and an Array with the constraint indexes where variable `var` appears, returns if the change is feasible or not.
 
