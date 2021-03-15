@@ -2,6 +2,7 @@
 
 [![Travis Build
 Status](https://travis-ci.com/DavidGarHeredia/OREnvironment.jl.svg?branch=main)](https://travis-ci.com/DavidGarHeredia/OREnvironment.jl)
+[![codecov](https://codecov.io/gh/DavidGarHeredia/OREnvironment.jl/branch/main/graph/badge.svg?token=ZR32PAPJKP)](https://codecov.io/gh/DavidGarHeredia/OREnvironment.jl)
 
 OREnvironment is a package to handle optimization problems in Julia. For the moment (no plan to change that in the short term), the package is oriented to deal with Mix Integer **Linear** Programming (MILP) problems.
 
