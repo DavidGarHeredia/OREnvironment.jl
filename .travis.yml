@@ -17,7 +17,7 @@ notifications:
 codecov: true
 
 script:
-  - julia --project --check-bounds=yes -e 'import Pkg; Pkg.build(); Pkg.test("OREnvironment"; coverage=true)'
+  - julia --project --check-bounds=yes -e 'import Pkg; Pkg.build(); Pkg.test("OREnvironment", coverage=true)'
 
 # After successful build submit coverage report and deploy updated documentation
 # But limit deployment to the linux worker so this is done only once.
