@@ -275,6 +275,22 @@ is_feasible(rhs::Float64, lhs::Float64, ::Val{:equal})::Bool       = lhs ≈ rhs
 is_feasible(rhs::Float64, lhs::Float64, ::Val{:greaterOrEq})::Bool = lhs >= rhs;
 
 """
+    is_active(c, lhs)
+
+Given a constraint `c`, returns if the left-hand side consumption `lhs` makes the constraint active or not.
+
+# Example
+```jldoctest
+julia> c = OREnvironment.constructConstraint(12.0, :lessOrEq, [1, 3, 4], [2.0, 5.0, 3.0]);
+julia> OREnvironment.is_active(c, 6.0)
+false
+julia> OREnvironment.is_active(c, 12.0)
+true
+```
+"""
+is_active(c::Constraint, lhs::Float64)::Bool = lhs ≈ get_rhs(c);
+
+"""
     compute_lhs_after_increment(var, Δ, currentLHS, c)
 
 For a change of `Δ` in the value of variable `var`, returns the new left-hand side consumption in constraint `c` given the current consumption `currentLHS`.
@@ -411,4 +427,33 @@ function is_feasible(s::Solution,
         end
     end
     return true;
+end
+
+"""
+    is_active(c, s)
+
+Returns true if constraint `c` is active under the consumption incurred by solution `s`. 
+
+**Note:** This function computes the left-hand side of the constraint using `s`, but it DOES NOT update the current consumption of solution `s`.
+
+**Tip:** If the lhs does not have to be recomputed, then check function [`is_active_under_current_consumption`](@ref) for a better performance. Actually, that function should be preferred over this one.
+
+See examples in the file with the tests: *./test/Constraints.jl*.
+"""
+is_active(c::Constraint, s::Solution)::Bool = is_active(c, compute_lhs(c, s));
+
+"""
+    is_active_under_current_consumption(c, idx, s)
+
+Returns true if the `idx`-th constraint (`c`) is active under the consumption incurred by solution `s`. 
+
+**Note:** This function DOES NOT compute the current consumption of solution `s`. It just checks the last value saved in memory and compare it with the right-hand side values of the constraint. That is why `idx` must be provided.
+
+If the lhs must be recomputed, use function [`is_active(c::OREnvironment.Constraint, s::OREnvironment.Solution)`](@ref) instead.
+
+See examples in the file with the tests: *./test/Constraints.jl*.
+"""
+function is_active_under_current_consumption(c::Constraint, idxConstraint::Int, s::Solution)::Bool 
+  local lhs::Float64 = get_constraint_consumption(s, idxConstraint);
+  return is_active(c, lhs);
 end

@@ -92,6 +92,33 @@ end
     end
 end
 
+@testset "is_active" begin
+    variables = [1, 10, 23, 56];
+    coefficients = [2.3, 3.2, 3.1, 12.34];
+    constraint = OREnvironment.constructConstraint(15.0, :lessOrEq, variables, coefficients); 
+
+    @testset " <= constraints" begin
+       lhs = 13.2;
+       @test OREnvironment.is_active(constraint, lhs) == false;
+       lhs = 15.0;
+       @test OREnvironment.is_active(constraint, lhs) == true;
+    end
+    @testset " => constraints" begin
+       lhs = 13.2;
+       OREnvironment.set_type!(constraint, :greaterOrEq);
+       @test OREnvironment.is_active(constraint, lhs) == false;
+       lhs = 15.0;
+       @test OREnvironment.is_active(constraint, lhs) == true;
+    end
+    @testset " == constraints" begin
+       lhs = 13.2;
+       OREnvironment.set_type!(constraint, :equal);
+       @test OREnvironment.is_active(constraint, lhs) == false;
+       lhs = 15.0;
+       @test OREnvironment.is_active(constraint, lhs) == true;
+    end
+end
+
 @testset "add_constraint_index_to_variables" begin
     p = constructorProblem();
     variablesConstraints = [Int[] for i in 1:6];
@@ -355,4 +382,33 @@ end
     lhs = OREnvironment.compute_lhs(p.constraints[2], s);
     @test lhs == 0.0;
     @test OREnvironment.is_feasible(s, p.constraints) == true;
+end
+
+@testset "compute_lhs and is_active" begin
+    s = constructorSolution();
+    p = constructorProblem();
+
+    OREnvironment.add_solution!(s, 1, 2.0);
+    @test OREnvironment.is_active(p.constraints[1], s) == false; # lhs = 4.6
+    @test OREnvironment.is_active(p.constraints[2], s) == false; # lhs = 6.6
+
+
+    OREnvironment.add_solution!(s, 3, 1.5);
+    @test OREnvironment.is_active(p.constraints[1], s) == false; # lhs = 9.4
+    @test OREnvironment.is_active(p.constraints[2], s) == false; # lhs = 12.9
+
+    OREnvironment.add_solution!(s, 4, 5.6/3.1);
+    @test OREnvironment.is_active(p.constraints[1], s) == true; # lhs = 15.0
+    @test OREnvironment.is_active(p.constraints[2], s) == false; # lhs = 12.9
+end
+
+
+@testset "is_active_under_current_consumption" begin
+    s = constructorSolution();
+    p = constructorProblem();
+
+    OREnvironment.set_constraint_consumption!(s, 1, 12.3);
+    OREnvironment.set_constraint_consumption!(s, 2, 9.0);
+    @test OREnvironment.is_active_under_current_consumption(p.constraints[1], 1, s) == false; 
+    @test OREnvironment.is_active_under_current_consumption(p.constraints[2], 2, s) == true; 
 end

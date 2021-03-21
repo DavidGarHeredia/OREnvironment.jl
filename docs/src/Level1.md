@@ -132,6 +132,9 @@ OREnvironment.read_constraints(file::String)
 OREnvironment.is_feasible(c::OREnvironment.Constraint, lhs::Float64)
 ```
 ```@docs
+OREnvironment.is_active(c::OREnvironment.Constraint, lhs::Float64)
+```
+```@docs
 OREnvironment.compute_lhs_after_increment(variable::Int, variable::Real, currentLHS::Float64, c::OREnvironment.Constraint)
 ```
 ```@docs
@@ -151,4 +154,10 @@ OREnvironment.compute_lhs(c::OREnvironment.Constraint, s::OREnvironment.Solution
 ```
 ```@docs
 OREnvironment.is_feasible(s::OREnvironment.Solution, constraints::Array{<:OREnvironment.Constraint,1})
+```
+```@docs
+OREnvironment.is_active(c::OREnvironment.Constraint, s::OREnvironment.Solution)
+```
+```@docs
+OREnvironment.is_active_under_current_consumption(c::OREnvironment.Constraint, idxConstraint::Int, s::OREnvironment.Solution)
 ```
