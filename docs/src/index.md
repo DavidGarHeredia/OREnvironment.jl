@@ -8,6 +8,11 @@ The package basically handles constraints and solutions under a common framework
 
 The structure of the documentation is as follows. First, it is exposed how to handle constraints. Then, the problem environment is presented. Finally, the frameworks to handle solution status and solutions are discussed.
 
+To install it:
+
+```julia
+pkg> add https://github.com/DavidGarHeredia/OREnvironment.jl.git
+````
 
 !!! warning
 
