@@ -56,7 +56,7 @@ end
   data_rhs = [12.3, 9.0, 33.0];
   data_symbol = [:lessOrEq, :equal, :greaterOrEq];
   # simulating the reading of constraints
-  # NOTE: check function read_constraints in ./test/Constraints.jl for actually
+  # check function read_constraints in ./test/Constraints.jl for actually
   # reading from a file!!!
   constraints = Array{OREnvironment.Constraint, 1}();
   for i in 1:3

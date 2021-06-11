@@ -309,7 +309,7 @@ end
 
     @testset "feasible solution" begin
         sol.sol[1] = 1.0;
-        sol.sol[2] = 10.0; # note that this doesn't appear in the constraints
+        sol.sol[2] = 10.0; # check that this doesn't appear in the constraints
         sol.sol[3] = 1.0;
         OREnvironment.update_constraint_consumption!(sol, p.constraints);
         @test OREnvironment.get_constraint_consumption(sol, 1) == 5.5;
@@ -338,7 +338,7 @@ end
 
     @testset "feasible solution" begin
         sol.sol[1] = 1.0;
-        sol.sol[2] = 10.0; # note that this doesn't appear in the constraints
+        sol.sol[2] = 10.0; # check that this doesn't appear in the constraints
         sol.sol[3] = 1.0;
         OREnvironment.update_constraint_consumption_and_feasibility!(sol, p.constraints);
         @test OREnvironment.is_feasible(sol) == true;
