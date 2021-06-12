@@ -124,7 +124,9 @@ julia> OREnvironment.get_constraint_consumption(s, 1)
 0.0
 ``` 
 """
-get_constraint_consumption(s::Status, idxConstraint::Int)::Float64 = @inbounds s.constraintLhsConsumption[idxConstraint];
+@inline function get_constraint_consumption(s::Status, idxConstraint::Int)::Float64 
+    @inbounds s.constraintLhsConsumption[idxConstraint];
+end
 
 """
     set_constraint_consumption!(s, idx, val)
@@ -139,7 +141,9 @@ julia> OREnvironment.get_constraint_consumption(s, 2)
 3.4
 ``` 
 """
-set_constraint_consumption!(s::Status, idxConstraint::Int, value::Float64) = @inbounds s.constraintLhsConsumption[idxConstraint] = value;
+@inline function set_constraint_consumption!(s::Status, idxConstraint::Int, value::Float64) 
+    @inbounds s.constraintLhsConsumption[idxConstraint] = value;
+end
 
 """
     worst_value(objSense)
@@ -197,8 +201,13 @@ function is_first_status_better(s1::Status,
     return is_first_obj_function_better(s1, s2, Val(objSense));
 end
 
-is_first_obj_function_better(s1::Status, s2::Status, ::Val{:max})::Bool = get_objfunction(s1) > get_objfunction(s2);
-is_first_obj_function_better(s1::Status, s2::Status, ::Val{:min})::Bool = get_objfunction(s1) < get_objfunction(s2);
+@inline function is_first_obj_function_better(s1::Status, s2::Status, ::Val{:max})::Bool 
+    get_objfunction(s1) > get_objfunction(s2);
+end
+
+@inline function is_first_obj_function_better(s1::Status, s2::Status, ::Val{:min})::Bool 
+    get_objfunction(s1) < get_objfunction(s2);
+end
 
 
 ############################

@@ -153,7 +153,9 @@ julia> OREnvironment.get_constraint_consumption(s, 2)
 0.0
 ```
 """
-get_constraint_consumption(s::Solution, idxConstraint::Int)::Float64 = get_constraint_consumption(s.status, idxConstraint); 
+@inline function get_constraint_consumption(s::Solution, idxConstraint::Int)::Float64 
+    return get_constraint_consumption(s.status, idxConstraint); 
+end
 
 """
     set_constraint_consumption!(s, idx, val)
@@ -171,7 +173,9 @@ julia> OREnvironment.get_constraint_consumption(s, 2)
 3.4
 ```
 """
-set_constraint_consumption!(s::Solution, idxConstraint::Int, value::Float64) = set_constraint_consumption!(s.status, idxConstraint, value); 
+@inline function set_constraint_consumption!(s::Solution, idxConstraint::Int, value::Float64) 
+    set_constraint_consumption!(s.status, idxConstraint, value); 
+end
 
 """
     is_first_solution_better(s1, s2, objSense, feasibilityRequired)
@@ -226,7 +230,9 @@ julia> OREnvironment.get_solution(s, 2)
 0
 ```
 """
-get_solution(s::FixedLengthArray{T}, variable::Int) where {T<:Real} = @inbounds s.sol[variable];
+@inline function get_solution(s::FixedLengthArray{T}, variable::Int) where {T<:Real} 
+    return @inbounds s.sol[variable];
+end
 
 """
     add_solution!(s, var, val)
@@ -244,7 +250,9 @@ julia> OREnvironment.get_solution(s, 2)
 4
 ```
 """
-add_solution!(s::FixedLengthArray{T}, variable::Int, value::T) where {T<:Real} = @inbounds s.sol[variable] = value;
+@inline function add_solution!(s::FixedLengthArray{T}, variable::Int, value::T) where {T<:Real} 
+    @inbounds s.sol[variable] = value;
+end
 
 """
     remove_solution!(s, var)
@@ -265,7 +273,9 @@ julia> OREnvironment.get_solution(s, 2)
 0
 ```
 """
-remove_solution!(s::FixedLengthArray{T}, variable::Int) where {T<:Real} = @inbounds s.sol[variable] = zero(T);
+@inline function remove_solution!(s::FixedLengthArray{T}, variable::Int) where {T<:Real} 
+    @inbounds s.sol[variable] = zero(T);
+end
 
 """
     remove_all_solution!(s)
@@ -367,7 +377,8 @@ function update_constraint_consumption!(s::Solution,
                                         idxConstraints::Array{Int,1})
     @inbounds for i in idxConstraints
         local currentLHS::Float64 = get_constraint_consumption(s, i);
-        local lhs::Float64 = compute_lhs_after_increment(variable, Δvariable, currentLHS, constraints[i]);
+        local lhs::Float64 = compute_lhs_after_increment(variable, Δvariable, 
+                                                     currentLHS, constraints[i]);
         set_constraint_consumption!(s, i, lhs);
     end
     return nothing;
@@ -390,14 +401,14 @@ function update_constraint_consumption_and_feasibility!(s::Solution,
     local feasible::Bool = true;
     @inbounds for i in idxConstraints
         local currentLHS::Float64 = get_constraint_consumption(s, i);
-        local lhs::Float64 = compute_lhs_after_increment(variable, Δvariable, currentLHS, constraints[i]);
+        local lhs::Float64 = compute_lhs_after_increment(variable, Δvariable, 
+                                                    currentLHS, constraints[i]);
         set_constraint_consumption!(s, i, lhs);
         local isfeasible::Bool = is_feasible(constraints[i], lhs);
         if !isfeasible feasible = false; end
     end
 
-    local globalCheckRequired::Bool = should_global_feasibility_be_checked(is_feasible(s), feasible);
-    if globalCheckRequired
+    if should_global_feasibility_be_checked(is_feasible(s), feasible)
         feasible = is_current_consumption_feasible(s, constraints);
     end
     set_feasible!(s, feasible); 
@@ -428,8 +439,8 @@ function add_solution_and_update_status!(s::FixedLengthArray{T},
     @inbounds local Δ::T  = value - s.sol[variable];
     local newObj::Float64 = get_objfunction(s) + Δ*get_cost(p, variable);
     @inbounds s.sol[variable] = value;
-    update_constraint_consumption_and_feasibility!(s, get_constraints(p), variable, Δ, 
-                                                   get_constraints_of_variable(p, variable));
+    update_constraint_consumption_and_feasibility!(s, get_constraints(p), 
+                            variable, Δ, get_constraints_of_variable(p, variable));
     set_objfunction!(s, newObj);
     return nothing;
 end
