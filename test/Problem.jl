@@ -31,15 +31,24 @@ end
   @test OREnvironment.get_constraints(p) === constraints;
   for i in 1:length(cost)
     @test OREnvironment.get_cost(p, i) == cost[i];
+    @test OREnvironment.get_lb_variable(p, i) == 0.0
+    @test OREnvironment.get_ub_variable(p, i) == 5.0
+    @test OREnvironment.get_type_variable(p, i) == Int
   end
   for i in 1:length(variablesConstraints)
     @test OREnvironment.get_constraints_of_variable(p, i) == variablesConstraints[i];
   end
   for i in 1:length(cost)
     OREnvironment.set_cost!(p, i, 12.0*i); 
+    OREnvironment.set_lb_variable!(p, i, 1.0) 
+    OREnvironment.set_ub_variable!(p, i, 3.0) 
+    OREnvironment.set_type_variable!(p, i, Float64) 
   end
   for i in 1:length(cost)
     @test OREnvironment.get_cost(p, i) == 12.0*i;
+    @test OREnvironment.get_lb_variable(p, i) == 1.0
+    @test OREnvironment.get_ub_variable(p, i) == 3.0
+    @test OREnvironment.get_type_variable(p, i) == Float64
   end
   @test OREnvironment.get_obj_sense(p) == :max;
   OREnvironment.set_obj_sense!(p, :min);
