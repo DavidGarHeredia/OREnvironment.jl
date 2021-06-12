@@ -4,10 +4,10 @@ mutable struct VariableDomain
     type::DataType; # Int, Float64
 end
 get_lb(d::VariableDomain)::Float64 = d.lb;
-get_ub(d::VariableDomain)::Float64 = d.ub;
-get_type(d::VariableDomain)::DataType = d.type;
 set_lb!(d::VariableDomain, lb::Float64) = d.lb = lb;
+get_ub(d::VariableDomain)::Float64 = d.ub;
 set_ub!(d::VariableDomain, ub::Float64) = d.ub = ub;
+get_type(d::VariableDomain)::DataType = d.type;
 set_type!(d::VariableDomain, type::DataType) = d.type = type;
 
 mutable struct DefaultProblem <: Problem
@@ -43,6 +43,19 @@ function constructProblem(costs::Array{Float64,1},
                           domain::Array{VariableDomain,1}) 
   variablesConstraints = get_relationship_variables_constraints(constraints, length(costs));
   return DefaultProblem(costs, constraints, variablesConstraints, objSense, domain);
+end
+
+get_lb_variable(p::Problem, variable::Int)::Float64 = get_lb(p.variablesDomain[variable]);
+@inline function set_lb_variable!(p::Problem, variable::Int, lb::Float64) 
+    set_lb!(p.variablesDomain[variable], lb);
+end
+get_ub_variable(p::Problem, variable::Int)::Float64 = get_ub(p.variablesDomain[variable]);
+@inline function set_ub_variable!(p::Problem, variable::Int, ub::Float64) 
+    set_ub!(p.variablesDomain[variable], ub);
+end
+get_type_variable(p::Problem, variable::Int)::DataType = get_type(p.variablesDomain[variable]);
+@inline function set_type_varible!(p::Problem, variable::Int, type::DataType)
+    set_type!(p.variablesDomain[variable], type);
 end
 
 """
