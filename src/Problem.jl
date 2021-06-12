@@ -54,7 +54,7 @@ get_ub_variable(p::Problem, variable::Int)::Float64 = get_ub(p.variablesDomain[v
     set_ub!(p.variablesDomain[variable], ub);
 end
 get_type_variable(p::Problem, variable::Int)::DataType = get_type(p.variablesDomain[variable]);
-@inline function set_type_varible!(p::Problem, variable::Int, type::DataType)
+@inline function set_type_variable!(p::Problem, variable::Int, type::DataType)
     set_type!(p.variablesDomain[variable], type);
 end
 
