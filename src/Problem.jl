@@ -1,14 +1,11 @@
 mutable struct VariableDomain
     lb::Float64;
     ub::Float64;
-    type::DataType; # Int, Float64
 end
 get_lb(d::VariableDomain)::Float64 = d.lb;
 set_lb!(d::VariableDomain, lb::Float64) = d.lb = lb;
 get_ub(d::VariableDomain)::Float64 = d.ub;
 set_ub!(d::VariableDomain, ub::Float64) = d.ub = ub;
-get_type(d::VariableDomain)::DataType = d.type;
-set_type!(d::VariableDomain, type::DataType) = d.type = type;
 
 mutable struct DefaultProblem <: Problem
   costs::Array{Float64,1};
@@ -52,10 +49,6 @@ end
 get_ub_variable(p::Problem, variable::Int)::Float64 = get_ub(p.variablesDomain[variable]);
 @inline function set_ub_variable!(p::Problem, variable::Int, ub::Float64) 
     set_ub!(p.variablesDomain[variable], ub);
-end
-get_type_variable(p::Problem, variable::Int)::DataType = get_type(p.variablesDomain[variable]);
-@inline function set_type_variable!(p::Problem, variable::Int, type::DataType)
-    set_type!(p.variablesDomain[variable], type);
 end
 
 """
