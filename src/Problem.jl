@@ -1,15 +1,27 @@
+mutable struct VariableDomain
+    lb::Float64;
+    ub::Float64;
+    type::DataType; # Int, Float64
+end
+get_lb(d::VariableDomain)::Float64 = d.lb;
+get_ub(d::VariableDomain)::Float64 = d.ub;
+get_type(d::VariableDomain)::DataType = d.type;
+set_lb!(d::VariableDomain, lb::Float64) = d.lb = lb;
+set_ub!(d::VariableDomain, ub::Float64) = d.ub = ub;
+set_type!(d::VariableDomain, type::DataType) = d.type = type;
 
 mutable struct DefaultProblem <: Problem
   costs::Array{Float64,1};
   constraints::Array{<:Constraint,1};
   variablesConstraints::Array{Array{Int,1},1};
   objSense::Symbol;
+  variablesDomain::Array{VariableDomain,1};
 end
 
 """
-    constructProblem(c, vconstr, objSense)
+    constructProblem(c, vconstr, objSense, vdomains)
 
-Constructs a `DefaultProblem` struct by providing the vector of cost coefficients `c`, the vector of constraint of the problem `vconstr` and the objective sense,
+Constructs a `DefaultProblem` struct by providing the vector of cost coefficients `c`, the vector of constraint of the problem `vconstr`, the objective sense, and the vector of domains of the variables (this may be empty if you don't want to specify it).
 
 # Example
 ```jldoctest
@@ -21,14 +33,16 @@ julia> coefs2 = coefs1 .+ 1.0;
 julia> constraint1 = OREnvironment.constructConstraint(15.0, :lessOrEq, variables1, coefs1);
 julia> constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
 julia> constraints = [constraint1, constraint2];
-julia> OREnvironment.constructProblem(cost, constraints, :max)
+julia> emptyDomain = Array{VariableDomain,1}()
+julia> OREnvironment.constructProblem(cost, constraints, :max, emptyDomain)
 ```
 """
 function constructProblem(costs::Array{Float64,1},
                           constraints::Array{<:Constraint,1},
-                          objSense::Symbol) 
+                          objSense::Symbol,
+                          domain::Array{VariableDomain,1}) 
   variablesConstraints = get_relationship_variables_constraints(constraints, length(costs));
-  return DefaultProblem(costs, constraints, variablesConstraints, objSense);
+  return DefaultProblem(costs, constraints, variablesConstraints, objSense, domain);
 end
 
 """
