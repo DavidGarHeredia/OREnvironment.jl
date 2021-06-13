@@ -385,7 +385,7 @@ function update_constraint_consumption!(s::Solution,
 end
 
 """
-    update_constraint_consumption!(s, vconstr, var, Δ, idxConstraints)
+    update_constraint_consumption_and_feasibility!(s, vconstr, var, Δ, idxConstraints)
 
 Updates constraint consuption of solution `s`, and its feasibility status, for the constraints of the problem (`vconstr`) when variable `var` has changed its value by `Δ`. `idxConstraints` is the vector of constraint indexes where variable `var` appears.
 
