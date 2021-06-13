@@ -1,24 +1,14 @@
-mutable struct VariableDomain
-    lb::Float64;
-    ub::Float64;
-end
-get_lb(d::VariableDomain)::Float64 = d.lb;
-set_lb!(d::VariableDomain, lb::Float64) = d.lb = lb;
-get_ub(d::VariableDomain)::Float64 = d.ub;
-set_ub!(d::VariableDomain, ub::Float64) = d.ub = ub;
-
 mutable struct DefaultProblem <: Problem
   costs::Array{Float64,1};
   constraints::Array{<:Constraint,1};
   variablesConstraints::Array{Array{Int,1},1};
   objSense::Symbol;
-  variablesDomain::Array{VariableDomain,1};
 end
 
 """
-    constructProblem(c, vconstr, objSense, vdomains)
+    constructProblem(c, vconstr, objSense)
 
-Constructs a `DefaultProblem` struct by providing the vector of cost coefficients `c`, the vector of constraint of the problem `vconstr`, the objective sense, and the vector of domains of the variables (this may be empty if you don't want to specify it).
+Constructs a `DefaultProblem` struct by providing the vector of cost coefficients `c`, the vector of constraint of the problem `vconstr` and the objective sense.
 
 # Example
 ```jldoctest
@@ -30,25 +20,14 @@ julia> coefs2 = coefs1 .+ 1.0;
 julia> constraint1 = OREnvironment.constructConstraint(15.0, :lessOrEq, variables1, coefs1);
 julia> constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
 julia> constraints = [constraint1, constraint2];
-julia> emptyDomain = Array{VariableDomain,1}()
-julia> OREnvironment.constructProblem(cost, constraints, :max, emptyDomain)
+julia> OREnvironment.constructProblem(cost, constraints, :max)
 ```
 """
 function constructProblem(costs::Array{Float64,1},
                           constraints::Array{<:Constraint,1},
-                          objSense::Symbol,
-                          domain::Array{VariableDomain,1}) 
+                          objSense::Symbol) 
   variablesConstraints = get_relationship_variables_constraints(constraints, length(costs));
-  return DefaultProblem(costs, constraints, variablesConstraints, objSense, domain);
-end
-
-get_lb_variable(p::Problem, variable::Int)::Float64 = get_lb(p.variablesDomain[variable]);
-@inline function set_lb_variable!(p::Problem, variable::Int, lb::Float64) 
-    set_lb!(p.variablesDomain[variable], lb);
-end
-get_ub_variable(p::Problem, variable::Int)::Float64 = get_ub(p.variablesDomain[variable]);
-@inline function set_ub_variable!(p::Problem, variable::Int, ub::Float64) 
-    set_ub!(p.variablesDomain[variable], ub);
+  return DefaultProblem(costs, constraints, variablesConstraints, objSense);
 end
 
 """
