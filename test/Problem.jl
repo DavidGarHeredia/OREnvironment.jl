@@ -1,6 +1,17 @@
 using OREnvironment
 using Test
 
+@testset "VariableDomain" begin
+  domain = OREnvironment.VariableDomain(1.0, 5.0)
+  @test OREnvironment.get_lb(domain) == 1.0
+  @test OREnvironment.get_ub(domain) == 5.0
+
+  OREnvironment.set_lb!(domain, 2.0)
+  OREnvironment.set_ub!(domain, 3.0)
+  @test OREnvironment.get_lb(domain) == 2.0
+  @test OREnvironment.get_ub(domain) == 3.0
+end
+
 @testset "building problem" begin 
   cost = collect(1.0:6.0);
   variables1 = [1, 3, 4, 6];
@@ -11,20 +22,27 @@ using Test
   constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
   constraints = [constraint1, constraint2];
   variablesConstraints = [[1,2], Int[], [1,2], [1], [2], [1,2]];
-  p = OREnvironment.DefaultProblem(cost, constraints, variablesConstraints, :max);
+  domain = [OREnvironment.VariableDomain(0.0, 5.0) for i in 1:6]
+  p = OREnvironment.DefaultProblem(cost, constraints, variablesConstraints, :max, domain);
 
   @test OREnvironment.get_constraints(p) === constraints;
   for i in 1:length(cost)
     @test OREnvironment.get_cost(p, i) == cost[i];
+    @test OREnvironment.get_lb_variable(p, i) == 0.0
+    @test OREnvironment.get_ub_variable(p, i) == 5.0
   end
   for i in 1:length(variablesConstraints)
     @test OREnvironment.get_constraints_of_variable(p, i) == variablesConstraints[i];
   end
   for i in 1:length(cost)
     OREnvironment.set_cost!(p, i, 12.0*i); 
+    OREnvironment.set_lb_variable!(p, i, 1.0) 
+    OREnvironment.set_ub_variable!(p, i, 3.0) 
   end
   for i in 1:length(cost)
     @test OREnvironment.get_cost(p, i) == 12.0*i;
+    @test OREnvironment.get_lb_variable(p, i) == 1.0
+    @test OREnvironment.get_ub_variable(p, i) == 3.0
   end
   @test OREnvironment.get_obj_sense(p) == :max;
   OREnvironment.set_obj_sense!(p, :min);
@@ -66,7 +84,8 @@ end
     symbol = data_symbol[i];
     push!(constraints, OREnvironment.constructConstraint(rhs, symbol, vars, coefs));
   end
-  p = OREnvironment.constructProblem(cost, constraints, :max);
+  domain = [OREnvironment.VariableDomain(0.0, 5.0) for i in 1:6]
+  p = OREnvironment.constructProblem(cost, constraints, :max, domain);
 
   # test that everything works
   variablesConstraints = OREnvironment.get_relationship_variables_constraints(constraints, 6);
@@ -147,7 +166,8 @@ function build_problem()
     push!(constraints, OREnvironment.constructConstraint(rhs, symbol, vars, coefs));
   end
   # variablesConstraints = OREnvironment.get_relationship_variables_constraints(constraints, 6);
-  p = OREnvironment.constructProblem(cost, constraints, :max);
+  domain = [OREnvironment.VariableDomain(0.0, 5.0) for i in 1:6]
+  p = OREnvironment.constructProblem(cost, constraints, :max, domain);
   return p;
 end
 
