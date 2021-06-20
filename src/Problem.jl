@@ -2,9 +2,63 @@ mutable struct VariableDomain
     lb::Float64;
     ub::Float64;
 end
+
+"""
+    get_lb(domain)
+
+Returns the lower bound in `domain`
+
+# Example
+```jldoctest
+julia> domain = OREnvironment.VariableDomain(1.0,5.0);
+julia> OREnvironment.get_lb(domain)
+1.0
+```
+"""
 get_lb(d::VariableDomain)::Float64 = d.lb;
+
+"""
+    set_lb!(domain, val)
+
+Sets the lower bound in `domain` to `val`
+
+# Example
+```jldoctest
+julia> domain = OREnvironment.VariableDomain(1.0,5.0);
+julia> set_lb!(domain, 3.0)
+julia> OREnvironment.get_lb(domain)
+3.0
+```
+"""
 set_lb!(d::VariableDomain, lb::Float64) = d.lb = lb;
+
+"""
+    get_ub(domain)
+
+Returns the upper bound in `domain`
+
+# Example
+```jldoctest
+julia> domain = OREnvironment.VariableDomain(1.0,5.0);
+julia> OREnvironment.get_ub(domain)
+5.0
+```
+"""
 get_ub(d::VariableDomain)::Float64 = d.ub;
+
+"""
+    set_ub!(domain, val)
+
+Sets the upper bound in `domain` to `val`
+
+# Example
+```jldoctest
+julia> domain = OREnvironment.VariableDomain(1.0,5.0);
+julia> set_ub!(domain, 9.0)
+julia> OREnvironment.get_lb(domain)
+9.0
+```
+"""
 set_ub!(d::VariableDomain, ub::Float64) = d.ub = ub;
 
 mutable struct DefaultProblem <: Problem
