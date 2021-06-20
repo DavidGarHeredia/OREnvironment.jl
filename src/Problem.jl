@@ -69,15 +69,6 @@ mutable struct DefaultProblem <: Problem
     variablesDomain::Array{VariableDomain,1};
 end
 
-function construct_default_problem()
-    costs = Array{Float64,1}();
-    constraints = Array{<:Constraint,1}();
-    variablesConstraints = Array{Array{Int,1},1}();
-    objSense = :min;
-    variablesDomain = Array{VariableDomain,1}();
-    return DefaultProblem(costs, constraints, variablesConstraints, objSense, variablesDomain);
-end
-
 """
     constructProblem(c, vconstr, objSense, vdomains)
 
