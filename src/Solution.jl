@@ -417,9 +417,9 @@ end
 
 function should_global_feasibility_be_checked(isSolutionFeasible::Bool, 
                                               isIncrementFeasible::Bool)::Bool
-  # if the solution was not already feasible but the current movement is,
-  # then feasibility must be set checking all the constraints.
-  return !isSolutionFeasible && isIncrementFeasible;
+    # if the solution was not already feasible but the current movement is,
+    # then feasibility must be set checking all the constraints.
+    return !isSolutionFeasible && isIncrementFeasible;
 end
 
 ############################
