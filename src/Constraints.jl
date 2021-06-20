@@ -109,7 +109,7 @@ false
 function is_variable(c::Constraint, variable::Int)::Bool
     local answer::Bool = haskey(c.variablesPositiveCoefficients, variable) || 
                          haskey(c.variablesNegativeCoefficients, variable);
-   return answer; 
+    return answer; 
 end
 
 """
@@ -454,6 +454,6 @@ If the lhs must be recomputed, use function [`is_active(c::OREnvironment.Constra
 See examples in the file with the tests: *./test/Constraints.jl*.
 """
 function is_active_under_current_consumption(c::Constraint, idxConstraint::Int, s::Solution)::Bool 
-  local lhs::Float64 = get_constraint_consumption(s, idxConstraint);
-  return is_active(c, lhs);
+    local lhs::Float64 = get_constraint_consumption(s, idxConstraint);
+    return is_active(c, lhs);
 end
