@@ -8,11 +8,20 @@ get_ub(d::VariableDomain)::Float64 = d.ub;
 set_ub!(d::VariableDomain, ub::Float64) = d.ub = ub;
 
 mutable struct DefaultProblem <: Problem
-  costs::Array{Float64,1};
-  constraints::Array{<:Constraint,1};
-  variablesConstraints::Array{Array{Int,1},1};
-  objSense::Symbol;
-  variablesDomain::Array{VariableDomain,1};
+    costs::Array{Float64,1};
+    constraints::Array{<:Constraint,1};
+    variablesConstraints::Array{Array{Int,1},1};
+    objSense::Symbol;
+    variablesDomain::Array{VariableDomain,1};
+end
+
+function construct_default_problem()
+    costs = Array{Float64,1}();
+    constraints = Array{<:Constraint,1}();
+    variablesConstraints = Array{Array{Int,1},1}();
+    objSense = :min;
+    variablesDomain = Array{VariableDomain,1}();
+    return DefaultProblem();
 end
 
 """
@@ -38,8 +47,8 @@ function constructProblem(costs::Array{Float64,1},
                           constraints::Array{<:Constraint,1},
                           objSense::Symbol,
                           domain::Array{VariableDomain,1}) 
-  variablesConstraints = get_relationship_variables_constraints(constraints, length(costs));
-  return DefaultProblem(costs, constraints, variablesConstraints, objSense, domain);
+    variablesConstraints = get_relationship_variables_constraints(constraints, length(costs));
+    return DefaultProblem(costs, constraints, variablesConstraints, objSense, domain);
 end
 
 get_lb_variable(p::Problem, variable::Int)::Float64 = get_lb(p.variablesDomain[variable]);
@@ -228,15 +237,15 @@ julia> OREnvironment.add_constraint!(p, c);
 ``` 
 """
 function add_constraint!(p::Problem, c::Constraint) 
-  push!(p.constraints, c);
-  local idx::Int = length(p.constraints);
-  add_constraint_index_to_variables!(c, idx, p.variablesConstraints);
+    push!(p.constraints, c);
+    local idx::Int = length(p.constraints);
+    add_constraint_index_to_variables!(c, idx, p.variablesConstraints);
 end
 
 function add_constraint!(p::Problem, constraints::Array{<:Constraint,1}) 
-  for c in constraints
-    add_constraint!(p,c);
-  end
+    for c in constraints
+        add_constraint!(p,c);
+    end
 end
 
 """
