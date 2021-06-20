@@ -25,6 +25,9 @@ end
   domain = [OREnvironment.VariableDomain(0.0, 5.0) for i in 1:6]
   p = OREnvironment.DefaultProblem(cost, constraints, variablesConstraints, :max, domain);
 
+  @test OREnvironment.get_number_of_constraints(p) == 2;
+  @test OREnvironment.get_number_of_variables(p) == 6;
+
   @test OREnvironment.get_constraints(p) === constraints;
   for i in 1:length(cost)
     @test OREnvironment.get_cost(p, i) == cost[i];
