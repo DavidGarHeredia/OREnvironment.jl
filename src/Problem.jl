@@ -73,15 +73,127 @@ julia> OREnvironment.get_lb_variable(p, 1);
 ```
 """
 get_lb_variable(p::Problem, variable::Int)::Float64 = get_lb(p.variablesDomain[variable]);
+
+"""
+    set_lb_variable!(p, var, val)
+
+Set the lower bound of variable `var` to value `val`.
+
+# Example
+```jldoctest
+julia> cost = collect(1.0:6.0);
+julia> variables1 = [1, 3, 4, 6];
+julia> variables2 = [1, 3, 5, 6];
+julia> coefs1 = [2.3, 3.2, 3.1, 12.34];
+julia> coefs2 = coefs1 .+ 1.0;
+julia> constraint1 = OREnvironment.constructConstraint(15.0, :lessOrEq, variables1, coefs1);
+julia> constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
+julia> constraints = [constraint1, constraint2];
+julia> domain = [VariableDomain(0.0,1.0) for i in 1:6];
+julia> p = OREnvironment.constructProblem(cost, constraints, :max, domain);
+julia> OREnvironment.set_lb_variable!(p, 1, 1.0);
+julia> OREnvironment.get_lb_variable(p, 1);
+1.0
+```
+"""
 @inline function set_lb_variable!(p::Problem, variable::Int, lb::Float64) 
     set_lb!(p.variablesDomain[variable], lb);
 end
+
+"""
+    get_ub_variable(p, var)
+
+Returns the upper bound of variable `var`.
+
+# Example
+```jldoctest
+julia> cost = collect(1.0:6.0);
+julia> variables1 = [1, 3, 4, 6];
+julia> variables2 = [1, 3, 5, 6];
+julia> coefs1 = [2.3, 3.2, 3.1, 12.34];
+julia> coefs2 = coefs1 .+ 1.0;
+julia> constraint1 = OREnvironment.constructConstraint(15.0, :lessOrEq, variables1, coefs1);
+julia> constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
+julia> constraints = [constraint1, constraint2];
+julia> domain = [VariableDomain(0.0,1.0) for i in 1:6];
+julia> p = OREnvironment.constructProblem(cost, constraints, :max, domain);
+julia> OREnvironment.get_ub_variable(p, 1);
+1.0
+```
+"""
 get_ub_variable(p::Problem, variable::Int)::Float64 = get_ub(p.variablesDomain[variable]);
+
+"""
+    set_ub_variable!(p, var, val)
+
+Set the upper bound of variable `var` to value `val`.
+
+# Example
+```jldoctest
+julia> cost = collect(1.0:6.0);
+julia> variables1 = [1, 3, 4, 6];
+julia> variables2 = [1, 3, 5, 6];
+julia> coefs1 = [2.3, 3.2, 3.1, 12.34];
+julia> coefs2 = coefs1 .+ 1.0;
+julia> constraint1 = OREnvironment.constructConstraint(15.0, :lessOrEq, variables1, coefs1);
+julia> constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
+julia> constraints = [constraint1, constraint2];
+julia> domain = [VariableDomain(0.0,1.0) for i in 1:6];
+julia> p = OREnvironment.constructProblem(cost, constraints, :max, domain);
+julia> OREnvironment.set_ub_variable!(p, 1, 3.0);
+julia> OREnvironment.get_ub_variable(p, 1);
+3.0
+```
+"""
 @inline function set_ub_variable!(p::Problem, variable::Int, ub::Float64) 
     set_ub!(p.variablesDomain[variable], ub);
 end
 
-# TODO: get_number_of_variables() get_number_of_constraints()
+"""
+    get_number_of_variables(p)
+
+Returns the number of variables in problem `p`.
+
+# Example
+```jldoctest
+julia> cost = collect(1.0:6.0);
+julia> variables1 = [1, 3, 4, 6];
+julia> variables2 = [1, 3, 5, 6];
+julia> coefs1 = [2.3, 3.2, 3.1, 12.34];
+julia> coefs2 = coefs1 .+ 1.0;
+julia> constraint1 = OREnvironment.constructConstraint(15.0, :lessOrEq, variables1, coefs1);
+julia> constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
+julia> constraints = [constraint1, constraint2];
+julia> domain = [VariableDomain(0.0,1.0) for i in 1:6];
+julia> p = OREnvironment.constructProblem(cost, constraints, :max, domain);
+julia> OREnvironment.get_number_of_variables(p);
+6
+```
+"""
+get_number_of_variables(p::Problem)::Int = length(p.costs)
+
+"""
+    get_number_of_constraints(p)
+
+Returns the number of constraints in problem `p`. This does not include variables bounds.
+
+# Example
+```jldoctest
+julia> cost = collect(1.0:6.0);
+julia> variables1 = [1, 3, 4, 6];
+julia> variables2 = [1, 3, 5, 6];
+julia> coefs1 = [2.3, 3.2, 3.1, 12.34];
+julia> coefs2 = coefs1 .+ 1.0;
+julia> constraint1 = OREnvironment.constructConstraint(15.0, :lessOrEq, variables1, coefs1);
+julia> constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
+julia> constraints = [constraint1, constraint2];
+julia> domain = [VariableDomain(0.0,1.0) for i in 1:6];
+julia> p = OREnvironment.constructProblem(cost, constraints, :max, domain);
+julia> OREnvironment.get_number_of_constraints(p);
+2
+```
+"""
+get_number_of_constraints(p::Problem)::Int = length(p.constraints)
 
 """
     get_cost(p, var)
