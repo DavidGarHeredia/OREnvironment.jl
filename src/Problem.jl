@@ -21,7 +21,7 @@ function construct_default_problem()
     variablesConstraints = Array{Array{Int,1},1}();
     objSense = :min;
     variablesDomain = Array{VariableDomain,1}();
-    return DefaultProblem();
+    return DefaultProblem(costs, constraints, variablesConstraints, objSense, variablesDomain);
 end
 
 """
