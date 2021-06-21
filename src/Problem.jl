@@ -72,7 +72,7 @@ end
 """
     constructProblem(c, vconstr, objSense, vdomains)
 
-Constructs a `DefaultProblem` struct by providing the vector of cost coefficients `c`, the vector of constraint of the problem `vconstr`, the objective sense, and the vector of domains of the variables (this may be empty if you don't want to specify it).
+Constructs a `DefaultProblem` struct by providing the vector of cost coefficients `c`, the vector of constraint of the problem `vconstr`, the objective sense, and the vector of domains of the variables.
 
 # Example
 ```jldoctest
