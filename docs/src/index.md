@@ -16,4 +16,4 @@ pkg> add https://github.com/DavidGarHeredia/OREnvironment.jl.git
 
 !!! warning
 
-    The code makes extensive use of the macro `@inbounds`. So be carreful when acessing arrays.
+    The code makes extensive use of the macro `@inbounds`. So be careful when accessing arrays.
