@@ -26,9 +26,32 @@ Pages = ["Level2.md"]
 ```
 
 ```@docs
-OREnvironment.constructProblem(costs::Array{Float64,1},constraints::Array{<:OREnvironment.Constraint,1},objSense::Symbol) 
+OREnvironment.constructProblem(costs::Array{Float64,1},constraints::Array{<:OREnvironment.Constraint,1},objSense::Symbol,domain::Array{OREnvironment.VariableDomain,1}) 
 ```
 
+```@docs
+OREnvironment.get_lb_variable(p::OREnvironment.Problem, variable::Int)
+```
+
+```@docs
+OREnvironment.set_lb_variable!(p::OREnvironment.Problem, variable::Int, lb::Float64) 
+```
+
+```@docs
+OREnvironment.get_ub_variable(p::OREnvironment.Problem, variable::Int) 
+```
+
+```@docs
+OREnvironment.set_ub_variable!(p::OREnvironment.Problem, variable::Int, ub::Float64) 
+```
+
+```@docs
+OREnvironment.get_number_of_variables(p::OREnvironment.Problem) 
+```
+
+```@docs
+OREnvironment.get_number_of_constraints(p::OREnvironment.Problem) 
+```
 
 ```@docs
 OREnvironment.get_cost(p::OREnvironment.Problem, variable::Int) 
