@@ -2,7 +2,7 @@
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://davidgarheredia.github.io/OREnvironment.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://davidgarheredia.github.io/OREnvironment.jl/dev)
-[![CI](https://github.com/davidgarheredia/OREnvironment.jl/actions)](https://github.com/oxfordcontrol/OREnvironment.jl/workflows/ci/badge.svg?branch=master)
+[![](https://github.com/davidgarheredia/OREnvironment.jl/workflows/ci/badge.svg?branch=main)](https://github.com/davidgarheredia/OREnvironment.jl/actions)
 [![codecov](https://codecov.io/gh/DavidGarHeredia/OREnvironment.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/DavidGarHeredia/OREnvironment.jl)
 
 OREnvironment is a package to handle optimization problems in Julia. For the moment (no plan to change that in the short term), the package is oriented to deal with Mix Integer **Linear** Programming (MILP) problems.
