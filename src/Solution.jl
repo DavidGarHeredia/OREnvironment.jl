@@ -30,6 +30,10 @@ function constructSolution(::Val{:FixedLengthArray},
     return FixedLengthArray(zeros(typeVariables, numVariables), status);
 end
 
+function create_empty_solution(p::Problem)
+    # TODO
+    # 1) test, code, doc, create PR
+end
 
 ############################
 # General methods for Solution
