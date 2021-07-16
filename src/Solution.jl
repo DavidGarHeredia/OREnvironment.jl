@@ -30,9 +30,12 @@ function constructSolution(::Val{:FixedLengthArray},
     return FixedLengthArray(zeros(typeVariables, numVariables), status);
 end
 
-function create_empty_solution(p::Problem)
-    # TODO
-    # 1) test, code, doc, create PR
+function create_empty_solution(problem::Problem)
+    # TODO: test, doc, create PR
+	local numConstraints::Int = get_number_of_constraints(problem);
+	local numVars::Int 		  = get_number_of_variables(problem);
+	local status::OR.Status	  = constructStatus(numConstraints);
+	return OR.constructSolution(:FixedLengthArray, (Int, numVars, status));
 end
 
 ############################
