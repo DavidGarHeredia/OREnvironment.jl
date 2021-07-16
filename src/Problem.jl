@@ -436,6 +436,11 @@ function add_constraint!(p::Problem, constraints::Array{<:Constraint,1})
     end
 end
 
+function is_feasible(p::Problem, s::Solution)
+    # TODO
+    # 1) test, code, doc, create PR
+end
+
 """
     gap(LB, UB, objSense) 
 
