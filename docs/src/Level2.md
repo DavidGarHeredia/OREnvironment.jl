@@ -79,5 +79,8 @@ OREnvironment.get_constraints_of_variable(p::OREnvironment.Problem, variable::In
 OREnvironment.add_constraint!(p::OREnvironment.Problem, c::OREnvironment.Constraint) 
 ```
 ```@docs
+OREnvironment.is_feasible(p::OREnvironment.Problem, s::OREnvironment.Solution)
+```
+```@docs
 OREnvironment.gap(lowerBound::Float64, upperBound::Float64, objSense::Symbol)
 ```

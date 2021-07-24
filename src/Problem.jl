@@ -61,6 +61,43 @@ julia> OREnvironment.get_lb(domain)
 """
 set_ub!(d::VariableDomain, ub::Float64) = d.ub = ub;
 
+"""
+    is_value_within_the_domain(domain, val)
+
+Checks if `val` is between the lower and upper bound of `domain`.
+
+# Example
+```jldoctest
+julia> domain = OREnvironment.VariableDomain(1.0,5.0);
+julia> OREnvironment.is_value_within_the_domain(domain, 3.0)
+true
+julia> OREnvironment.is_value_within_the_domain(domain, 5)
+true
+julia> OREnvironment.is_value_within_the_domain(domain, 6)
+false
+```
+"""
+@inline function is_value_within_the_domain(d::VariableDomain, value::T)::Bool where {T<:Real}
+    return d.lb <= value <= d.ub;
+end
+
+"""
+    is_solution_within_bounds(arrayDomains, solution)
+
+Checks if all the values of `solution` are within the domains. Each variable will have 1 domain.
+"""
+function is_solution_within_bounds(variablesDomain::Array{VariableDomain,1},
+                                   solution::Solution)::Bool
+    local nVariables::Int = length(variablesDomain);
+    for i in 1:nVariables
+        local value = get_solution(solution, i);
+        local feasible::Bool = is_value_within_the_domain(variablesDomain[i], value);
+        if feasible == false return false end
+    end
+    return true;
+end
+
+
 mutable struct DefaultProblem <: Problem
     costs::Array{Float64,1};
     constraints::Array{<:Constraint,1};
@@ -434,6 +471,47 @@ function add_constraint!(p::Problem, constraints::Array{<:Constraint,1})
     for c in constraints
         add_constraint!(p,c);
     end
+end
+
+"""
+    is_feasible(p, s)
+
+Checks if the current status of solution `s` is feasible for problem `p`, regarding constraints and variables bounds. 
+
+**Note:** This function DOES NOT compute the current consumption of solution `s`. It just checks the last values saved in memory and compare them with the right-hand side values of the constraints. 
+
+# Example
+```jldoctest
+julia> typeVariables = Int; numVariables = 6;  numConstraints = 2;
+julia> status = OREnvironment.constructStatus(numConstraints);
+julia> args = (typeVariables, numVariables, status);
+julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
+julia> cost = collect(1.0:6.0);
+julia> variables1 = [1, 3, 4, 6];
+julia> variables2 = [1, 3, 5, 6];
+julia> coefs1 = [2.3, 3.2, 3.1, 12.34];
+julia> coefs2 = coefs1 .+ 1.0;
+julia> constraint1 = OREnvironment.constructConstraint(15.0, :lessOrEq, variables1, coefs1);
+julia> constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
+julia> constraints = [constraint1, constraint2];
+julia> domain = [OREnvironment.VariableDomain(0.0,1.0) for i in 1:6];
+julia> p = OREnvironment.constructProblem(cost, constraints, :max, domain);
+julia> OREnvironment.is_feasible(p,s)
+true
+julia> OREnvironment.add_solution!(s, 1, 2) # value 2 violates domain
+julia> OREnvironment.is_feasible(p,s)
+false
+``` 
+"""
+function is_feasible(p::Problem, s::Solution)::Bool
+    local lhsFeasible::Bool = is_current_consumption_feasible(s, p.constraints);
+    if lhsFeasible == false 
+        set_feasible!(s, false);
+        return false; 
+    end
+    local boundFeasible::Bool = is_solution_within_bounds(p.variablesDomain, s);
+    set_feasible!(s, boundFeasible);
+    return boundFeasible;
 end
 
 """
