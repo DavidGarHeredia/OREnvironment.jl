@@ -115,7 +115,9 @@ OREnvironment.update_constraint_consumption_and_feasibility!(s::OREnvironment.So
 
 These have to be reimplemented when extending the package to new solution structures.
 
-
+```@docs
+OREnvironment.create_empty_solution(problem::OREnvironment.Problem, typeVariables::DataType)
+```
 ```@docs
 OREnvironment.get_solution(s::OREnvironment.FixedLengthArray{T}, variable::Int) where {T<:Real}
 ```
