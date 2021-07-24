@@ -10,6 +10,32 @@ using Test
   OREnvironment.set_ub!(domain, 3.0)
   @test OREnvironment.get_lb(domain) == 2.0
   @test OREnvironment.get_ub(domain) == 3.0
+  @test OREnvironment.is_value_within_the_domain(domain, 2)
+  @test OREnvironment.is_value_within_the_domain(domain, 2.5)
+  @test OREnvironment.is_value_within_the_domain(domain, 3)
+  @test OREnvironment.is_value_within_the_domain(domain, 4.0) == false
+  @test OREnvironment.is_value_within_the_domain(domain, 1) == false
+end
+
+function constructorSolution(numConstraints=2)
+    status = OREnvironment.constructStatus(numConstraints);
+    Tvariables = Int; sizeArray = 3;
+    sol = OREnvironment.constructSolution(:FixedLengthArray, (Tvariables, sizeArray, status));
+    return sol;
+end
+
+@testset "is_solution_within_bounds" begin
+  d1 = OREnvironment.VariableDomain(1.0, 5.0)
+  d2 = OREnvironment.VariableDomain(2.0, 4.0)
+  d3 = OREnvironment.VariableDomain(3.0, 7.0)
+  domain = [d1, d2, d3]
+  sol = constructorSolution()
+  @test OREnvironment.is_solution_within_bounds(domain, sol) == false
+
+  OREnvironment.add_solution!(sol, 1, 2);
+  OREnvironment.add_solution!(sol, 2, 3);
+  OREnvironment.add_solution!(sol, 3, 6);
+  @test OREnvironment.is_solution_within_bounds(domain, sol)
 end
 
 @testset "building problem" begin 
@@ -218,6 +244,26 @@ end
   @test OREnvironment.get_constraints_of_variable(p, 4) == [3]; 
   @test OREnvironment.get_constraints_of_variable(p, 5) == [3, 4]; 
   @test OREnvironment.get_constraints_of_variable(p, 6) == [2,3,4]; 
+end
+
+@testset "is_feasible" begin
+  typeVariables = Int; numVariables = 6;  numConstraints = 2;
+  status = OREnvironment.constructStatus(numConstraints);
+  args = (typeVariables, numVariables, status);
+  s = OREnvironment.constructSolution(:FixedLengthArray, args)
+  cost = collect(1.0:6.0);
+  variables1 = [1, 3, 4, 6];
+  variables2 = [1, 3, 5, 6];
+  coefs1 = [2.3, 3.2, 3.1, 12.34];
+  coefs2 = coefs1 .+ 1.0;
+  constraint1 = OREnvironment.constructConstraint(15.0, :lessOrEq, variables1, coefs1);
+  constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
+  constraints = [constraint1, constraint2];
+  domain = [OREnvironment.VariableDomain(0.0,1.0) for i in 1:6];
+  p = OREnvironment.constructProblem(cost, constraints, :max, domain);
+  @test OREnvironment.is_feasible(p,s)
+  OREnvironment.add_solution!(s, 1, 2) # value 2 violates domain
+  @test OREnvironment.is_feasible(p,s) == false
 end
 
 @testset "gap function" begin 
