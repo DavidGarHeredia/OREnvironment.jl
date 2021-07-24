@@ -92,6 +92,15 @@ end
     end
 end
 
+@testset "create_empty_solution" begin
+    p = constructorProblem()
+    sol = OREnvironment.create_empty_solution(p, Int)
+    @test OREnvironment.is_feasible(sol) == false;
+    @test OREnvironment.is_optimal(sol) == false;
+    @test OREnvironment.get_objfunction(sol) == 0.0;
+    @test length(sol.sol) == 6;
+end
+
 @testset "Adding and removing solutions" begin
     value = 12.3;
     valueDummy = 0.0;
