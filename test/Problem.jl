@@ -247,7 +247,7 @@ end
 end
 
 @testset "is_feasible" begin
-  typeVariables = Int; numVariables = 6;  numConstraints = 2;
+  typeVariables = Float64; numVariables = 6;  numConstraints = 2;
   status = OREnvironment.constructStatus(numConstraints);
   args = (typeVariables, numVariables, status);
   s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -262,7 +262,19 @@ end
   domain = [OREnvironment.VariableDomain(0.0,1.0) for i in 1:6];
   p = OREnvironment.constructProblem(cost, constraints, :max, domain);
   @test OREnvironment.is_feasible(p,s)
-  OREnvironment.add_solution!(s, 1, 2) # value 2 violates domain
+
+  OREnvironment.add_solution!(s, 1, 1.2) # value 1.2 violates domain
+  OREnvironment.update_constraint_consumption_and_feasibility!(s, p.constraints)
+  @test OREnvironment.is_feasible(p,s) == false
+
+  OREnvironment.add_solution!(s, 1, 0.5) 
+  OREnvironment.add_solution!(s, 2, 0.5) 
+  OREnvironment.add_solution!(s, 3, 0.5) 
+  OREnvironment.update_constraint_consumption_and_feasibility!(s, p.constraints)
+  @test OREnvironment.is_feasible(p,s)
+
+  OREnvironment.add_solution!(s,6,1.0) # we violate constraints
+  OREnvironment.update_constraint_consumption_and_feasibility!(s, p.constraints)
   @test OREnvironment.is_feasible(p,s) == false
 end
 
