@@ -13,7 +13,7 @@ Constructs a container of type `solutionType` for the solution. Note that the ar
 
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -51,7 +51,7 @@ end
 Returns the feasibility value of solution `s`.
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -68,7 +68,7 @@ Sets the feasibility value of solution `s` to `val`.
 
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -85,7 +85,7 @@ set_feasible!(s::Solution, value::Bool) = set_feasible!(s.status, value);
 Returns the optimality value of solution `s`.
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -102,7 +102,7 @@ Sets the optimality value of solution `s` to `val`.
 
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -119,7 +119,7 @@ set_optimal!(s::Solution, value::Bool) = set_optimal!(s.status, value);
 Returns the objective function value of solution `s`.
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -136,7 +136,7 @@ Sets the objective function value of solution `s` to `val`.
 
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -156,7 +156,7 @@ Returns the consumption of the `idx` constraint in solution `s`.
 
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -175,7 +175,7 @@ Sets the consumption of the `idx` constraint in solution `s` to value `val`.
 
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -195,7 +195,7 @@ Returns if solution `s1` is better than solution `s2`. For the comparaison is re
 
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s1 = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -233,7 +233,7 @@ Returns the solution value of variable/index `var`.
 
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -252,7 +252,7 @@ Sets the solution value of variable/index `var` to `val`
 
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -272,7 +272,7 @@ Sets the solution value of variable/index `var` to 0.
 
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
@@ -295,7 +295,7 @@ Sets the solution value of all the variables to 0.
 
 # Example
 ```jldoctest
-julia> typeOfVariables = Int; numVariables = 5;  numConstraints = 3;
+julia> typeVariables = Int; numVariables = 5;  numConstraints = 3;
 julia> status = OREnvironment.constructStatus(numConstraints);
 julia> args = (typeVariables, numVariables, status);
 julia> s = OREnvironment.constructSolution(:FixedLengthArray, args)
