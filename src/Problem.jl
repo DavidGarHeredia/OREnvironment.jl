@@ -506,11 +506,9 @@ false
 function is_feasible(p::Problem, s::Solution)::Bool
     local lhsFeasible::Bool = is_current_consumption_feasible(s, p.constraints);
     if lhsFeasible == false 
-        set_feasible!(s, false);
         return false; 
     end
     local boundFeasible::Bool = is_solution_within_bounds(p.variablesDomain, s);
-    set_feasible!(s, boundFeasible);
     return boundFeasible;
 end
 
