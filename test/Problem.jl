@@ -5,9 +5,11 @@ using Test
   domain = OREnvironment.VariableDomain(1.0, 5.0)
   @test OREnvironment.get_lb(domain) == 1.0
   @test OREnvironment.get_ub(domain) == 5.0
+  @test OREnvironment.get_middle_point(domain) == 3.0
 
   OREnvironment.set_lb!(domain, 2.0)
   OREnvironment.set_ub!(domain, 3.0)
+  @test OREnvironment.get_middle_point(domain) == 2.5
   @test OREnvironment.get_lb(domain) == 2.0
   @test OREnvironment.get_ub(domain) == 3.0
   @test OREnvironment.is_value_within_the_domain(domain, 2)

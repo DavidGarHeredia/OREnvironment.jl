@@ -25,7 +25,7 @@ Sets the lower bound in `domain` to `val`
 # Example
 ```jldoctest
 julia> domain = OREnvironment.VariableDomain(1.0,5.0);
-julia> set_lb!(domain, 3.0)
+julia> OREnvironment.set_lb!(domain, 3.0)
 julia> OREnvironment.get_lb(domain)
 3.0
 ```
@@ -54,12 +54,26 @@ Sets the upper bound in `domain` to `val`
 # Example
 ```jldoctest
 julia> domain = OREnvironment.VariableDomain(1.0,5.0);
-julia> set_ub!(domain, 9.0)
+julia> OREnvironment.set_ub!(domain, 9.0)
 julia> OREnvironment.get_lb(domain)
 9.0
 ```
 """
 set_ub!(d::VariableDomain, ub::Float64) = d.ub = ub;
+
+"""
+    get_middle_point(domain)
+
+Computes the middle point corresponding to the domain.
+
+# Example
+```jldoctest
+julia> domain = OREnvironment.VariableDomain(1.0,5.0);
+julia> OREnvironment.get_middle_point(domain)
+3.0
+```
+"""
+get_middle_point(d::VariableDomain)::Float64 = (d.ub + d.lb)/2
 
 """
     is_value_within_the_domain(domain, val)
