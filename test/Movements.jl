@@ -247,3 +247,21 @@ end
 		@test OREnvironment.get_solution(sol1, 1) == 5
 	end
 end
+
+
+@testset "swap_values and undo_swap" begin
+	p = constructorProblem()
+	sol1 = OREnvironment.create_empty_solution(p, Int)
+	@test OREnvironment.get_solution(sol1, 1) == 0
+	@test OREnvironment.get_solution(sol1, 2) == 0 
+	OREnvironment.add_solution!(sol1, 1, 4)
+	OREnvironment.add_solution!(sol1, 2, 3)
+	@test OREnvironment.get_solution(sol1, 1) == 4
+	@test OREnvironment.get_solution(sol1, 2) == 3 
+	OREnvironment.swap_values!(sol1, 1, 2, p)
+	@test OREnvironment.get_solution(sol1, 1) == 3
+	@test OREnvironment.get_solution(sol1, 2) == 4 
+	OREnvironment.undo_swap!(sol1, 1, 2, p)
+	@test OREnvironment.get_solution(sol1, 1) == 4
+	@test OREnvironment.get_solution(sol1, 2) == 3 
+end

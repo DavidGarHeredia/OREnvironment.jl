@@ -1,7 +1,23 @@
-# swap two values
 # inverse (inverse the order of all elements between x_i and x_j) 
 # insert (put element x_j in position i) # check if Julia is faster by default 
 # insert_sequence = move a whole seq instead of just one element like insertion
+
+function swap_values!(s::FixedLengthArray{T}, 
+					  variable1::Int,
+					  variable2::Int,
+					  p::Problem) where {T<:Real}
+	local value1::T = get_solution(s, variable1)
+	local value2::T = get_solution(s, variable2)
+	add_solution_and_update_status!(s, variable2, value1, p);
+	add_solution_and_update_status!(s, variable1, value2, p);
+end
+
+function undo_swap!(s::FixedLengthArray{T}, 
+					variable1::Int,
+					variable2::Int,
+					p::Problem) where {T<:Real}
+	swap_values!(s, variable1, variable2, p); # doing the swap again undoes the swap
+end
 
 function flip_value!(s::FixedLengthArray{T}, 
 					 variable::Int,
