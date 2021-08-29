@@ -10,26 +10,26 @@ Pages = ["Level5.md"]
 ```
 
 ```@docs
-OREnvironment.inverse_order!(s::OREnvironment.FixedLengthArray{T}, firstVariable::Int, lastVariable::Int, p::::OREnvironment.Problem) where {T<:Real}
+OREnvironment.inverse_order!(s::OREnvironment.FixedLengthArray{T}, firstVariable::Int, lastVariable::Int, p::OREnvironment.Problem) where {T<:Real}
 ```
 ```@docs
-OREnvironment.undo_inverse!(s::OREnvironment.FixedLengthArray{T}, firstVariable::Int, lastVariable::Int, p::::OREnvironment.Problem) where {T<:Real}
+OREnvironment.undo_inverse!(s::OREnvironment.FixedLengthArray{T}, firstVariable::Int, lastVariable::Int, p::OREnvironment.Problem) where {T<:Real}
 ```
 ```@docs
-OREnvironment.swap_values!(s::OREnvironment.FixedLengthArray{T}, variable1::Int, variable2::Int, p::::OREnvironment.Problem) where {T<:Real}
+OREnvironment.swap_values!(s::OREnvironment.FixedLengthArray{T}, variable1::Int, variable2::Int, p::OREnvironment.Problem) where {T<:Real}
 ```
 ```@docs
-OREnvironment.undo_swap!(s::OREnvironment.FixedLengthArray{T}, variable1::Int, variable2::Int, p::::OREnvironment.Problem) where {T<:Real}
+OREnvironment.undo_swap!(s::OREnvironment.FixedLengthArray{T}, variable1::Int, variable2::Int, p::OREnvironment.Problem) where {T<:Real}
 ```
 ```@docs
-OREnvironment.flip_value!(s::OREnvironment.FixedLengthArray{T}, variable::Int, p::::OREnvironment.Problem) where {T<:Real}
+OREnvironment.flip_value!(s::OREnvironment.FixedLengthArray{T}, variable::Int, p::OREnvironment.Problem) where {T<:Real}
 ```
 ```@docs
-OREnvironment.undo_flip!(s::OREnvironment.FixedLengthArray{T}, variable::Int, p::::OREnvironment.Problem) where {T<:Real}
+OREnvironment.undo_flip!(s::OREnvironment.FixedLengthArray{T}, variable::Int, p::OREnvironment.Problem) where {T<:Real}
 ```
 ```@docs
-OREnvironment.mirror_value!(s::OREnvironment.FixedLengthArray{T}, variable::Int, p::::OREnvironment.Problem) where {T<:Real}
+OREnvironment.mirror_value!(s::OREnvironment.FixedLengthArray{T}, variable::Int, p::OREnvironment.Problem) where {T<:Real}
 ```
 ```@docs
-OREnvironment.undo_mirror!(s::OREnvironment.FixedLengthArray{T}, variable::Int, p::::OREnvironment.Problem) where {T<:Real}
+OREnvironment.undo_mirror!(s::OREnvironment.FixedLengthArray{T}, variable::Int, p::OREnvironment.Problem) where {T<:Real}
 ```
