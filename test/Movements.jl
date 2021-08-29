@@ -67,8 +67,127 @@ end
 end
 
 @testset "mirror_value and undo_mirror" begin
-	@testset "Float64 as a type" begin
+	p = constructorProblem()
+	@testset "0 as lb and Float64 as a type" begin
+		sol1 = OREnvironment.create_empty_solution(p, Float64)
+		@test OREnvironment.get_solution(sol1, 1) == 0.0
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 5.0
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 1.75, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 3.25
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 2.0, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 3.0
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 2.5, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 2.5
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 3.0, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 2.0
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 3.5, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 1.5
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 4.75, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 0.25
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 5.0, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 0.0
 	end
-	@testset "Int as a type" begin
+	@testset "0 as lb and Int as a type" begin
+		sol1 = OREnvironment.create_empty_solution(p, Int)
+		@test OREnvironment.get_solution(sol1, 1) == 0
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 5
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 1, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 4
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 2, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 3
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 3, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 2
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 4, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 1
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 5, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 0
+	end
+
+	OREnvironment.set_lb_variable!(p, 1, 1.0)
+	@testset "1 as lb and Float as a type" begin
+		sol1 = OREnvironment.create_empty_solution(p, Float64)
+		@test OREnvironment.get_solution(sol1, 1) == 0.0 # value outside bounds
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 0.0 # we did nothing
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 1.75, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 4.25
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 2.0, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 4.0
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 2.5, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 3.5
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 3.0, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 3.0
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 3.5, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 2.5
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 4.75, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 1.25
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 5.0, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 1.0
+	end
+	@testset "1 as lb and Int as a type" begin
+		sol1 = OREnvironment.create_empty_solution(p, Int)
+		@test OREnvironment.get_solution(sol1, 1) == 0 # value outside bounds
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 0 # we did nothing
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 1, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 5
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 2, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 4
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 3, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 3
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 4, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 2
+
+		OREnvironment.add_solution_and_update_status(sol1, 1, 5, p)
+		OREnvironment.mirror_value(sol1, 1, p)
+		@test OREnvironment.get_solution(sol1, 1) == 1
 	end
 end
