@@ -59,9 +59,9 @@ function mirror_value!(s::FixedLengthArray{T},
 					   p::Problem) where {T<:Real}
 	local value::T = get_solution(s, variable);
 	if is_value_within_the_domain(p, variable, value)
-		local sum_bounds::T = T(get_ub_variable(p, variable) + get_lb_variable(p, variable));
-		local new_value::T =  sum_bounds - value;
-		add_solution_and_update_status!(s, variable, new_value, p);
+		local sumBounds::T = T(get_ub_variable(p, variable) + get_lb_variable(p, variable));
+		local newValue::T =  sumBounds - value;
+		add_solution_and_update_status!(s, variable, newValue, p);
 	end
 end
 
