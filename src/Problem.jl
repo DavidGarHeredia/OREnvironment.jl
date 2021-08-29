@@ -25,7 +25,7 @@ Sets the lower bound in `domain` to `val`
 # Example
 ```jldoctest
 julia> domain = OREnvironment.VariableDomain(1.0,5.0);
-julia> set_lb!(domain, 3.0)
+julia> OREnvironment.set_lb!(domain, 3.0)
 julia> OREnvironment.get_lb(domain)
 3.0
 ```
@@ -54,12 +54,26 @@ Sets the upper bound in `domain` to `val`
 # Example
 ```jldoctest
 julia> domain = OREnvironment.VariableDomain(1.0,5.0);
-julia> set_ub!(domain, 9.0)
+julia> OREnvironment.set_ub!(domain, 9.0)
 julia> OREnvironment.get_lb(domain)
 9.0
 ```
 """
 set_ub!(d::VariableDomain, ub::Float64) = d.ub = ub;
+
+"""
+    get_middle_point(domain)
+
+Computes the middle point corresponding to the domain.
+
+# Example
+```jldoctest
+julia> domain = OREnvironment.VariableDomain(1.0,5.0);
+julia> OREnvironment.get_middle_point(domain)
+3.0
+```
+"""
+get_middle_point(d::VariableDomain)::Float64 = (d.ub + d.lb)/2
 
 """
     is_value_within_the_domain(domain, val)
@@ -229,6 +243,60 @@ julia> OREnvironment.get_ub_variable(p, 1);
 """
 @inline function set_ub_variable!(p::Problem, variable::Int, ub::Float64) 
     set_ub!(p.variablesDomain[variable], ub);
+end
+
+"""
+    is_value_within_the_domain(p, var, val)
+
+Checks if for variable `var`, value `val` is within its domain.
+
+# Example
+```jldoctest
+julia> cost = collect(1.0:6.0);
+julia> variables1 = [1, 3, 4, 6];
+julia> variables2 = [1, 3, 5, 6];
+julia> coefs1 = [2.3, 3.2, 3.1, 12.34];
+julia> coefs2 = coefs1 .+ 1.0;
+julia> constraint1 = OREnvironment.constructConstraint(15.0, :lessOrEq, variables1, coefs1);
+julia> constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
+julia> constraints = [constraint1, constraint2];
+julia> domain = [OREnvironment.VariableDomain(0.0,1.0) for i in 1:6];
+julia> p = OREnvironment.constructProblem(cost, constraints, :max, domain);
+julia> OREnvironment.is_value_within_the_domain(p, 1, 3.0)
+false
+julia> OREnvironment.is_value_within_the_domain(p, 1, 0.5)
+true
+```
+"""
+@inline function is_value_within_the_domain(p::Problem, 
+                                            variable::Int, 
+                                            value::T)::Bool where {T<:Real}
+    return is_value_within_the_domain(p.variablesDomain[variable], value)
+end
+
+"""
+    get_middle_point_variable_domain(p, var)
+
+Computes the middle point corresponding to the domain of variable `var`.
+
+# Example
+```jldoctest
+julia> cost = collect(1.0:6.0);
+julia> variables1 = [1, 3, 4, 6];
+julia> variables2 = [1, 3, 5, 6];
+julia> coefs1 = [2.3, 3.2, 3.1, 12.34];
+julia> coefs2 = coefs1 .+ 1.0;
+julia> constraint1 = OREnvironment.constructConstraint(15.0, :lessOrEq, variables1, coefs1);
+julia> constraint2 = OREnvironment.constructConstraint(9.0, :lessOrEq, variables2, coefs2);
+julia> constraints = [constraint1, constraint2];
+julia> domain = [OREnvironment.VariableDomain(0.0,1.0) for i in 1:6];
+julia> p = OREnvironment.constructProblem(cost, constraints, :max, domain);
+julia> OREnvironment.get_middle_point_variable_domain(p, 1);
+0.5
+```
+"""
+@inline function get_middle_point_variable_domain(p::Problem, variable::Int)::Float64
+    return get_middle_point(p.variablesDomain[variable])
 end
 
 """
