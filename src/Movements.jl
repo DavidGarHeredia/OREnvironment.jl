@@ -1,6 +1,24 @@
-# inverse (inverse the order of all elements between x_i and x_j) 
 # insert (put element x_j in position i) # check if Julia is faster by default 
 # insert_sequence = move a whole seq instead of just one element like insertion
+
+function inverse_order!(s::FixedLengthArray{T}, 
+					    firstVariable::Int,
+					    lastVariable::Int,
+					    p::Problem) where {T<:Real}
+	local numberOfElements::Int = lastVariable - firstVariable;
+	local counter = 0
+	for i in 0:2:numberOfElements
+		swap_values!(s, firstVariable+counter, lastVariable-counter, p)
+		counter += 1
+	end
+end
+
+function undo_inverse!(s::FixedLengthArray{T}, 
+					   firstVariable::Int,
+					   lastVariable::Int,
+					   p::Problem) where {T<:Real}
+	inverse_order!(s, firstVariable, lastVariable, p);
+end
 
 function swap_values!(s::FixedLengthArray{T}, 
 					  variable1::Int,

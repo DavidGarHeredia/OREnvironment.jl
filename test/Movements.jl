@@ -265,3 +265,52 @@ end
 	@test OREnvironment.get_solution(sol1, 1) == 4
 	@test OREnvironment.get_solution(sol1, 2) == 3 
 end
+
+@testset "inverse_order and undo_inverse" begin
+	p = constructorProblem()
+	sol1 = OREnvironment.create_empty_solution(p, Float64)
+	OREnvironment.add_solution!(sol1, 1, 1.6)
+	OREnvironment.add_solution!(sol1, 2, 2.5)
+	OREnvironment.add_solution!(sol1, 3, 3.4)
+	OREnvironment.add_solution!(sol1, 4, 4.3)
+	OREnvironment.add_solution!(sol1, 5, 5.2)
+	OREnvironment.add_solution!(sol1, 6, 6.1)
+	@test OREnvironment.get_solution(sol1, 1) == 1.6 
+	@test OREnvironment.get_solution(sol1, 2) == 2.5
+	@test OREnvironment.get_solution(sol1, 3) == 3.4 
+	@test OREnvironment.get_solution(sol1, 4) == 4.3
+	@test OREnvironment.get_solution(sol1, 5) == 5.2 
+	@test OREnvironment.get_solution(sol1, 6) == 6.1 
+	@testset "when the number of elements is even" begin
+		OREnvironment.inverse_order!(sol1, 2, 5, p)
+		@test OREnvironment.get_solution(sol1, 1) == 1.6 
+		@test OREnvironment.get_solution(sol1, 2) == 5.2 
+		@test OREnvironment.get_solution(sol1, 3) == 4.3 
+		@test OREnvironment.get_solution(sol1, 4) == 3.4
+		@test OREnvironment.get_solution(sol1, 5) == 2.5 
+		@test OREnvironment.get_solution(sol1, 6) == 6.1 
+		OREnvironment.undo_inverse!(sol1, 2, 5, p)
+		@test OREnvironment.get_solution(sol1, 1) == 1.6 
+		@test OREnvironment.get_solution(sol1, 2) == 2.5
+		@test OREnvironment.get_solution(sol1, 3) == 3.4 
+		@test OREnvironment.get_solution(sol1, 4) == 4.3
+		@test OREnvironment.get_solution(sol1, 5) == 5.2 
+		@test OREnvironment.get_solution(sol1, 6) == 6.1 
+	end
+	@testset "when the number of elements is odd" begin
+		OREnvironment.inverse_order!(sol1, 2, 6, p)
+		@test OREnvironment.get_solution(sol1, 1) == 1.6 
+		@test OREnvironment.get_solution(sol1, 2) == 6.1
+		@test OREnvironment.get_solution(sol1, 3) == 5.2
+		@test OREnvironment.get_solution(sol1, 4) == 4.3
+		@test OREnvironment.get_solution(sol1, 5) == 3.4
+		@test OREnvironment.get_solution(sol1, 6) == 2.5
+		OREnvironment.undo_inverse!(sol1, 2, 6, p)
+		@test OREnvironment.get_solution(sol1, 1) == 1.6 
+		@test OREnvironment.get_solution(sol1, 2) == 2.5
+		@test OREnvironment.get_solution(sol1, 3) == 3.4 
+		@test OREnvironment.get_solution(sol1, 4) == 4.3
+		@test OREnvironment.get_solution(sol1, 5) == 5.2 
+		@test OREnvironment.get_solution(sol1, 6) == 6.1 
+	end
+end
