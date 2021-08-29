@@ -8,5 +8,5 @@ format = Documenter.HTML(prettyurls = false)
 
 deploydocs(
 	repo = "github.com/DavidGarHeredia/OREnvironment.jl.git",
-	devbranch = "main"
+	devbranch = "dev"
 )
