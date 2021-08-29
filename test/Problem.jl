@@ -61,6 +61,7 @@ end
     @test OREnvironment.get_cost(p, i) == cost[i];
     @test OREnvironment.get_lb_variable(p, i) == 0.0
     @test OREnvironment.get_ub_variable(p, i) == 5.0
+    @test OREnvironment.get_middle_point_variable_domain(p, i) == 2.5
   end
   for i in 1:length(variablesConstraints)
     @test OREnvironment.get_constraints_of_variable(p, i) == variablesConstraints[i];
