@@ -108,7 +108,7 @@ end
 """
     mirror_value!(s, var, p)
 
-If variable `var` in solution `s` has a value `x[var]=z`, and the variable is bounded to the interval (it may be discrete) `[lb, ub]`, then the variable is assigned value $ub+lb-z$.
+If variable `var` in solution `s` has a value `x[var]=z`, and the variable is bounded to the interval (it may be discrete) `[lb, ub]`, then the variable is assigned value `ub+lb-z`.
 
 For example, if `x[var]=4` and `[lb, ub] = [1,5]`, then, after calling the function, `x[var] = 2`. Notice that if you draw the bounds in the real line: 1-2-3-4-5, value 2 is the mirror of 4. Meaning that if you fold the interval by its middle point (which in the example is 3), value 2 and 4 would touch.
 
