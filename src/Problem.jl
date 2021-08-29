@@ -266,7 +266,7 @@ julia> OREnvironment.get_middle_point_variable_domain(p, 1);
 0.5
 ```
 """
-@inline function get_middle_point_variable_domain(p::Problem, variable::Int)
+@inline function get_middle_point_variable_domain(p::Problem, variable::Int)::Float64
     return get_middle_point(p.variablesDomain[variable])
 end
 
