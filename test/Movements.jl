@@ -19,46 +19,56 @@ end
 
 @testset "flip_value and undo_flip" begin
 	p = constructorProblem()
-	# flipping variable 1
-	for type in [Int, Float64]
-		sol1 = OREnvironment.create_empty_solution(p, type)
-		@test OREnvironment.is_feasible(sol1) == false # by default is false
-		@test OREnvironment.get_objfunction(sol1) == 0.0
-		@test OREnvironment.get_solution(sol1, 1) == zero(type)
+	@testset "flipping variable 1" begin
+		for type in [Int, Float64]
+			sol1 = OREnvironment.create_empty_solution(p, type)
+			@test OREnvironment.is_feasible(sol1) == false # by default is false
+			@test OREnvironment.get_objfunction(sol1) == 0.0
+			@test OREnvironment.get_solution(sol1, 1) == zero(type)
 
-		OREnvironment.flip_value!(sol1, 1, p)
-		@test OREnvironment.is_feasible(sol1) == true
-		@test OREnvironment.get_objfunction(sol1) == 1.0
-		@test OREnvironment.get_solution(sol1, 1) == one(type)
-		
-		OREnvironment.undo_flip!(sol1, 1, p)
-		@test OREnvironment.is_feasible(sol1) == true
-		@test OREnvironment.get_objfunction(sol1) == 0.0
-		@test OREnvironment.get_solution(sol1, 1) == zero(type)
-		
-		OREnvironment.add_solution!(sol1, 1, 3*one(type))
-		OREnvironment.flip_value!(sol1, 1, p) # as we don't have 1 or 0 nothing happens
-		@test OREnvironment.get_solution(sol1, 1) == 3*one(type)
+			OREnvironment.flip_value!(sol1, 1, p)
+			@test OREnvironment.is_feasible(sol1) == true
+			@test OREnvironment.get_objfunction(sol1) == 1.0
+			@test OREnvironment.get_solution(sol1, 1) == one(type)
+			
+			OREnvironment.undo_flip!(sol1, 1, p)
+			@test OREnvironment.is_feasible(sol1) == true
+			@test OREnvironment.get_objfunction(sol1) == 0.0
+			@test OREnvironment.get_solution(sol1, 1) == zero(type)
+			
+			OREnvironment.add_solution!(sol1, 1, 3*one(type))
+			OREnvironment.flip_value!(sol1, 1, p) # as we don't have 1 or 0 nothing happens
+			@test OREnvironment.get_solution(sol1, 1) == 3*one(type)
+		end
 	end
-	# flipping varible 6
-	for type in [Int, Float64]
-		sol1 = OREnvironment.create_empty_solution(p, type)
-		@test OREnvironment.is_feasible(sol1) == false # by default is false
-		@test OREnvironment.get_objfunction(sol1) == 0.0
-		@test OREnvironment.get_solution(sol1, 6) == zero(type)
 
-		OREnvironment.flip_value!(sol1, 6, p)
-		@test OREnvironment.is_feasible(sol1) == false
-		@test OREnvironment.get_objfunction(sol1) == 6.0
-		@test OREnvironment.get_solution(sol1, 6) == one(type)
-		
-		OREnvironment.undo_flip!(sol1, 6, p)
-		@test OREnvironment.is_feasible(sol1) == true
-		@test OREnvironment.get_objfunction(sol1) == 0.0
-		@test OREnvironment.get_solution(sol1, 6) == zero(type)
-		
-		OREnvironment.add_solution!(sol1, 6, 3*one(type))
-		OREnvironment.flip_value!(sol1, 6, p) # as we don't have 1 or 0 nothing happens
-		@test OREnvironment.get_solution(sol1, 6) == 3*one(type)
+	@testet "flipping varible 6" begin
+		for type in [Int, Float64]
+			sol1 = OREnvironment.create_empty_solution(p, type)
+			@test OREnvironment.is_feasible(sol1) == false # by default is false
+			@test OREnvironment.get_objfunction(sol1) == 0.0
+			@test OREnvironment.get_solution(sol1, 6) == zero(type)
+
+			OREnvironment.flip_value!(sol1, 6, p)
+			@test OREnvironment.is_feasible(sol1) == false
+			@test OREnvironment.get_objfunction(sol1) == 6.0
+			@test OREnvironment.get_solution(sol1, 6) == one(type)
+
+			OREnvironment.undo_flip!(sol1, 6, p)
+			@test OREnvironment.is_feasible(sol1) == true
+			@test OREnvironment.get_objfunction(sol1) == 0.0
+			@test OREnvironment.get_solution(sol1, 6) == zero(type)
+
+			OREnvironment.add_solution!(sol1, 6, 3*one(type))
+			OREnvironment.flip_value!(sol1, 6, p) # as we don't have 1 or 0 nothing happens
+			@test OREnvironment.get_solution(sol1, 6) == 3*one(type)
+		end
+	end
+end
+
+@testset "mirror_value and undo_mirror" begin
+	@testset "Float64 as a type" begin
+	end
+	@testset "Int as a type" begin
 	end
 end
