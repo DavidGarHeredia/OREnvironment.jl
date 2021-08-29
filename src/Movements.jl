@@ -1,5 +1,4 @@
-# insert (put element x_j in position i) # check if Julia is faster by default 
-# insert_sequence = move a whole seq instead of just one element like insertion
+
 
 function inverse_order!(s::FixedLengthArray{T}, 
 					    firstVariable::Int,
