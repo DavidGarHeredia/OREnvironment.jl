@@ -8,5 +8,6 @@ include("Solution.jl")
 include("Constraints.jl")
 include("Problem.jl")
 include("Permutations.jl")
+include("Movements.jl")
 
 end

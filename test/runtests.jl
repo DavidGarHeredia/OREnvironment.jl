@@ -9,6 +9,7 @@ tests = [
     "Constraints"
     "Problem"
     "Permutations"
+    "Movements"
 ]
 
 @testset "OREnvironment.jl" begin

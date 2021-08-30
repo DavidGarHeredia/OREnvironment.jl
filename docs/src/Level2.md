@@ -46,6 +46,14 @@ OREnvironment.set_ub_variable!(p::OREnvironment.Problem, variable::Int, ub::Floa
 ```
 
 ```@docs
+OREnvironment.is_value_within_the_domain(p::OREnvironment.Problem, variable::Int, value::T) where {T<:Real}
+```
+
+```@docs
+OREnvironment.get_middle_point_variable_domain(p::OREnvironment.Problem, variable::Int)
+```
+
+```@docs
 OREnvironment.get_number_of_variables(p::OREnvironment.Problem) 
 ```
 
