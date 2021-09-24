@@ -5,9 +5,11 @@ using Test
   domain = OREnvironment.VariableDomain(1.0, 5.0)
   @test OREnvironment.get_lb(domain) == 1.0
   @test OREnvironment.get_ub(domain) == 5.0
+  @test OREnvironment.get_middle_point(domain) == 3.0
 
   OREnvironment.set_lb!(domain, 2.0)
   OREnvironment.set_ub!(domain, 3.0)
+  @test OREnvironment.get_middle_point(domain) == 2.5
   @test OREnvironment.get_lb(domain) == 2.0
   @test OREnvironment.get_ub(domain) == 3.0
   @test OREnvironment.is_value_within_the_domain(domain, 2)
@@ -59,6 +61,8 @@ end
     @test OREnvironment.get_cost(p, i) == cost[i];
     @test OREnvironment.get_lb_variable(p, i) == 0.0
     @test OREnvironment.get_ub_variable(p, i) == 5.0
+    @test OREnvironment.get_middle_point_variable_domain(p, i) == 2.5
+    @test OREnvironment.is_value_within_the_domain(p, i, 4.0) == true
   end
   for i in 1:length(variablesConstraints)
     @test OREnvironment.get_constraints_of_variable(p, i) == variablesConstraints[i];
@@ -67,6 +71,7 @@ end
     OREnvironment.set_cost!(p, i, 12.0*i); 
     OREnvironment.set_lb_variable!(p, i, 1.0) 
     OREnvironment.set_ub_variable!(p, i, 3.0) 
+    @test OREnvironment.is_value_within_the_domain(p, i, 4.0) == false
   end
   for i in 1:length(cost)
     @test OREnvironment.get_cost(p, i) == 12.0*i;
