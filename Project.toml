@@ -1,7 +1,10 @@
 name = "OREnvironment"
 uuid = "589f263a-0adc-408b-bde8-fa3f6b74b592"
 authors = ["DavidGarHeredia <dgheredia@protonmail.com>"]
-version = "0.2.0"
+version = "0.3.0"
+
+[deps]
+ORInterface = "43071d64-de10-4806-ae84-b0e10aaf9965"
 
 [compat]
 julia = "1.5"
