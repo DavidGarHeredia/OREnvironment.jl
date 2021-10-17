@@ -26,68 +26,68 @@ Pages = ["Level2.md"]
 ```
 
 ```@docs
-OREnvironment.constructProblem(costs::Array{Float64,1},constraints::Array{<:OREnvironment.Constraint,1},objSense::Symbol,domain::Array{OREnvironment.VariableDomain,1}) 
+OREnvironment.constructProblem(costs::Array{Float64,1},constraints::Array{<:ORInterface.Constraint,1},objSense::Symbol,domain::Array{OREnvironment.VariableDomain,1}) 
 ```
 
 ```@docs
-OREnvironment.get_lb_variable(p::OREnvironment.Problem, variable::Int)
+OREnvironment.get_lb_variable(p::ORInterface.Problem, variable::Int)
 ```
 
 ```@docs
-OREnvironment.set_lb_variable!(p::OREnvironment.Problem, variable::Int, lb::Float64) 
+OREnvironment.set_lb_variable!(p::ORInterface.Problem, variable::Int, lb::Float64) 
 ```
 
 ```@docs
-OREnvironment.get_ub_variable(p::OREnvironment.Problem, variable::Int) 
+OREnvironment.get_ub_variable(p::ORInterface.Problem, variable::Int) 
 ```
 
 ```@docs
-OREnvironment.set_ub_variable!(p::OREnvironment.Problem, variable::Int, ub::Float64) 
+OREnvironment.set_ub_variable!(p::ORInterface.Problem, variable::Int, ub::Float64) 
 ```
 
 ```@docs
-OREnvironment.is_value_within_the_domain(p::OREnvironment.Problem, variable::Int, value::T) where {T<:Real}
+OREnvironment.is_value_within_the_domain(p::ORInterface.Problem, variable::Int, value::T) where {T<:Real}
 ```
 
 ```@docs
-OREnvironment.get_middle_point_variable_domain(p::OREnvironment.Problem, variable::Int)
+OREnvironment.get_middle_point_variable_domain(p::ORInterface.Problem, variable::Int)
 ```
 
 ```@docs
-OREnvironment.get_number_of_variables(p::OREnvironment.Problem) 
+OREnvironment.get_number_of_variables(p::ORInterface.Problem) 
 ```
 
 ```@docs
-OREnvironment.get_number_of_constraints(p::OREnvironment.Problem) 
+OREnvironment.get_number_of_constraints(p::ORInterface.Problem) 
 ```
 
 ```@docs
-OREnvironment.get_cost(p::OREnvironment.Problem, variable::Int) 
+OREnvironment.get_cost(p::ORInterface.Problem, variable::Int) 
 ```
 
 ```@docs
-OREnvironment.set_cost!(p::OREnvironment.Problem, variable::Int, value::Float64)
+OREnvironment.set_cost!(p::ORInterface.Problem, variable::Int, value::Float64)
 ```
 ```@docs
-OREnvironment.get_obj_sense(p::OREnvironment.Problem)
+OREnvironment.get_obj_sense(p::ORInterface.Problem)
 ```
 ```@docs
-OREnvironment.set_obj_sense!(p::OREnvironment.Problem, value::Symbol)
+OREnvironment.set_obj_sense!(p::ORInterface.Problem, value::Symbol)
 ```
 ```@docs
-OREnvironment.get_constraint(p::OREnvironment.Problem, idxConstraint::Int)
+OREnvironment.get_constraint(p::ORInterface.Problem, idxConstraint::Int)
 ```
 ```@docs
-OREnvironment.get_constraints(p::OREnvironment.Problem)
+OREnvironment.get_constraints(p::ORInterface.Problem)
 ```
 ```@docs
-OREnvironment.get_constraints_of_variable(p::OREnvironment.Problem, variable::Int)
+OREnvironment.get_constraints_of_variable(p::ORInterface.Problem, variable::Int)
 ```
 ```@docs
-OREnvironment.add_constraint!(p::OREnvironment.Problem, c::OREnvironment.Constraint) 
+OREnvironment.add_constraint!(p::ORInterface.Problem, c::ORInterface.Constraint) 
 ```
 ```@docs
-OREnvironment.is_feasible(p::OREnvironment.Problem, s::OREnvironment.Solution)
+OREnvironment.is_feasible(p::ORInterface.Problem, s::ORInterface.Solution)
 ```
 ```@docs
 OREnvironment.gap(lowerBound::Float64, upperBound::Float64, objSense::Symbol)

@@ -33,34 +33,34 @@ Pages = ["Level3.md"]
 OREnvironment.constructStatus(numberConstraints::Int)
 ```
 ```@docs
-OREnvironment.is_feasible(s::OREnvironment.Status)
+OREnvironment.is_feasible(s::ORInterface.Status)
 ```
 ```@docs
-OREnvironment.set_feasible!(s::OREnvironment.Status, value::Bool)
+OREnvironment.set_feasible!(s::ORInterface.Status, value::Bool)
 ```
 ```@docs
-OREnvironment.is_optimal(s::OREnvironment.Status)
+OREnvironment.is_optimal(s::ORInterface.Status)
 ```
 ```@docs
-OREnvironment.set_optimal!(s::OREnvironment.Status, value::Bool)
+OREnvironment.set_optimal!(s::ORInterface.Status, value::Bool)
 ```
 ```@docs
-OREnvironment.get_objfunction(s::OREnvironment.Status)
+OREnvironment.get_objfunction(s::ORInterface.Status)
 ```
 ```@docs
-OREnvironment.set_objfunction!(s::OREnvironment.Status, value::Float64)
+OREnvironment.set_objfunction!(s::ORInterface.Status, value::Float64)
 ```
 ```@docs
-OREnvironment.get_constraint_consumption(s::OREnvironment.Status, idxConstraint::Int)
+OREnvironment.get_constraint_consumption(s::ORInterface.Status, idxConstraint::Int)
 ```
 ```@docs
-OREnvironment.set_constraint_consumption!(s::OREnvironment.Status, idxConstraint::Int, value::Float64)
+OREnvironment.set_constraint_consumption!(s::ORInterface.Status, idxConstraint::Int, value::Float64)
 ```
 ```@docs
 OREnvironment.worst_value(objsense::Symbol)
 ```
 ```@docs
-OREnvironment.is_first_status_better(s1::OREnvironment.Status, s2::OREnvironment.Status, objSense::Symbol, feasibilityRequiered::Bool)
+OREnvironment.is_first_status_better(s1::ORInterface.Status, s2::ORInterface.Status, objSense::Symbol, feasibilityRequiered::Bool)
 ```
 ### Methods for DefaultStatus
 If you implement a new status, you also have to implement this method.

@@ -54,7 +54,7 @@ In most cases, you don't build constraints one by one as shown above, but you re
 Imagine that we have the information about the constraints (variables, coefficients, etc) stored in a dataframe of N rows. Then we will create the constraints as follows:
 
 ```julia
-constraints = Array{OREnvironment.Constraint, 1}(); # vector of constraints
+constraints = Array{ORInterface.Constraint, 1}(); # vector of constraints
 for i in 1:N
   c = OREnvironment.constructConstraint(df.rhs[i], df.symbol[i], df.vars[i], df.coefs[i]);
   push!(constraints, c);
@@ -82,7 +82,7 @@ For an example (which I highly recommed you to read), check the file *./test/sam
 
 ## Some technical details
 
-The type of constraint considered by default is called `OREnvironment.DefaultConstraint`, which inherits from `OREnvironment.Constraint`. So you can define your own type of constraint and reuse most of the code (if not all) available for `OREnvironment.Constraint` by using inheritance.
+The type of constraint considered by default is called `OREnvironment.DefaultConstraint`, which inherits from `ORInterface.Constraint`. So you can define your own type of constraint and reuse most of the code (if not all) available for `ORInterface.Constraint` by using inheritance.
 
 An interesting feature of `OREnvironment.DefaultConstraint` is that, although it just asks for the variables and coefficients making the left-hand side of a constraint, it handles this information in a special way. It saves the information distinguishing between variables with a positive coefficient and variables with a negative one. This is an idea that I read from a paper by the people of [LocalSolver](https://www.localsolver.com/), which is particularly useful to develop black-box solver methods. The relationship between variables and coefficients is saved in a Julia dictionary for fast access.
 
@@ -101,63 +101,63 @@ Pages = ["Level1.md"]
 OREnvironment.constructConstraint(rhs::Float64, constraintType::Symbol, variables::Array{Int,1}, coefficients::Array{Float64,1})
 ```
 ```@docs
-OREnvironment.get_rhs(c::OREnvironment.Constraint)
+OREnvironment.get_rhs(c::ORInterface.Constraint)
 ```
 ```@docs
-OREnvironment.set_rhs!(c::OREnvironment.Constraint, val::Float64)
+OREnvironment.set_rhs!(c::ORInterface.Constraint, val::Float64)
 ```
 ```@docs
-OREnvironment.get_type(c::OREnvironment.Constraint)
+OREnvironment.get_type(c::ORInterface.Constraint)
 ```
 ```@docs
-OREnvironment.set_type!(c::OREnvironment.Constraint, val::Symbol)
+OREnvironment.set_type!(c::ORInterface.Constraint, val::Symbol)
 ```
 ```@docs
-OREnvironment.is_variable(c::OREnvironment.Constraint, pos::Int)
+OREnvironment.is_variable(c::ORInterface.Constraint, pos::Int)
 ```
 ```@docs
-OREnvironment.get_coefficient(c::OREnvironment.Constraint, pos::Int)
+OREnvironment.get_coefficient(c::ORInterface.Constraint, pos::Int)
 ```
 ```@docs
-OREnvironment.set_coefficient!(c::OREnvironment.Constraint, pos::Int,
+OREnvironment.set_coefficient!(c::ORInterface.Constraint, pos::Int,
 val::Float64)
 ```
 ```@docs
-OREnvironment.get_relationship_variables_constraints(constraints::Array{<:OREnvironment.Constraint,1}, nVariables::Int)
+OREnvironment.get_relationship_variables_constraints(constraints::Array{<:ORInterface.Constraint,1}, nVariables::Int)
 ```
 ```@docs
 OREnvironment.read_constraints(file::String)
 ```
 ```@docs
-OREnvironment.is_feasible(c::OREnvironment.Constraint, lhs::Float64)
+OREnvironment.is_feasible(c::ORInterface.Constraint, lhs::Float64)
 ```
 ```@docs
-OREnvironment.is_active(c::OREnvironment.Constraint, lhs::Float64)
+OREnvironment.is_active(c::ORInterface.Constraint, lhs::Float64)
 ```
 ```@docs
-OREnvironment.compute_lhs_after_increment(variable::Int, variable::Real, currentLHS::Float64, c::OREnvironment.Constraint)
+OREnvironment.compute_lhs_after_increment(variable::Int, variable::Real, currentLHS::Float64, c::ORInterface.Constraint)
 ```
 ```@docs
-OREnvironment.is_increment_feasible(variable::Int, variable::Real, currentLHS::Float64, c::OREnvironment.Constraint)
+OREnvironment.is_increment_feasible(variable::Int, variable::Real, currentLHS::Float64, c::ORInterface.Constraint)
 ```
 
 ### Methods where type Solution is also involved
 In these methods, an struct called solution is also involved. Check [Solutions](@ref) for a better understanding.
 ```@docs
-OREnvironment.is_increment_feasible(s::OREnvironment.Solution, constraints::Array{<:OREnvironment.Constraint,1}, variable::Int, variable::Real, idxConstraints::Array{Int,1})
+OREnvironment.is_increment_feasible(s::ORInterface.Solution, constraints::Array{<:ORInterface.Constraint,1}, variable::Int, variable::Real, idxConstraints::Array{Int,1})
 ```
 ```@docs
-OREnvironment.is_current_consumption_feasible(s::OREnvironment.Solution, constraints::Array{<:OREnvironment.Constraint,1})
+OREnvironment.is_current_consumption_feasible(s::ORInterface.Solution, constraints::Array{<:ORInterface.Constraint,1})
 ```
 ```@docs
-OREnvironment.compute_lhs(c::OREnvironment.Constraint, s::OREnvironment.Solution)
+OREnvironment.compute_lhs(c::ORInterface.Constraint, s::ORInterface.Solution)
 ```
 ```@docs
-OREnvironment.is_feasible(s::OREnvironment.Solution, constraints::Array{<:OREnvironment.Constraint,1})
+OREnvironment.is_feasible(s::ORInterface.Solution, constraints::Array{<:ORInterface.Constraint,1})
 ```
 ```@docs
-OREnvironment.is_active(c::OREnvironment.Constraint, s::OREnvironment.Solution)
+OREnvironment.is_active(c::ORInterface.Constraint, s::ORInterface.Solution)
 ```
 ```@docs
-OREnvironment.is_active_under_current_consumption(c::OREnvironment.Constraint, idxConstraint::Int, s::OREnvironment.Solution)
+OREnvironment.is_active_under_current_consumption(c::ORInterface.Constraint, idxConstraint::Int, s::ORInterface.Solution)
 ```

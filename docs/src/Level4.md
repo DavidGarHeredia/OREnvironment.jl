@@ -68,46 +68,46 @@ Pages = ["Level4.md"]
 OREnvironment.constructSolution(solutionType::Symbol, args)
 ```
 ```@docs
-OREnvironment.is_feasible(s::OREnvironment.Solution)
+OREnvironment.is_feasible(s::ORInterface.Solution)
 ```
 ```@docs
-OREnvironment.set_feasible!(s::OREnvironment.Solution, value::Bool)
+OREnvironment.set_feasible!(s::ORInterface.Solution, value::Bool)
 ```
 ```@docs
-OREnvironment.is_optimal(s::OREnvironment.Solution)
+OREnvironment.is_optimal(s::ORInterface.Solution)
 ```
 ```@docs
-OREnvironment.set_optimal!(s::OREnvironment.Solution, value::Bool)
+OREnvironment.set_optimal!(s::ORInterface.Solution, value::Bool)
 ```
 ```@docs
-OREnvironment.get_objfunction(s::OREnvironment.Solution)
+OREnvironment.get_objfunction(s::ORInterface.Solution)
 ```
 ```@docs
-OREnvironment.set_objfunction!(s::OREnvironment.Solution, value::Float64)
+OREnvironment.set_objfunction!(s::ORInterface.Solution, value::Float64)
 ```
 ```@docs
-OREnvironment.get_constraint_consumption(s::OREnvironment.Solution, idxConstraint::Int)
+OREnvironment.get_constraint_consumption(s::ORInterface.Solution, idxConstraint::Int)
 ```
 ```@docs
-OREnvironment.set_constraint_consumption!(s::OREnvironment.Solution, idxConstraint::Int, value::Float64)
+OREnvironment.set_constraint_consumption!(s::ORInterface.Solution, idxConstraint::Int, value::Float64)
 ```
 ```@docs
-OREnvironment.is_first_solution_better(s1::OREnvironment.Solution,s2::OREnvironment.Solution, objSense::Symbol,feasibilityRequired::Bool)
+OREnvironment.is_first_solution_better(s1::ORInterface.Solution,s2::ORInterface.Solution, objSense::Symbol,feasibilityRequired::Bool)
 ```
 
 ### Methods for Solution when dealing with Constraints
 
 ```@docs
-OREnvironment.update_constraint_consumption!(s::OREnvironment.Solution, constraints::Array{<:OREnvironment.Constraint,1})
+OREnvironment.update_constraint_consumption!(s::ORInterface.Solution, constraints::Array{<:ORInterface.Constraint,1})
 ```
 ```@docs
-OREnvironment.update_constraint_consumption_and_feasibility!(s::OREnvironment.Solution,  constraints::Array{<:OREnvironment.Constraint,1})
+OREnvironment.update_constraint_consumption_and_feasibility!(s::ORInterface.Solution,  constraints::Array{<:ORInterface.Constraint,1})
 ```
 ```@docs
-OREnvironment.update_constraint_consumption!(s::OREnvironment.Solution, constraints::Array{<:OREnvironment.Constraint,1}, variable::Int, Δvariable::Real, idxConstraints::Array{Int,1})
+OREnvironment.update_constraint_consumption!(s::ORInterface.Solution, constraints::Array{<:ORInterface.Constraint,1}, variable::Int, Δvariable::Real, idxConstraints::Array{Int,1})
 ```
 ```@docs
-OREnvironment.update_constraint_consumption_and_feasibility!(s::OREnvironment.Solution, constraints::Array{<:OREnvironment.Constraint,1}, variable::Int, Δvariable::Real, idxConstraints::Array{Int,1})
+OREnvironment.update_constraint_consumption_and_feasibility!(s::ORInterface.Solution, constraints::Array{<:ORInterface.Constraint,1}, variable::Int, Δvariable::Real, idxConstraints::Array{Int,1})
 ```
 
 
@@ -116,7 +116,7 @@ OREnvironment.update_constraint_consumption_and_feasibility!(s::OREnvironment.So
 These have to be reimplemented when extending the package to new solution structures.
 
 ```@docs
-OREnvironment.create_empty_solution(problem::OREnvironment.Problem, typeVariables::DataType)
+OREnvironment.create_empty_solution(problem::ORInterface.Problem, typeVariables::DataType)
 ```
 ```@docs
 OREnvironment.get_solution(s::OREnvironment.FixedLengthArray{T}, variable::Int) where {T<:Real}
@@ -131,11 +131,11 @@ OREnvironment.remove_solution!(s::OREnvironment.FixedLengthArray{T}, variable::I
 OREnvironment.remove_all_solutions!(s::OREnvironment.FixedLengthArray{T}) where {T<:Real}
 ```
 ```@docs
-OREnvironment.add_solution_and_update_status!(s::OREnvironment.FixedLengthArray{T}, variable::Int, value::T, p::OREnvironment.Problem) where {T<:Real}
+OREnvironment.add_solution_and_update_status!(s::OREnvironment.FixedLengthArray{T}, variable::Int, value::T, p::ORInterface.Problem) where {T<:Real}
 ```
 ```@docs
-OREnvironment.remove_solution_and_update_status!(s::OREnvironment.FixedLengthArray{T}, variable::Int, p::OREnvironment.Problem) where {T<:Real}
+OREnvironment.remove_solution_and_update_status!(s::OREnvironment.FixedLengthArray{T}, variable::Int, p::ORInterface.Problem) where {T<:Real}
 ```
 ```@docs
-OREnvironment.remove_all_solutions_and_update_status!(s::OREnvironment.FixedLengthArray{T}, p::OREnvironment.Problem) where {T<:Real}
+OREnvironment.remove_all_solutions_and_update_status!(s::OREnvironment.FixedLengthArray{T}, p::ORInterface.Problem) where {T<:Real}
 ```
