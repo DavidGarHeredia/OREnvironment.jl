@@ -6,7 +6,7 @@ using Test
 #######################
 # PRELIMINARIES FOR THE TESTS 
 #######################
-mutable struct MyProblem <: OREnvironment.Problem 
+mutable struct MyProblem <: Problem 
     costs::Array{Float64,1};
     constraints::Array{<:Constraint,1};
     variablesConstraints::Array{Array{Int,1},1};
