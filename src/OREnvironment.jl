@@ -2,7 +2,8 @@ __precompile__()
 
 module OREnvironment
 
-include("Types.jl")
+using ORInterface
+
 include("Status.jl")
 include("Solution.jl")
 include("Constraints.jl")
