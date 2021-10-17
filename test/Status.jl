@@ -1,4 +1,5 @@
 using OREnvironment
+using ORInterface
 using Test
 
 @testset "Building Status" begin

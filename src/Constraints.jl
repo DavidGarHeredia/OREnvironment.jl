@@ -369,7 +369,7 @@ Returns true if the current consumption associated with solution `s` is feasible
 
 **Note:** This function DOES NOT compute the current consumption of solution `s`. It just checks the last values saved in memory and compare them with the right-hand side values of the constraints. This is for efficiency reasons. Usually, given a solution `s`, when you locally modified it, it is possible to efficiently recompute the current consumption of the solution by just checking the constraints affected by the change. Therefore, to check feasibility it would be a waste of time to recompute the left-hand sides again instead of checking the values in memory.
 
-If the lhs must be recomputed to check feasibility, use function [`is_feasible(s::OREnvironment.Solution, constraints::Array{<:OREnvironment.Constraint,1})`](@ref) instead.
+If the lhs must be recomputed to check feasibility, use function [`is_feasible(s::Solution, constraints::Array{<:Constraint,1})`](@ref) instead.
 
 See examples in the file with the tests: *./test/Constraints.jl*.
 """
@@ -449,7 +449,7 @@ Returns true if the `idx`-th constraint (`c`) is active under the consumption in
 
 **Note:** This function DOES NOT compute the current consumption of solution `s`. It just checks the last value saved in memory and compare it with the right-hand side values of the constraint. That is why `idx` must be provided.
 
-If the lhs must be recomputed, use function [`is_active(c::OREnvironment.Constraint, s::OREnvironment.Solution)`](@ref) instead.
+If the lhs must be recomputed, use function [`is_active(c::Constraint, s::Solution)`](@ref) instead.
 
 See examples in the file with the tests: *./test/Constraints.jl*.
 """

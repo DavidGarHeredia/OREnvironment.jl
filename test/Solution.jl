@@ -1,4 +1,5 @@
 using OREnvironment
+using ORInterface
 using Test
 
 #######################
@@ -6,7 +7,7 @@ using Test
 #######################
 mutable struct MyProblem <: OREnvironment.Problem 
     costs::Array{Float64,1};
-    constraints::Array{<:OREnvironment.Constraint,1};
+    constraints::Array{<:Constraint,1};
     variablesConstraints::Array{Array{Int,1},1};
 end
 

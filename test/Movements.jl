@@ -1,5 +1,6 @@
 
 using OREnvironment
+using ORInterface
 using Test
 
 function constructorProblem()

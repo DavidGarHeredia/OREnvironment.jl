@@ -1,4 +1,5 @@
 using OREnvironment
+using ORInterface
 using Test
 
 @testset "VariableDomain" begin
@@ -110,7 +111,7 @@ end
   # simulating the reading of constraints
   # check function read_constraints in ./test/Constraints.jl for actually
   # reading from a file!!!
-  constraints = Array{OREnvironment.Constraint, 1}();
+  constraints = Array{Constraint, 1}();
   for i in 1:3
     vars = data_vars[i]; # in practice we read from file
     coefs = data_coefs[i];
@@ -191,7 +192,7 @@ function build_problem()
   data_rhs = [12.3, 9.0, 33.0];
   data_symbol = [:lessOrEq, :equal, :greaterOrEq];
   # simulating the reading of constraints
-  constraints = Array{OREnvironment.Constraint, 1}();
+  constraints = Array{Constraint, 1}();
   for i in 1:3
     vars = data_vars[i]; # in practice we read from file
     coefs = data_coefs[i];
