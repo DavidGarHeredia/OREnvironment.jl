@@ -24,7 +24,7 @@ jobs:
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
-      - run: julia -e 'using Pkg; Pkg.add(url="https://github.com/DavidGarHeredia/ORInterface.jl.git")'
+      # - run: julia -e 'using Pkg; Pkg.add(url="https://github.com/DavidGarHeredia/ORInterface.jl.git")'
       - uses: actions/cache@v1
         env:
           cache-name: cache-artifacts

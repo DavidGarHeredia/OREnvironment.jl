@@ -1,0 +1,8 @@
+# This file is machine-generated - editing it directly is not advised
+
+[[ORInterface]]
+git-tree-sha1 = "1c7c7db5c2e16ed9e84277ab531595a0b74fd0f5"
+repo-rev = "master"
+repo-url = "https://github.com/DavidGarHeredia/ORInterface.jl"
+uuid = "43071d64-de10-4806-ae84-b0e10aaf9965"
+version = "0.1.0"
