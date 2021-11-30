@@ -36,10 +36,10 @@ end
 Constructs an empty solution of type `:FixedLengthArray` with variables of type `T` with the information contained in `problem` (num of constraints, of variables).
 """
 function create_empty_solution(problem::Problem, typeVariables::DataType)
-	local numConstraints::Int = get_number_of_constraints(problem);
-	local numVars::Int 		  = get_number_of_variables(problem);
-	local status::Status	  = constructStatus(numConstraints);
-	return constructSolution(:FixedLengthArray, (typeVariables, numVars, status));
+    local numConstraints::Int = get_number_of_constraints(problem);
+    local numVars::Int 		  = get_number_of_variables(problem);
+    local status::Status	  = constructStatus(numConstraints);
+    return constructSolution(:FixedLengthArray, (typeVariables, numVars, status));
 end
 
 ############################
